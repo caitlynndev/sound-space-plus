@@ -446,12 +446,12 @@ func _ready():
 	
 	$Notes.multimesh = MultiMesh.new()
 	$Notes.multimesh.transform_format = MultiMesh.TRANSFORM_3D
-	$Notes.multimesh.color_format = MultiMesh.COLOR_FLOAT
+	$Notes.multimesh.use_colors = true
 	$Notes.multimesh.instance_count = 1
 	if asq:
 		$ASq.multimesh = MultiMesh.new()
 		$ASq.multimesh.transform_format = MultiMesh.TRANSFORM_3D
-		$ASq.multimesh.color_format = MultiMesh.COLOR_8BIT
+		$ASq.multimesh.use_colors = true
 		$ASq.multimesh.mesh = QuadMesh.new()
 		$ASq.multimesh.mesh.size = Vector2(3.35,3.35)
 		$ASq.multimesh.mesh.surface_set_material(0,asq_mat)
@@ -461,14 +461,14 @@ func _ready():
 	
 	
 	var mesh:Mesh
-	if "user://" in Rhythia.selected_mesh.path:
-		var m = ObjParse.load_obj(Rhythia.selected_mesh.path)
-		if m != null:
-			mesh = m
-		else:
-			mesh = load("res://assets/blocks/rounded.obj")
-	else:
-		mesh = load(Rhythia.selected_mesh.path)
+	#if "user://" in Rhythia.selected_mesh.path:
+		#var m = ObjParse.load_obj(Rhythia.selected_mesh.path)
+		#if m != null:
+			#mesh = m
+		#else:
+			#mesh = load("res://assets/blocks/rounded.obj")
+	#else:
+	mesh = load(Rhythia.selected_mesh.path)
 	
 	
 	var img = Globals.imageLoader.load_if_exists("user://note")
@@ -643,8 +643,8 @@ func _set_rec_interval(delta:float):
 		1:
 			min_interval = 60
 			max_interval = 240
-	if Engine.target_fps != 0:
-		max_interval = min(max_interval,Engine.target_fps)
+	if Engine.max_fps != 0:
+		max_interval = min(max_interval,Engine.max_fps)
 		min_interval = min(min_interval,max_interval)
 	var target_interval = min_interval+((diff/12)*(max_interval-min_interval))
 	var new_interval = rec_interval
@@ -733,7 +733,7 @@ func _process(delta:float):
 					pause_state = 0
 					pause_cooldown = 1
 			elif pause_state == 0:
-				 pause_cooldown = max(pause_cooldown - delta, 0)
+				pause_cooldown = max(pause_cooldown - delta, 0)
 		elif Rhythia.replay.sv != 1:
 			var should_pause:bool = false
 			var should_giveup:bool = false

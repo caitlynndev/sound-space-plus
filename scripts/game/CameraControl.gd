@@ -15,23 +15,23 @@ enum Freelook_Modes {MOUSE, INPUT_ACTION, MOUSE_AND_INPUT_ACTION}
 
 # Freelook settings
 @export var freelook = true
-@export (Freelook_Modes) var freelook_mode = 2
-@export (float, 0.0, 0.999, 0.001) var smoothness = 0.5: set = set_smoothness
-@export (int, 0, 360) var yaw_limit = 360
-@export (int, 0, 360) var pitch_limit = 360
+@export var freelook_mode: Freelook_Modes = 2
+@export_range(0.0, 0.999, 0.001) var smoothness = 0.5: set = set_smoothness
+@export_range(0, 360, 1) var yaw_limit = 360
+@export_range(0, 360, 1) var pitch_limit = 360
 
 var sensitivity = 0.5
 
 # Pivot Settings
-@export var privot: NodePath: set = set_privot
+@export_node_path("Node3D") var privot: set = set_privot
 @export var distance = 5.0: set = set_distance
 @export var rotate_privot = false
 @export var collisions = true: set = set_collisions
 
 # Movement settings
 @export var movement = true
-@export (float, 0.0, 1.0) var acceleration = 1.0
-@export (float, 0.0, 0.0, 1.0) var deceleration = 0.1
+@export_range(0.0, 1.0) var acceleration = 1.0
+@export_range(0.0, 0.0, 1.0) var deceleration = 0.1
 @export var max_speed = Vector3(5.0, 5.0, 5.0)
 @export var local = true
 
@@ -134,10 +134,10 @@ func _update_views_physics(delta):
 	if freelook:
 		_update_rotation(delta)
 
-	var space_state = get_world_3d().get_direct_space_state()
-	var obstacle = space_state.intersect_ray(privot.get_position(),  get_position())
-	if not obstacle.is_empty():
-		set_position(obstacle.position)
+	#var space_state = get_world_3d().get_direct_space_state()
+	#var obstacle = space_state.intersect_ray(privot.get_position(),  get_position())
+	#if not obstacle.is_empty():
+		#set_position(obstacle.position)
 
 func _update_movement(delta):
 	var offset = max_speed * acceleration * _direction
@@ -233,7 +233,7 @@ func set_enabled(value):
 		set_process_input(true)
 		_update_process_func()
 		if use_gui and !already_loaded_gui:
-			move_to_front()
+			#move_to_front()
 			already_loaded_gui = true
 			_gui = preload("camera_control_gui.gd")
 			_gui = _gui.new(self, gui_action)

@@ -88,12 +88,12 @@ func _draw():
 							poff*2
 						),
 						ma(Color(0.3,0.3,0.3),0.35 * Dance.InQuint(m)),
-						false, 2, true #*(1.0-(off/nt))
+						false, 2 #*(1.0-(off/nt))
 					)
 					draw_rect(
 						Rect2(10 + (n.x*100), 10 +(n.y*100), 80, 80),
 						ma(colors[fmod(i,colors.size())],0.5*Dance.InQuint(m)),
-						false, 3, false
+						false, 3
 					)
 					draw_rect(
 						Rect2(11+(n.x*100), 12+(n.y*100), 77, 77),
@@ -103,6 +103,9 @@ func _draw():
 
 func _process(delta):
 	if active: update()
+
+func update():
+	pass
 
 func setup(song:Song):
 	$Hit.stream = Rhythia.hit_snd

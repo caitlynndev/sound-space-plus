@@ -37,10 +37,7 @@ func loadMapFile():
 	if map.should_reload_on_play:
 		map.setup_from_file(map.initFile,map.musicFile)
 	notes = map.read_notes()
-	var file:FileAccess = File.new()
 	var song:AudioStream = map.stream()
-	
-	
 	
 	$Spawn.spawn_notes(notes)
 	
@@ -227,7 +224,7 @@ func get_point_amt() -> int:
 	return int(floor((50 * spd * min(hbo,hwi) * mod) + 0.5) * combo_level)
 
 
-func hit(col):
+func _hit(col):
 	emit_signal("hit",col)
 	hits += 1
 	total_notes += 1
@@ -256,7 +253,7 @@ func hit(col):
 	score += points
 	return points
 
-func miss(col):
+func _miss(col):
 	emit_signal("miss",col)
 	misses += 1
 	total_notes += 1

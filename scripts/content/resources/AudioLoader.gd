@@ -164,9 +164,7 @@ func load_buffer(bytes:PackedByteArray,loop:bool=false):
 
 	#if file is ogg
 	elif format == "ogg":
-		var newstream = AudioStreamOggVorbis.new()
-		newstream.loop = loop #set to false or delete this line if you don't want to loop
-		newstream.data = bytes
+		var newstream = AudioStreamOggVorbis.load_from_buffer(bytes)
 		return newstream
 
 	#if file is mp3

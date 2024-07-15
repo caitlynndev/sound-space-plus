@@ -3,7 +3,7 @@ extends Node3D
 var rpos:Vector2 = Vector2(transform.origin.x,-transform.origin.y)
 
 enum {
-	C_MOUSE = 0
+	C_MOUSE = 0,
 	C_JOYSTICK = 1
 }
 

@@ -131,7 +131,7 @@ func _process(delta):
 func _physics_process(delta):
 	# when the mouse is released from drag, the list will scroll based on the momentum
 	if momentum != 0:
-		momentum = lerp(momentum, 0, 0.3)
+		momentum = lerp(momentum, 0.0, 0.3)
 		if abs(momentum) < 0.3:
 			momentum = 0
 		else:
