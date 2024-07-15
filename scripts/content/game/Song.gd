@@ -340,7 +340,8 @@ func get_music_buffer():
 			return null
 	elif songType == Globals.MAP_SSPM2:
 		print("[sspm2] %s: reading audio buffer" % id)
-		var err = file2.open(filePath,FileAccess.READ)
+		file2 = FileAccess.open(filePath,FileAccess.READ)
+		var err = FileAccess.get_open_error()
 		if err == OK:
 			file2.seek(0x2d) # Skip over header data
 			

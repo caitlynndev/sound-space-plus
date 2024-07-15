@@ -54,10 +54,10 @@ func get_format(bytes:PackedByteArray) -> String:
 	# Figure out file format from signatures
 	# https://en.wikipedia.org/wiki/List_of_file_signatures
 	
-	if bytes.slice(0,7) == PackedByteArray([0x89,0x50,0x4E,0x47,0x0D,0x0A,0x1A,0x0A]): return "png"
-	if bytes.slice(0,2) == PackedByteArray([0x42,0x4D]): return "bmp"
-	if bytes.slice(0,2) == PackedByteArray([0xFF,0xD8,0xFF]): return "jpg"
-	if bytes.slice(0,3) == PackedByteArray([0x52,0x49,0x46,0x46]) and bytes.slice(8,11) == PackedByteArray([0x57,0x45,0x42,0x50]): return "webp"
+	if bytes.slice(0,8) == PackedByteArray([0x89,0x50,0x4E,0x47,0x0D,0x0A,0x1A,0x0A]): return "png"
+	if bytes.slice(0,3) == PackedByteArray([0x42,0x4D]): return "bmp"
+	if bytes.slice(0,3) == PackedByteArray([0xFF,0xD8,0xFF]): return "jpg"
+	if bytes.slice(0,4) == PackedByteArray([0x52,0x49,0x46,0x46]) and bytes.slice(8,12) == PackedByteArray([0x57,0x45,0x42,0x50]): return "webp"
 	
 	# unsupported
 	return "unknown"

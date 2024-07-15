@@ -201,7 +201,6 @@ func get_files_recursive(
 	if pause_amt != -1: await get_tree().process_frame
 	print("-- start recurse --")
 	print(paths)
-	var dir:DirAccess = DirAccess.open("res://")
 	
 	var files:Array = []
 	var folders:Array = []
@@ -233,7 +232,8 @@ func get_files_recursive(
 			
 			var cpath:String = ProjectSettings.globalize_path(subfolders.pop_back().strip_edges())
 			cpath = cpath.simplify_path()
-			var err = dir.change_dir(cpath)
+			var dir:DirAccess = DirAccess.open(cpath)
+			var err = dir.get_open_error()
 			if err == OK:
 				err = dir.list_dir_begin() # TODOConverter3To4 fill missing arguments https://github.com/godotengine/godot/pull/40547
 				if err == OK:
@@ -331,7 +331,7 @@ func _ready():
 	var disable_intro = false
 	if FileAccess.file_exists(Globals.p("user://settings.json")):
 		var file = FileAccess.open(Globals.p("user://settings.json"), FileAccess.READ)
-		if FileAccess.get_open_error() != OK:
+		if (FileAccess.get_open_error()) != OK:
 			print("file.open failed"); return -2
 		var test_json_conv = JSON.new()
 		test_json_conv.parse(file.get_as_text())
