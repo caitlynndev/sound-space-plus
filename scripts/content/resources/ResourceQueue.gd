@@ -30,26 +30,27 @@ func _wait(_caller):
 func queue_resource(path, p_in_front = false):
 	if Input.is_key_pressed(KEY_CTRL) and Input.is_key_pressed(KEY_P): return ERR_SKIP
 	_lock("queue_resource")
-	if path in pending:
-		_unlock("queue_resource")
-		return OK
-	elif ResourceLoader.has_cached(path):
-		var res = ResourceLoader.load(path)
-		pending[path] = res
-		_unlock("queue_resource")
-		return OK
-	else:
-		var res = ResourceLoader.load_threaded_request(path)
-		if !res: return FAILED
-		res.set_meta("path", path)
-		if p_in_front:
-			queue.insert(0, res)
-		else:
-			queue.push_back(res)
-		pending[path] = res
-		_post("queue_resource")
-		_unlock("queue_resource")
-		return OK
+	#if path in pending:
+		#_unlock("queue_resource")
+		#return OK
+	#elif ResourceLoader.has_cached(path):
+	# TODO: reimplement threaded loading
+	var res = ResourceLoader.load(path)
+	pending[path] = res
+	_unlock("queue_resource")
+	return OK
+	#else:
+		#var res = ResourceLoader.load_threaded_request(path)
+		#if !res: return FAILED
+		##res.set_meta("path", path)
+		#if p_in_front:
+			#queue.insert(0, res)
+		#else:
+			#queue.push_back(res)
+		#pending[path] = res
+		#_post("queue_resource")
+		#_unlock("queue_resource")
+		#return OK
 
 
 func cancel_resource(path):
@@ -87,7 +88,7 @@ func is_ready(path):
 func _wait_for_resource(res, path):
 	_unlock("wait_for_resource")
 	while true:
-		RenderingServer.sync()
+		#RenderingServer.sync()
 		OS.delay_usec(16000) # Wait approximately 1 frame.
 		_lock("wait_for_resource")
 		if queue.size() == 0 || queue[0] != res:

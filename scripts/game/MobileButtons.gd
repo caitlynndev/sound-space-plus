@@ -13,8 +13,7 @@ func _on_GiveUp_released():
 	Input.action_release("give_up")
 
 func _ready():
-	var tween:Tween = Tween.new()
-	add_child(tween)
+	var tween:Tween = create_tween().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_QUAD)
 	
 	$Pause/Button.visible = OS.has_feature("Android")
 	$GiveUp/Button.visible = OS.has_feature("Android")
@@ -23,7 +22,7 @@ func _ready():
 		$Pause/Button.position.x = DisplayServer.get_display_safe_area().size.x - 150
 		$GiveUp/Button.position.x = DisplayServer.get_display_safe_area().size.x - 150
 	
-	tween.interpolate_property($Pause, "modulate", Color(1,1,1,0.5), Color(1,1,1,0), 1, Tween.TRANS_QUAD, Tween.EASE_IN_OUT, 1)
-	tween.start()
-	tween.interpolate_property($GiveUp, "modulate", Color(1,1,1,0.5), Color(1,1,1,0), 1, Tween.TRANS_QUAD, Tween.EASE_IN_OUT, 1)
+	tween.tween_interval(1)
+	tween.parallel().tween_property($Pause, "modulate", Color(1,1,1,0), 1)
+	tween.parallel().tween_property($GiveUp, "modulate", Color(1,1,1,0), 1)
 	tween.start()

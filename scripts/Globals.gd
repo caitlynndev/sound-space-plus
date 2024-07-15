@@ -198,7 +198,7 @@ func get_files_recursive(
 	pause_amt:int=(-1) # Outputs through the signal recurse_result if used
 ):
 	var a = Time.get_ticks_usec()
-	if pause_amt != -1: await get_tree().idle_frame
+	if pause_amt != -1: await get_tree().process_frame
 	print("-- start recurse --")
 	print(paths)
 	var dir:DirAccess = DirAccess.open("res://")
@@ -220,7 +220,7 @@ func get_files_recursive(
 		
 		i += 1
 		if pause_amt != -1 and (pause_amt == 0 or ((i%pause_amt) == 0)):
-			await get_tree().idle_frame
+			await get_tree().process_frame
 		
 #		print("start layer %s" % layer)
 		subfolders = subfolders2
@@ -229,11 +229,11 @@ func get_files_recursive(
 		while subfolders.size() != 0:
 			i += 1
 			if pause_amt != -1 and (pause_amt == 0 or ((i%pause_amt) == 0)):
-				await get_tree().idle_frame
+				await get_tree().process_frame
 			
 			var cpath:String = ProjectSettings.globalize_path(subfolders.pop_back().strip_edges())
 			cpath = cpath.simplify_path()
-			var err = dir.open(cpath)
+			var err = dir.change_dir(cpath)
 			if err == OK:
 				err = dir.list_dir_begin() # TODOConverter3To4 fill missing arguments https://github.com/godotengine/godot/pull/40547
 				if err == OK:
@@ -242,7 +242,7 @@ func get_files_recursive(
 					while n:
 						i += 1
 						if pause_amt != -1 and (pause_amt == 0 or ((i%pause_amt) == 0)):
-							await get_tree().idle_frame
+							await get_tree().process_frame
 						
 						if folders_with != "" and n == folders_with:
 							folders.append(cpath)
@@ -283,7 +283,7 @@ var con:LineEdit
 
 signal console_sent
 func _process(delta):
-	notify_gui.raise()
+	notify_gui.move_to_front()
 	
 	if Input.is_action_just_pressed("debug_notify"):
 		notify(NOTIFY_INFO,"This is a notification!","Debug Notify")
@@ -297,7 +297,7 @@ func _process(delta):
 			get_parent().add_child(con)
 			con.position = Vector2(5,5)
 			con.size.x = 400
-			con.raise()
+			con.move_to_front()
 			con.grab_focus()
 			
 			await con.text_submitted
@@ -311,10 +311,10 @@ func _process(delta):
 					var cmd = txt.split(" ",true,1)[0]
 					emit_signal("console_sent",cmd,txt.trim_prefix(cmd).strip_edges())
 	if console_open:
-		con.raise()
+		con.move_to_front()
 	elif fps_visible:
 		fps_disp.text = "%s fps" % Engine.get_frames_per_second()
-		fps_disp.raise()
+		fps_disp.move_to_front()
 	
 	if Input.is_action_just_pressed("fps"):
 		if !fps_disp.is_inside_tree():
@@ -329,17 +329,15 @@ func _ready():
 	thread.start(Callable(Rhythia, "do_init"))
 	
 	var disable_intro = false
-	var file:File = File.new()
-	if file.file_exists(Globals.p("user://settings.json")):
-		var err = file.open(Globals.p("user://settings.json"),File.READ)
-		if err != OK:
+	if FileAccess.file_exists(Globals.p("user://settings.json")):
+		var file = FileAccess.open(Globals.p("user://settings.json"), FileAccess.READ)
+		if FileAccess.get_open_error() != OK:
 			print("file.open failed"); return -2
 		var test_json_conv = JSON.new()
 		test_json_conv.parse(file.get_as_text())
 		var decode = test_json_conv.get_data()
 		file.close()
-		if !decode.error:
-			disable_intro = decode.result.has("disable_intro") and decode.result.disable_intro
+		disable_intro = decode.has("disable_intro") and decode.disable_intro
 	if !disable_intro: get_tree().call_deferred("change_scene_to_file","res://scenes/Intro.tscn")
 	
 	url_regex.compile(

@@ -35,7 +35,7 @@ static func load_mtl_from_buffer(mtl_data:String,textures:Dictionary)->Dictionar
 static func get_data(path:String)->String:
 	if path!="":
 		var file := File.new()
-		var err:=file.open(path, File.READ)
+		var err:=file.open(path, FileAccess.READ)
 		if err==OK:
 			var res:=file.get_as_text()
 			file.close()
@@ -53,7 +53,7 @@ static func get_mtl_tex(mtl_path:String)->Dictionary:
 #Get textures paths from mtl path
 static func get_mtl_tex_paths(mtl_path:String)->Array:
 	var file := File.new()
-	var err:=file.open(mtl_path, File.READ)
+	var err:=file.open(mtl_path, FileAccess.READ)
 	var paths := []
 	if err==OK:
 		var lines := file.get_as_text().split("\n", false)

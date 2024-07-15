@@ -122,11 +122,11 @@ func update_static_values():
 	misseslabel.text = "%s" % Globals.comma_sep(Game.misses)
 	energybar.max_value = Game.max_energy
 	energybar.value = Game.energy
-	combotxt.text = String(Game.combo_level) + "x"
+	combotxt.text = str(Game.combo_level) + "x"
 	combo_ring_target = float(Game.lvl_progress) / 10.0
 	
 	if Game.combo != last_combo:
-		truecombo.text = String(Game.combo)
+		truecombo.text = str(Game.combo)
 		truecombo.position.y = 100
 		last_combo = Game.combo
 	

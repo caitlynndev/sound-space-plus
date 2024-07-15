@@ -1,11 +1,10 @@
 extends Button
-var dir:DirAccess = DirAccess.new()
 
 @export var target: String = "cursor"
 @export var default_image: Texture2D
 
 enum KIND {
-	IMAGE
+	IMAGE,
 	SOUND
 }
 
@@ -14,7 +13,7 @@ enum KIND {
 var copy_old_from:String
 
 func save_sel(file:String):
-	dir.copy(copy_old_from,file)
+	DirAccess.copy_absolute(copy_old_from,file)
 
 func load_img():
 	var tex = Globals.imageLoader.load_if_exists("user://" + target)
@@ -49,18 +48,18 @@ func reset_to_default():
 		)
 		var response:int = await Globals.confirm_prompt.option_selected
 		while response == 1:
-			if dir.file_exists(Globals.p("user://%s.png" % target)): rename_old("png")
-			elif dir.file_exists(Globals.p("user://%s.jpg" % target)): rename_old("jpg")
-			elif dir.file_exists(Globals.p("user://%s.jpeg" % target)): rename_old("jpeg")
-			elif dir.file_exists(Globals.p("user://%s.webp" % target)): rename_old("webp")
-			elif dir.file_exists(Globals.p("user://%s.bmp" % target)): rename_old("bmp")
+			if FileAccess.file_exists(Globals.p("user://%s.png" % target)): rename_old("png")
+			elif FileAccess.file_exists(Globals.p("user://%s.jpg" % target)): rename_old("jpg")
+			elif FileAccess.file_exists(Globals.p("user://%s.jpeg" % target)): rename_old("jpeg")
+			elif FileAccess.file_exists(Globals.p("user://%s.webp" % target)): rename_old("webp")
+			elif FileAccess.file_exists(Globals.p("user://%s.bmp" % target)): rename_old("bmp")
 			response = await Globals.confirm_prompt.option_selected
 		if response == 2:
-			if dir.file_exists(Globals.p("user://%s.png" % target)): dir.remove(Globals.p("user://%s.png" % target))
-			elif dir.file_exists(Globals.p("user://%s.jpg" % target)): dir.remove(Globals.p("user://%s.jpg" % target))
-			elif dir.file_exists(Globals.p("user://%s.jpeg" % target)): dir.remove(Globals.p("user://%s.jpeg" % target))
-			elif dir.file_exists(Globals.p("user://%s.webp" % target)): dir.remove(Globals.p("user://%s.webp" % target))
-			elif dir.file_exists(Globals.p("user://%s.bmp" % target)): dir.remove(Globals.p("user://%s.bmp" % target))
+			if FileAccess.file_exists(Globals.p("user://%s.png" % target)): DirAccess.remove_absolute(Globals.p("user://%s.png" % target))
+			elif FileAccess.file_exists(Globals.p("user://%s.jpg" % target)): DirAccess.remove_absolute(Globals.p("user://%s.jpg" % target))
+			elif FileAccess.file_exists(Globals.p("user://%s.jpeg" % target)): DirAccess.remove_absolute(Globals.p("user://%s.jpeg" % target))
+			elif FileAccess.file_exists(Globals.p("user://%s.webp" % target)): DirAccess.remove_absolute(Globals.p("user://%s.webp" % target))
+			elif FileAccess.file_exists(Globals.p("user://%s.bmp" % target)): DirAccess.remove_absolute(Globals.p("user://%s.bmp" % target))
 			
 			load_img()
 		else: print("canceled")
@@ -82,20 +81,20 @@ func sel(files:Array):
 			)
 			var response:int = await Globals.confirm_prompt.option_selected
 			while response == 1:
-				if dir.file_exists(Globals.p("user://%s.png" % target)): rename_old("png")
-				elif dir.file_exists(Globals.p("user://%s.jpg" % target)): rename_old("jpg")
-				elif dir.file_exists(Globals.p("user://%s.jpeg" % target)): rename_old("jpeg")
-				elif dir.file_exists(Globals.p("user://%s.webp" % target)): rename_old("webp")
-				elif dir.file_exists(Globals.p("user://%s.bmp" % target)): rename_old("bmp")
+				if FileAccess.file_exists(Globals.p("user://%s.png" % target)): rename_old("png")
+				elif FileAccess.file_exists(Globals.p("user://%s.jpg" % target)): rename_old("jpg")
+				elif FileAccess.file_exists(Globals.p("user://%s.jpeg" % target)): rename_old("jpeg")
+				elif FileAccess.file_exists(Globals.p("user://%s.webp" % target)): rename_old("webp")
+				elif FileAccess.file_exists(Globals.p("user://%s.bmp" % target)): rename_old("bmp")
 				response = await Globals.confirm_prompt.option_selected
 			if response == 2:			
-				if dir.file_exists(Globals.p("user://%s.png" % target)): dir.remove(Globals.p("user://%s.png" % target))
-				elif dir.file_exists(Globals.p("user://%s.jpg" % target)): dir.remove(Globals.p("user://%s.jpg" % target))
-				elif dir.file_exists(Globals.p("user://%s.jpeg" % target)): dir.remove(Globals.p("user://%s.jpeg" % target))
-				elif dir.file_exists(Globals.p("user://%s.webp" % target)): dir.remove(Globals.p("user://%s.webp" % target))
-				elif dir.file_exists(Globals.p("user://%s.bmp" % target)): dir.remove(Globals.p("user://%s.bmp" % target))
+				if FileAccess.file_exists(Globals.p("user://%s.png" % target)): DirAccess.remove_absolute(Globals.p("user://%s.png" % target))
+				elif FileAccess.file_exists(Globals.p("user://%s.jpg" % target)): DirAccess.remove_absolute(Globals.p("user://%s.jpg" % target))
+				elif FileAccess.file_exists(Globals.p("user://%s.jpeg" % target)): DirAccess.remove_absolute(Globals.p("user://%s.jpeg" % target))
+				elif FileAccess.file_exists(Globals.p("user://%s.webp" % target)): DirAccess.remove_absolute(Globals.p("user://%s.webp" % target))
+				elif FileAccess.file_exists(Globals.p("user://%s.bmp" % target)): DirAccess.remove_absolute(Globals.p("user://%s.bmp" % target))
 				
-				dir.copy(files[0],Globals.p("user://%s.%s" % [target,files[0].get_extension()]))
+				DirAccess.copy_absolute(files[0],Globals.p("user://%s.%s" % [target,files[0].get_extension()]))
 				
 				load_img()
 			else: print("canceled")

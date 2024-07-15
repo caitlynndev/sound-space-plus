@@ -30,7 +30,7 @@ var unknown:Array = []
 
 var disp:Array = []
 
-var ready:bool = false
+var is_ready:bool = false
 
 var scroll_up:bool = false
 var scroll_down:bool = false
@@ -103,13 +103,13 @@ func switch_to_play_screen():
 	size_list()
 	if Rhythia.menu_target == "res://scenes/menu/menu.tscn": return
 	if disp.find(Rhythia.registry_song.get_item(Rhythia.selected_song.id)) == -1: #if the selected song is not in the list, reset filters to show it
-		reset_filters()
+		_reset_filters()
 	get_viewport().get_node("Menu/Sidebar").press(0,true)
 	cur_map = disp.find(Rhythia.registry_song.get_item(Rhythia.selected_song.id))
 	load_pg(true)
 
-var was_maximized = (get_window().mode == Window.MODE_MAXIMIZED)
-var was_fullscreen = ((get_window().mode == Window.MODE_EXCLUSIVE_FULLSCREEN) or (get_window().mode == Window.MODE_FULLSCREEN))
+@onready var was_maximized = (get_window().mode == Window.MODE_MAXIMIZED)
+@onready var was_fullscreen = ((get_window().mode == Window.MODE_EXCLUSIVE_FULLSCREEN) or (get_window().mode == Window.MODE_FULLSCREEN))
 func _process(delta):
 	if check_drag or dragged:
 		drag_offset = get_global_mouse_position()
@@ -233,31 +233,31 @@ func reload_to_current_page(_a=null):
 
 func update_search_text(txt:String):
 	search_text = txt
-	if ready: reload_to_current_page()
+	if is_ready: reload_to_current_page()
 	emit_signal("search_updated")
 
 func update_author_search_text(txt:String):
 	author_search_text = txt
-	if ready: reload_to_current_page()
+	if is_ready: reload_to_current_page()
 	emit_signal("search_updated")
 
 func update_search_dfil(dfil:Array):
 	difficulty_filter = dfil
 	Rhythia.last_difficulty_filter = dfil
-	if ready: reload_to_current_page()
+	if is_ready: reload_to_current_page()
 	emit_signal("search_updated")
 
 func update_search_showbroken(show:bool):
 	show_broken_maps = show
-	if ready: reload_to_current_page()
+	if is_ready: reload_to_current_page()
 
 func update_search_showonline(show:bool):
 	show_online_maps = show
-	if ready: reload_to_current_page()
+	if is_ready: reload_to_current_page()
 
 func update_search_flipped(flip:bool):
 	flip_display = flip
-	if ready: reload_to_current_page()
+	if is_ready: reload_to_current_page()
 
 func update_search_flip_name(flip:bool):
 	flip_name = flip
@@ -266,7 +266,7 @@ func update_search_flip_name(flip:bool):
 	hard.sort_custom(Callable(self, "sortsongsimple"))
 	logic.sort_custom(Callable(self, "sortsongsimple"))
 	amogus.sort_custom(Callable(self, "sortsongsimple"))
-	if ready: reload_to_current_page()
+	if is_ready: reload_to_current_page()
 
 func sortab(a, b): return a < b
 
@@ -288,7 +288,7 @@ func sortsong(a:Song, b:Song):
 		else: return ad < bd
 	else: return sortsongsimple(a,b)
 
-func reset_filters():
+func _reset_filters():
 	print("resetting filters")
 	emit_signal("reset_filters") # updates line edits (MapSearch and AuthorSearch)
 	update_search_dfil([Globals.DIFF_UNKNOWN,Globals.DIFF_EASY,Globals.DIFF_MEDIUM,Globals.DIFF_HARD,Globals.DIFF_LOGIC,Globals.DIFF_AMOGUS])
@@ -420,7 +420,7 @@ func _input(ev:InputEvent):
 
 func handle_window_resize():
 #	get_tree().reload_current_scene()
-	if ready: size_list()
+	if is_ready: size_list()
 
 func firstload():
 #	if the button is held down, it will keep scrolling
@@ -432,7 +432,7 @@ func firstload():
 	get_parent().get_parent().get_node("T/Random").connect("pressed", Callable(self, "select_random"))
 	prepare_songs()
 	reload_to_current_page()
-	ready = true
+	is_ready = true
 	Rhythia.connect("favorite_songs_changed", Callable(self, "reload_to_current_page"))
 	Rhythia.connect("download_done", Callable(self, "update_clouds"))
 	get_viewport().connect("size_changed", Callable(self, "handle_window_resize"))
@@ -497,12 +497,7 @@ func _load_covers():
 	for i in range(allmaps.size()):
 		allmaps[i]._get_cover()
 
-func strip_diacritics(s:String): # we hardcoding tonight   -  edit nvm im literally a genius
-#	var diacritics = "[̴̧̳̦̜̱͖̲̺͊͜1̷̨̛̝̼̓͒8̶̳̘̥̰̌̋̎͛̐͛̄̾ͅ6̶̡̛̦̻̭̅͝0̷̼̤͓̹͚͇͐͒́͗̿̍͋̕͜ ̸̦̥̻͈̳̥̲͖̆̀̽̋͘Ḇ̴̢̲̞̰͉̬͙̮̗͒̿̉͛͊P̸̩͉̻͓̱͕͖͉͕̉͌̈̅̃̈͑̚͜͝M̶̡̜͕̺̞͔̾̉ ̵̠̈È̸̛̤̖͍̈̓̏̒̆̋͘x̸̨̛͉̀͛͑͑́t̸̲̹̖̺̥̪̙͗̒̓̆̀͒͒̚r̷̲̩̦̓̔̓̑̀̿́̕͝ã̷̢̢̤̹̹̝̓͌̃͂t̸̲͉͊̀o̸͉͈̿̿̌͋̋n̶̗̺̩̱̠͚͌͛̈́͂̃̀̚͠͝ȩ̷̠̻͕̠̫̗͖̹̊]̶͖̙̳̳̲̪̌̆̄̈͊͛͘͜͜͜͝ ̸̧̩͕̲́̇̃̑A̶̱̖͔̪̦̮̐̉̀͗͊̚͝w̶̢͕̬̪̞̲͚͕̫̠̎̀̾̌̓̊̚͝͠â̵͇̮͖̜̱͙̗k̸̢̛̥̩͈̤̩͍̱͍͇̆̆̀̎̓͐̊̕ȩ̵̦̙̠̬̔̍́̚s̴̡̬̦̈́̈̄͌̃͠y̶̙͒͐̉̆̔ ̸̙̦̲̃͆̇́́͂͠C̵̨̖̻̯̪͎̀̊̄̏͛͗͝h̵̨̦̫̖͇̮̥̿͊̎̂͝r̴̖̙̤͖̤̻̝̬̗̓̄̓̆̇̈́̇̄͠ḭ̷̧̧͙̲͈̬̦̮̈́̀͗͌̕ͅs̴̯̿t̸̡̡͈̰̮͎̺͌̏ͅḿ̸̢̛̼̼͖̗ã̵̢̢̬͜s̶̡̙̼̥̣̺̻̭̱̈̈́̆̒̒̈́͠ͅ ̷̧̗͌́̐̌̽̅͠B̴̨̡̢̟͕̦̹͉̺̔ͅë̷̻̞͎̬͎̗͋̀͐́̅l̷̛̠̪͕͖̊̾l̶̹̤͊͊s̷̛͉͛͌̐͘̚̚͘ ̷͕̯̲̟̦̥͍̞͑̾̀͆͛͑̂͊͐R̵̮̮͖̥̜̠̖̥̲͇̋́i̵̟͚̭̣̙̫̙̘͍͛̍͝ͅņ̷̩͉̮̭͙̌͆g̵̨̡̹̗̗͍̟̟̩̓̾̂̍̆ ̴̺̥̙͉͉̾̉̽f̴͓̏̿̅̋͛̓̓o̴͈̎̀͒̏̚͠͝r̷̡̬͉͇̞̉̈̀ ̶̡̛̘̭̩͓̟̊̆̓̓̏̇͝͝H̴̢͓̫̰́̈̋E̶̛̛̥̬̯̺͊̏̽̀L̵̟̮̞̫̟͗̑̀͂̽͑̔̐̉̕L̷̛̹̼͎̰͗̾̆͋̊́̆͆"
-#	if s.is_subsequence_ofi(diacritics):
-#		return "[1860] BPM Extratone Awakesy Christmas Bells Ring for HELL"
-#	return s
-# ^^ this map is the only reason im doing this ^^
+func strip_diacritics(s:String):
 #	this removes all COMBINING UTF8 values to prevent spammed diactritics also known as zalgo text since it lags the maplist
 #	i found those values at https://www.utf8-chartable.de/unicode-utf8-table.pl?number=1024&utf8=0x -  starts at U+0300 ends at U+036F
 #	print(s)

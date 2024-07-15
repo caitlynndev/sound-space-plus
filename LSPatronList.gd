@@ -1,8 +1,8 @@
 extends ReferenceRect
 
 func _ready():
-	var file:File = File.new()
-	var err:int = file.open("res://patreon3.txt",File.READ)
+	var file:FileAccess = FileAccess.open("res://patreon3.txt",FileAccess.READ)
+	var err:int = FileAccess.get_open_error()
 	if err == OK: # will be FILE_NOT_FOUND if it doesn't exist
 		var txt:String = file.get_as_text()
 		file.close()

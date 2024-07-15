@@ -123,7 +123,7 @@ func _ready():
 				if v is Color:
 					with = v.to_html(v.a != 1)
 				else:
-					with = String(v)
+					with = str(v)
 				
 				target.get_node("Desc").text = target.get_node("Desc").text.replace("##DEFAULT##", with)
 

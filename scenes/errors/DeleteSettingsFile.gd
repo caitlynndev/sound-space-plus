@@ -10,8 +10,7 @@ func confirm(v:int):
 		if v == 1:
 			Globals.confirm_prompt.s_next.play()
 			Globals.confirm_prompt.close()
-			var dir:DirAccess = DirAccess.new()
-			var res:int = dir.remove(Globals.p("user://settings.json"))
+			var res:int = DirAccess.remove_absolute(Globals.p("user://settings.json"))
 			await Globals.confirm_prompt.done_closing
 			if res != OK and res != ERR_FILE_NOT_FOUND:
 				Globals.confirm_prompt.open(
@@ -33,7 +32,7 @@ func confirm(v:int):
 				await Globals.confirm_prompt.done_closing
 				#get_node("../BlackFade").target = true
 				#yield(get_node("../BlackFade"),"done_fading")
-				Engine.target_fps = 0
+				Engine.max_fps = 0
 				get_tree().change_scene_to_file("res://scenes/init.tscn")
 				return
 		else:

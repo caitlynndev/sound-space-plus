@@ -22,7 +22,7 @@ func concat(arr:Array) -> String:
 	for v in arr:
 		if i != 0: s += " "
 		if v is String: s += v
-		else: v += String(v)
+		else: v += str(v)
 		i += 1
 	
 	return s

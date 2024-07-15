@@ -233,7 +233,7 @@ func set_enabled(value):
 		set_process_input(true)
 		_update_process_func()
 		if use_gui and !already_loaded_gui:
-			raise()
+			move_to_front()
 			already_loaded_gui = true
 			_gui = preload("camera_control_gui.gd")
 			_gui = _gui.new(self, gui_action)

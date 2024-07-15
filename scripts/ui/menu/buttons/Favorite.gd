@@ -11,10 +11,10 @@ func upd(_s=null):
 		disabled = false
 		if Rhythia.is_favorite(Rhythia.selected_song.id):
 			text = "Favorited!"
-			pressed = true
+			button_pressed = true
 		else:
 			text = "Favorite"
-			pressed = false
+			button_pressed = false
 	else:
 		disabled = true
 

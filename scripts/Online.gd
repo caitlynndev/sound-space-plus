@@ -56,9 +56,8 @@ func _mapdl_handler(id:String,map:Song):
 	if !await self._connection_test:
 		mapdl_error(id,"Failed to connect",map); return
 	
-	var dir:DirAccess = DirAccess.new()
-	if dir.file_exists(Globals.p("user://mapdl.sspm.part")):
-		dir.remove(Globals.p("user://mapdl.sspm.part"))
+	if FileAccess.file_exists(Globals.p("user://mapdl.sspm.part")):
+		DirAccess.remove_absolute(Globals.p("user://mapdl.sspm.part"))
 	
 	mapdl_hr.download_file = Globals.p("user://mapdl.sspm.part")
 	var res = mapdl_hr.request(map.download_url)
@@ -75,7 +74,7 @@ func _mapdl_handler(id:String,map:Song):
 			mapdl_error(id,"Can't Connect",map)
 		elif mapdl_res.result == HTTPRequest.RESULT_CONNECTION_ERROR:
 			mapdl_error(id,"Connection Error",map)
-		elif mapdl_res.result == HTTPRequest.RESULT_SSL_HANDSHAKE_ERROR:
+		elif mapdl_res.result == HTTPRequest.RESULT_TLS_HANDSHAKE_ERROR:
 			mapdl_error(id,"SSL Handshake Error",map)
 		elif mapdl_res.result == HTTPRequest.RESULT_TIMEOUT:
 			mapdl_error(id,"Timeout",map)
@@ -88,7 +87,7 @@ func _mapdl_handler(id:String,map:Song):
 			
 		elif mapdl_res.result == HTTPRequest.RESULT_SUCCESS:
 			if mapdl_res.response_code == 200:
-				dir.rename(Globals.p("user://mapdl.sspm.part"),Globals.p("user://maps/%s.sspm" % map.id))
+				DirAccess.rename_absolute(Globals.p("user://mapdl.sspm.part"),Globals.p("user://maps/%s.sspm" % map.id))
 				map.load_from_sspm(Globals.p("user://maps/%s.sspm" % map.id))
 				if map.songType != Globals.MAP_SSPM2:
 					if Input.is_action_pressed("skip_convert"):
@@ -132,7 +131,7 @@ const month = [
 ]
 
 func load_db_maps():
-	await get_tree().idle_frame
+	await get_tree().process_frame
 	
 	if !ProjectSettings.get_setting("application/networking/enabled"):
 		pass # 011-865
@@ -154,9 +153,7 @@ func load_db_maps():
 			return
 		
 		var netmaps:Dictionary = {
-			var test_json_conv = JSON.new()
-			test_json_conv.parse("""{
-			"id_that_doesnt_exist": test_json_conv.get_data()
+			"id_that_doesnt_exist": {
 				"id":"id_that_doesnt_exist",
 				"download":"http://chedski.test/ssp/mapdb/api/download/id_that_doesnt_exist",
 				"audio":"http://chedski.test/ssp/mapdb/api/audio/id_that_doesnt_exist",
@@ -178,14 +175,14 @@ func load_db_maps():
 				"note_data_length":2688,
 				"music_format":"mp3",
 				"music_offset":117,
-				"music_length":1594095 }""")
+				"music_length":1594095 }
 		}
 		
-		var file:File = File.new()
 		var dict_date = Time.get_datetime_dict_from_unix_time(1373) # first number that came to mind
 		
-		if file.file_exists(Globals.p("user://.mapdb_cache.json")) && file.file_exists(Globals.p("user://.mapdb_updated.txt")):
-			var err = file.open(Globals.p("user://.mapdb_updated.txt"),File.READ)
+		if FileAccess.file_exists(Globals.p("user://.mapdb_cache.json")) && FileAccess.file_exists(Globals.p("user://.mapdb_updated.txt")):
+			var file = FileAccess.open(Globals.p("user://.mapdb_updated.txt"),FileAccess.READ)
+			var err = FileAccess.get_open_error()
 			if err == OK:
 				dict_date = Time.get_datetime_dict_from_datetime_string(file.get_as_text(), true)
 			file.close()
@@ -210,7 +207,7 @@ func load_db_maps():
 		elif netmaps_res.result == HTTPRequest.RESULT_CONNECTION_ERROR:
 			show_db_error("Map database download failed.\nError: Connection Error","Map Database Error")
 			await self.error_done
-		elif netmaps_res.result == HTTPRequest.RESULT_SSL_HANDSHAKE_ERROR:
+		elif netmaps_res.result == HTTPRequest.RESULT_TLS_HANDSHAKE_ERROR:
 			show_db_error("Map database download failed.\nError: SSL Handshake Error","Map Database Error")
 			await self.error_done
 		elif netmaps_res.result == HTTPRequest.RESULT_TIMEOUT:
@@ -223,12 +220,13 @@ func load_db_maps():
 		elif netmaps_res.result == HTTPRequest.RESULT_SUCCESS:
 			if netmaps_res.response_code == 200:
 				print("Cache miss!")
-				var res = file.open(Globals.p("user://.mapdb_cache.json"),File.WRITE)
+				var file = FileAccess.open(Globals.p("user://.mapdb_cache.json"),FileAccess.WRITE)
+				var res = FileAccess.get_open_error()
 				if res == OK:
 					file.store_buffer(netmaps_res.body)
 				file.close()
 				if res == OK:
-					res = file.open(Globals.p("user://.mapdb_updated.txt"),File.WRITE)
+					res = file.open(Globals.p("user://.mapdb_updated.txt"),FileAccess.WRITE)
 					if res == OK:
 						file.store_string(Time.get_datetime_string_from_system(true))
 					file.close()
@@ -258,18 +256,18 @@ func load_db_maps():
 								)
 							
 							i += 1
-							if fmod(i,floor(float(netmaps.size())/100)) == 0: await get_tree().idle_frame
+							if fmod(i,floor(float(netmaps.size())/100)) == 0: await get_tree().process_frame
 			elif netmaps_res.response_code == 304:
 				print("Cache hit!")
-				var res = file.open(Globals.p("user://.mapdb_cache.json"),File.READ)
+				var file = FileAccess.open(Globals.p("user://.mapdb_cache.json"),FileAccess.READ)
+				var res = FileAccess.get_open_error()
 				if res == OK:
 					var test_json_conv = JSON.new()
 					test_json_conv.parse(file.get_as_text())
 					var nmp = test_json_conv.get_data()
 					if !(nmp is Dictionary):
-						var dir:DirAccess = DirAccess.new()
-						dir.remove(Globals.p("user://.mapdb_cache.json"))
-						dir.remove(Globals.p("user://.mapdb_updated.txt"))
+						DirAccess.remove_absolute(Globals.p("user://.mapdb_cache.json"))
+						DirAccess.remove_absolute(Globals.p("user://.mapdb_updated.txt"))
 					else:
 						netmaps = nmp
 						var i = 0
@@ -289,7 +287,7 @@ func load_db_maps():
 									)
 								
 								i += 1
-								if fmod(i,floor(float(netmaps.size())/100)) == 0: await get_tree().idle_frame
+								if fmod(i,floor(float(netmaps.size())/100)) == 0: await get_tree().process_frame
 				file.close()
 			else:
 				show_db_error("Map database download failed.\nError code: HTTP-%s" % netmaps_res.response_code,"Map Database Error")
@@ -345,17 +343,14 @@ func attempt_update():
 		return
 	print("Extracting")
 	ProjectSettings.load_resource_pack(file_path,false)
-	var read_file = File.new()
-	read_file.open("res://SoundSpacePlus.pck",File.READ)
+	var read_file = FileAccess.open("res://SoundSpacePlus.pck",FileAccess.READ)
 	var new_file_buffer = read_file.get_buffer(read_file.get_length())
 	read_file.close()
-	var file = File.new()
-	var dir = DirAccess.new()
-	if dir.file_exists(exec_dir.path_join("SoundSpacePlus.pck.old")):
-		dir.remove(exec_dir.path_join("SoundSpacePlus.pck.old"))
-	if dir.file_exists(exec_dir.path_join("SoundSpacePlus.pck")):
-		dir.rename(exec_dir.path_join("SoundSpacePlus.pck"),exec_dir.path_join("SoundSpacePlus.pck.old"))
-	file.open(exec_dir.path_join("SoundSpacePlus.pck"),File.WRITE)
+	if FileAccess.file_exists(exec_dir.path_join("SoundSpacePlus.pck.old")):
+		DirAccess.remove_absolute(exec_dir.path_join("SoundSpacePlus.pck.old"))
+	if FileAccess.file_exists(exec_dir.path_join("SoundSpacePlus.pck")):
+		DirAccess.rename_absolute(exec_dir.path_join("SoundSpacePlus.pck"),exec_dir.path_join("SoundSpacePlus.pck.old"))
+	var file = FileAccess.open(exec_dir.path_join("SoundSpacePlus.pck"),FileAccess.WRITE)
 	file.store_buffer(new_file_buffer)
 	file.close()
 	emit_signal("update_finished")
@@ -407,32 +402,32 @@ const MODULO_8_BIT = 256
 
 static func getRandomInt():
   # Randomize every time to minimize the risk of collisions
-  randomize()
+	randomize()
 
-  return randi() % MODULO_8_BIT
+	return randi() % MODULO_8_BIT
 
 static func uuidbin():
   # 16 random bytes with the bytes on index 6 and 8 modified
-  return [
-	getRandomInt(), getRandomInt(), getRandomInt(), getRandomInt(),
-	getRandomInt(), getRandomInt(), ((getRandomInt()) & 0x0f) | 0x40, getRandomInt(),
-	((getRandomInt()) & 0x3f) | 0x80, getRandomInt(), getRandomInt(), getRandomInt(),
-	getRandomInt(), getRandomInt(), getRandomInt(), getRandomInt(),
-  ]
+	return [
+		getRandomInt(), getRandomInt(), getRandomInt(), getRandomInt(),
+		getRandomInt(), getRandomInt(), ((getRandomInt()) & 0x0f) | 0x40, getRandomInt(),
+		((getRandomInt()) & 0x3f) | 0x80, getRandomInt(), getRandomInt(), getRandomInt(),
+		getRandomInt(), getRandomInt(), getRandomInt(), getRandomInt(),
+	]
 
 static func v4():
   # 16 random bytes with the bytes on index 6 and 8 modified
-  var b = uuidbin()
+	var b = uuidbin()
 
-  return '%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x' % [
-	# low
-	b[0], b[1], b[2], b[3],
-	# mid
-	b[4], b[5],
-	# hi
-	b[6], b[7],
-	# clock
-	b[8], b[9],
-	# clock
-	b[10], b[11], b[12], b[13], b[14], b[15]
-  ]
+	return '%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x' % [
+		# low
+		b[0], b[1], b[2], b[3],
+		# mid
+		b[4], b[5],
+		# hi
+		b[6], b[7],
+		# clock
+		b[8], b[9],
+		# clock
+		b[10], b[11], b[12], b[13], b[14], b[15]
+	]

@@ -1,7 +1,7 @@
 extends Resource
 class_name Replay
 
-const file_sig:PackedByteArray = PackedByteArray([0x53,0x73,0x2A,0x52])
+const file_sig:PackedByteArray = [0x53,0x73,0x2A,0x52]
 const current_sv:int = 4
 var debug:bool = OS.has_feature("debug")
 
@@ -17,7 +17,7 @@ var settings:Dictionary = {}
 var id:String
 var sv:int = 2 # make autoplayer behave
 
-var file:File = File.new()
+var file:FileAccess
 var recording:bool = false
 var loaded:bool = false
 var autoplayer:bool = false
@@ -47,9 +47,9 @@ func update_debug_text():
 	if debug:
 		var txt:String = "-- replay debug --"
 		for k in debug_txt.keys():
-			txt += "\n%s: %s" % [k,String(debug_txt[k])]
+			txt += "\n%s: %s" % [k,str(debug_txt[k])]
 		debug_label.text = txt
-		debug_label.raise()
+		debug_label.move_to_front()
 
 func read_data(from_path:String=""):
 	print("reading data")
@@ -65,13 +65,14 @@ func read_data(from_path:String=""):
 				debug_label.position = Vector2(10,10)
 				debug_label.scale = Vector2(0.5,0.5)
 				debug_label.text = "-- replay debug --"
-			debug_label.raise()
+			debug_label.move_to_front()
 			
 			debug_txt = { source_path = from_path }
 			update_debug_text()
 		
 		if from_path:
-			var err:int = file.open(from_path,File.READ)
+			file = FileAccess.open(from_path,FileAccess.READ)
+			var err:int = FileAccess.get_open_error()
 			
 			debug_txt.autoplayer = false
 			update_debug_text()
@@ -157,7 +158,7 @@ func read_data(from_path:String=""):
 				update_debug_text()
 				if fmod(i,70) == 0:
 					emit_signal("progress",(float(i)/float(sigcount)) * 0.6)
-					await Rhythia.get_tree().idle_frame
+					await Rhythia.get_tree().process_frame
 				
 				if kind == Globals.RS_CURSOR:
 					var ms = file.get_32()
@@ -214,7 +215,7 @@ func read_data(from_path:String=""):
 				update_debug_text()
 				if fmod(num,250) == 0:
 					emit_signal("progress",0.6 + ((float(num)/float(curcount)) * 0.4))
-					await Rhythia.get_tree().idle_frame
+					await Rhythia.get_tree().process_frame
 				cursor_positions.append(cursor_unrev.pop_back())
 			
 			debug_txt.noteres_amt = note_results.size()
@@ -241,7 +242,7 @@ func read_data(from_path:String=""):
 #				i += 1
 #				if fmod(i,250) == 0:
 #					emit_signal("progress",(float(i)/float(notes.size())) * 0.6)
-#					yield(Rhythia.get_tree(),"idle_frame")
+#					yield(Rhythia.get_tree(),"process_frame")
 #				var p:Vector3 = Vector3(n[0],-n[1],float(n[2]))
 #				if Rhythia.mod_mirror_x: p.x = 2 - p.x
 #				if Rhythia.mod_mirror_y: p.y = (-p.y) - 2
@@ -259,16 +260,16 @@ func read_data(from_path:String=""):
 #				update_debug_text()
 #				if fmod(num,250) == 0:
 #					emit_signal("progress",0.6 + ((float(num)/float(curcount)) * 0.4))
-#					yield(Rhythia.get_tree(),"idle_frame")
+#					yield(Rhythia.get_tree(),"process_frame")
 #				var c:Vector3 = cursor_unrev.pop_back()
 #				var r:Vector3 = Vector3(clamp(c.x,-0.5,2.5),clamp(c.y,-2.5,0.5),c.z)
 #				if c != r:
-#					print("c/r mismatch! %s != %s" % [String(c),String(r)])
+#					print("c/r mismatch! %s != %s" % [str(c),str(r)])
 #					debug_txt.c_r_mismatch += 1
 #				cursor_positions.append(r)
 #
 			end_ms = Rhythia.selected_song.last_ms
-			await Rhythia.get_tree().idle_frame
+			await Rhythia.get_tree().process_frame
 			emit_signal("done_loading")
 			loaded = true
 
@@ -314,7 +315,7 @@ func get_caret_column(ms:float):
 		rem = max(rem-1,0)
 		var rc = 0
 		for _n in range(rem):
-			cursor_positions.remove(cursor_positions.size()-1)
+			cursor_positions.remove_at(cursor_positions.size()-1)
 			rc += 1
 			rem += 1
 			i -= 1
@@ -422,7 +423,8 @@ func start_recording(with_song:Song):
 	var dt = Time.get_datetime_dict_from_system()
 	song = with_song
 	id = "%s.%s-%s-%s_%s-%s-%s" % [song.id,dt.year,dt.month,dt.day,dt.hour,dt.minute,dt.second]
-	var err:int = file.open(Globals.p("user://replays/%s.sspre" % id),File.WRITE)
+	file = FileAccess.open(Globals.p("user://replays/%s.sspre" % id),FileAccess.WRITE)
+	var err:int = FileAccess.get_open_error()
 	file.store_buffer(file_sig)
 	file.store_16(current_sv)
 	file.store_64(0)

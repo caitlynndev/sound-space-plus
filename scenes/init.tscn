@@ -54,7 +54,7 @@ func _process(delta):
 		if i > 7: i -= 8
 	
 	for n in get_children():
-		var ni = int(n.name)
+		var ni = int(str(n.name))
 		if up and i == ni:
 			n.modulate.a = 1
 		else: n.modulate.a = max(n.modulate.a-(delta*1.35),0)

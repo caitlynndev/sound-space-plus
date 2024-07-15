@@ -18,18 +18,17 @@ func notify(type:int,body:String,title:String="Notification",time:float=5):
 	notif.get_node("H/Body/V/Body/L").text = body
 	add_child(notif)
 	
-	var twn:Tween = Tween.new()
-	notif.add_child(twn)
+	var twn:Tween = notif.create_tween()
 	notif.modulate = Color(1,1,1,0)
 	notif.visible = true
-	twn.interpolate_property(notif,"modulate",Color(1,1,1,0),Color(1,1,1,1),0.25)
-	twn.start()
+	twn.tween_property(notif,"modulate",Color(1,1,1,1),0.25)
+	twn.play()
 	
 	await get_tree().create_timer(time - 2).timeout
 	
-	twn.stop_all()
-	twn.interpolate_property(notif,"modulate",Color(1,1,1,1),Color(1,1,1,0),2)
-	twn.start()
+	twn = notif.create_tween()
+	twn.tween_property(notif,"modulate",Color(1,1,1,0),2)
+	twn.play()
 	
 	await get_tree().create_timer(2).timeout
 	

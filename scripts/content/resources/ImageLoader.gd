@@ -54,10 +54,10 @@ func get_format(bytes:PackedByteArray) -> String:
 	# Figure out file format from signatures
 	# https://en.wikipedia.org/wiki/List_of_file_signatures
 	
-	if bytes.subarray(0,7) == PackedByteArray([0x89,0x50,0x4E,0x47,0x0D,0x0A,0x1A,0x0A]): return "png"
-	if bytes.subarray(0,2) == PackedByteArray([0x42,0x4D]): return "bmp"
-	if bytes.subarray(0,2) == PackedByteArray([0xFF,0xD8,0xFF]): return "jpg"
-	if bytes.subarray(0,3) == PackedByteArray([0x52,0x49,0x46,0x46]) and bytes.subarray(8,11) == PackedByteArray([0x57,0x45,0x42,0x50]): return "webp"
+	if bytes.slice(0,7) == PackedByteArray([0x89,0x50,0x4E,0x47,0x0D,0x0A,0x1A,0x0A]): return "png"
+	if bytes.slice(0,2) == PackedByteArray([0x42,0x4D]): return "bmp"
+	if bytes.slice(0,2) == PackedByteArray([0xFF,0xD8,0xFF]): return "jpg"
+	if bytes.slice(0,3) == PackedByteArray([0x52,0x49,0x46,0x46]) and bytes.slice(8,11) == PackedByteArray([0x57,0x45,0x42,0x50]): return "webp"
 	
 	# unsupported
 	return "unknown"
@@ -80,8 +80,8 @@ func load_buffer(bytes:PackedByteArray) -> Texture2D:
 	return imgtex
 
 func load_file(filepath:String) -> Texture2D:
-	var file = File.new()
-	var err = file.open(Globals.p(filepath), File.READ)
+	var file = FileAccess.open(Globals.p(filepath), FileAccess.READ)
+	var err = FileAccess.get_open_error()
 	if err != OK:
 		report_errors(err, Globals.p(filepath))
 		file.close()
@@ -92,12 +92,11 @@ func load_file(filepath:String) -> Texture2D:
 	return load_buffer(bytes)
 
 func load_if_exists(path:String):
-	var file:File = File.new()
 	path = Globals.p(path)
-	if file.file_exists(path + ".png"): path += ".png"
-	elif file.file_exists(path + ".jpg"): path += ".jpg"
-	elif file.file_exists(path + ".jpeg"): path += ".jpeg"
-	elif file.file_exists(path + ".webp"): path += ".webp"
-	elif file.file_exists(path + ".bmp"): path += ".bmp"
-	if file.file_exists(path): return load_file(path)
+	if FileAccess.file_exists(path + ".png"): path += ".png"
+	elif FileAccess.file_exists(path + ".jpg"): path += ".jpg"
+	elif FileAccess.file_exists(path + ".jpeg"): path += ".jpeg"
+	elif FileAccess.file_exists(path + ".webp"): path += ".webp"
+	elif FileAccess.file_exists(path + ".bmp"): path += ".bmp"
+	if FileAccess.file_exists(path): return load_file(path)
 	else: return null

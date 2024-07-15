@@ -1,7 +1,7 @@
 extends CheckBox
 
 func _pressed():
-	pressed = false
+	button_pressed = false
 	Globals.confirm_prompt.open(
 		"The Nearsight modifier has been removed.\nTo achieve the same effect, set your spawn distance to 3/5 of your approach rate & your fade length to 100%.",
 		"Notice",

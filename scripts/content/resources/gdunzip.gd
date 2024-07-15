@@ -92,10 +92,10 @@ func load(path):
 
 	var file = File.new()
 
-	if !file.file_exists(path):
+	if !FileAccess.file_exists(path):
 		return false
 
-	file.open(path, File.READ)
+	file.open(path, FileAccess.READ)
 	var file_length = file.get_length()
 	if file.get_32() != 0x04034B50:
 		return false

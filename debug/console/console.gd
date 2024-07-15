@@ -57,7 +57,7 @@ func openConsole():
 #	MainViewport.gui_disable_input = true
 	self.console_open = true
 	CommandBar.text = CommandBar.text.rstrip("\\")
-	get_parent().raise()
+	get_parent().move_to_front()
 
 func close(_ct=null):
 	get_tree().paused = false

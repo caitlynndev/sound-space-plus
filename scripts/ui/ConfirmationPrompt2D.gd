@@ -20,7 +20,7 @@ signal done_closing
 
 var is_open:bool = false
 var current_options:Array = []
-var twn:Tween = Tween.new()
+var twn:Tween
 var transition_time:float = 0.4
 
 func open(body:String, title:String="Confirm", options:Array=[
@@ -41,14 +41,15 @@ func open(body:String, title:String="Confirm", options:Array=[
 				button.text = option.text
 		else:
 			button.visible = false
-	twn.stop_all()
+	if twn != null: twn.kill()
+	twn = create_tween().parallel().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SINE)
 	$C.position = Vector2(-300,0)
 	modulate = Color(1,1,1,0)
 	visible = true
-	raise()
-	twn.interpolate_property($C,"position",Vector2(-300,0),Vector2(0,0),transition_time,Tween.TRANS_SINE,Tween.EASE_OUT)
-	twn.interpolate_property(self,"modulate",Color(1,1,1,0),Color(1,1,1,1),transition_time,Tween.TRANS_SINE,Tween.EASE_OUT)
-	twn.start()
+	move_to_front()
+	twn.tween_property($C,"position",Vector2(0,0),transition_time)
+	twn.tween_property(self,"modulate",Color(1,1,1,1),transition_time)
+	twn.play()
 	await twn.tween_all_completed
 	for i in range(buttons.size()):
 		var button:Button = buttons[i]
@@ -60,10 +61,11 @@ func open(body:String, title:String="Confirm", options:Array=[
 	emit_signal("done_opening")
 
 func close():
-	twn.stop_all()
-	twn.interpolate_property($C,"position",Vector2(0,0),Vector2(300,0),transition_time,Tween.TRANS_SINE,Tween.EASE_IN)
-	twn.interpolate_property(self,"modulate",Color(1,1,1,1),Color(1,1,1,0),transition_time,Tween.TRANS_SINE,Tween.EASE_IN)
-	twn.start()
+	if twn != null: twn.kill()
+	twn = create_tween().parallel().set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_SINE)
+	twn.tween_property($C,"position",Vector2(300,0),transition_time)
+	twn.tween_property(self,"modulate",Color(1,1,1,0),transition_time)
+	twn.play()
 	is_open = false
 	current_options = []
 	for button in buttons: button.disabled = true
@@ -87,6 +89,5 @@ func _process(delta):
 
 func _ready():
 	visible = false
-	add_child(twn)
 	for i in range(buttons.size()):
 		buttons[i].connect("pressed", Callable(self, "emit_signal").bind("option_selected",i))

@@ -128,8 +128,8 @@ func update(_s=null):
 	
 	# give the containers time to update
 	if is_inside_tree():
-		await get_tree().idle_frame
-		await get_tree().idle_frame
+		await get_tree().process_frame
+		await get_tree().process_frame
 #		if $RS/H1/Info.rect_size.y > 245:
 #			$Actions.rect_position.y = $RS/H1/Info.rect_size.y + 35
 #			$RS/H2/EndInfo.rect_position.y = $RS/H1/Info.rect_size.y + 35

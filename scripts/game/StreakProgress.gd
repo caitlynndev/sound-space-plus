@@ -25,5 +25,5 @@ func _ready():
 		parts.append(n)
 		add_child(n)
 		n.rotation = 5*i
-		n.raise()
+		n.move_to_front()
 	_update_progress()

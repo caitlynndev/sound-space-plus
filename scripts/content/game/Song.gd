@@ -53,18 +53,18 @@ var pb_data:Dictionary = {}
 const hash_chunk_size = 1024
 
 enum {
-	DT_UNKNOWN = 0x00
-	DT_INT_8 = 0x01 # Unsigned
-	DT_INT_16 = 0x02 # Unsigned
-	DT_INT_32 = 0x03 # Unsigned
-	DT_INT_64 = 0x04 # Unsigned
-	DT_FLOAT_32 = 0x05
-	DT_FLOAT_64 = 0x06
-	DT_POSITION = 0x07
-	DT_BUFFER = 0x08
-	DT_STRING = 0x09
-	DT_BUFFER_LONG = 0x0a
-	DT_STRING_LONG = 0x0b
+	DT_UNKNOWN = 0x00,
+	DT_INT_8 = 0x01, # Unsigned
+	DT_INT_16 = 0x02, # Unsigned
+	DT_INT_32 = 0x03, # Unsigned
+	DT_INT_64 = 0x04, # Unsigned
+	DT_FLOAT_32 = 0x05,
+	DT_FLOAT_64 = 0x06,
+	DT_POSITION = 0x07,
+	DT_BUFFER = 0x08,
+	DT_STRING = 0x09,
+	DT_BUFFER_LONG = 0x0a,
+	DT_STRING_LONG = 0x0b,
 	DT_ARRAY = 0x0c
 }
 
@@ -73,8 +73,8 @@ func _get_cover():
 		return
 	if is_instance_valid(cover):
 		return cover
-	var file = File.new()
-	var err = file.open(filePath,File.READ)
+	var file = FileAccess.open(filePath, FileAccess.READ)
+	var err = FileAccess.get_open_error()
 	if err != OK:
 		print(err)
 	file.seek(cover_offset)
@@ -194,9 +194,9 @@ func load_from_db_data(data:Dictionary={
 func load_pbs():
 	if Rhythia.single_map_mode:
 		return
-	var file:File = File.new()
-	if file.file_exists(Globals.p("user://bests/%s" % id)):
-		var err:int = file.open(Globals.p("user://bests/%s" % id),File.READ)
+	var file:FileAccess = FileAccess.open(Globals.p("user://bests/%s" % id),FileAccess.READ)
+	if FileAccess.file_exists(Globals.p("user://bests/%s" % id)):
+		var err:int = FileAccess.get_open_error()
 		if err != OK:
 			return
 		
@@ -239,10 +239,10 @@ func load_pbs():
 func save_pbs():
 	if Rhythia.single_map_mode:
 		return
-	var file:File = File.new()
-	var err:int = file.open(Globals.p("user://bests/%s") % id,File.WRITE)
+	var file:FileAccess = FileAccess.open(Globals.p("user://bests/%s") % id,FileAccess.WRITE)
+	var err:int = FileAccess.get_open_error()
 	if err != OK:
-		print("error writing pb file for %s:  %s" % [id, String(err)])
+		print("error writing pb file for %s:  %s" % [id, str(err)])
 		return
 	file.store_buffer(PackedByteArray([0x53,0x53,0x2B,0x70,0x42]))
 	file.store_16(3) # version
@@ -305,10 +305,10 @@ func set_pb_if_better(pb_str:String,pb:Dictionary):
 	else: return false
 
 func get_music_buffer():
-	var file2:File = File.new()
+	var file2:FileAccess = FileAccess.open(filePath,FileAccess.READ)
 	if songType == Globals.MAP_SSPM:
 		print("[sspm] %s: reading audio buffer" % id)
-		var err = file2.open(filePath,File.READ)
+		var err = file2.get_open_error()
 		if err == OK:
 			file2.seek(8) # Skip over header data
 			file2.get_line() # Skip over metadata
@@ -340,7 +340,7 @@ func get_music_buffer():
 			return null
 	elif songType == Globals.MAP_SSPM2:
 		print("[sspm2] %s: reading audio buffer" % id)
-		var err = file2.open(filePath,File.READ)
+		var err = file2.open(filePath,FileAccess.READ)
 		if err == OK:
 			file2.seek(0x2d) # Skip over header data
 			
@@ -361,7 +361,7 @@ func get_music_buffer():
 			print("[sspm2] %s: Error while loading music! err was %s" % [id, err])
 			return null
 	else:
-		var err = file2.open(musicFile,File.READ)
+		var err = file2.open(musicFile,FileAccess.READ)
 		if err != OK:
 			print("[file] %s: Failed to open music file!" % id)
 			return null
@@ -393,10 +393,10 @@ func stream() -> AudioStream:
 
 func loadFromFile(path:String):
 	initFile = path
-	var file:File = File.new()
-	var err = file.open(path,File.READ)
+	var file:FileAccess = FileAccess.open(path,FileAccess.READ)
+	var err = FileAccess.get_open_error()
 	if err != OK:
-		warning = "[txt map] File could not be opened - returned error " + String(err)
+		warning = "[txt map] File could not be opened - returned error " + str(err)
 		return
 	rawData = file.get_as_text()
 	file.close()
@@ -406,7 +406,7 @@ func loadRawData(data:String):
 	var blank = 0
 	var invalid = 0
 	var split:Array = rawData.split(",")
-	split.remove(0)
+	split.remove_at(0)
 	notes = []
 	for s in split:
 		if s != "":
@@ -419,12 +419,11 @@ func loadRawData(data:String):
 				notes.append([x,y,ms])
 			else: invalid += 1
 		else: blank += 1
-	var file = File.new()
-	if !file.file_exists(musicFile) and !musicFile.begins_with("res://"):
+	if !FileAccess.file_exists(musicFile) and !musicFile.begins_with("res://"):
 		warning = "[txt map] Audio file doesn't exist!"
 		is_broken = true
-	elif invalid != 0: warning = "[txt map] Song has %s invalid note(s)" % String(invalid)
-	elif blank != 0: warning = "[txt map] Song has %s blank note(s)" % String(blank)
+	elif invalid != 0: warning = "[txt map] Song has %s invalid note(s)" % str(invalid)
+	elif blank != 0: warning = "[txt map] Song has %s blank note(s)" % str(blank)
 	else:
 		warning = ""
 		is_broken = false
@@ -442,11 +441,10 @@ func loadVulnusNoteArray(vNotes:Array):
 			last_ms = ms
 			notes.append([x,y,ms])
 		else: invalid += 1
-	var file = File.new()
-	if !file.file_exists(musicFile) and !musicFile.begins_with("res://"):
+	if !FileAccess.file_exists(musicFile) and !musicFile.begins_with("res://"):
 		warning = "[vulnus map] Audio file doesn't exist!"
 		is_broken = true
-	elif invalid != 0: warning = "[vulnus map] Song has %s invalid note(s)" % String(invalid)
+	elif invalid != 0: warning = "[vulnus map] Song has %s invalid note(s)" % str(invalid)
 #	notes.sort_custom(self,"notesort")
 	note_count = notes.size()
 
@@ -474,8 +472,7 @@ func setup_from_vulnus_json(jsonPath:String,songFile:String,useDifficultyName:bo
 	songType = Globals.MAP_VULNUS
 	musicFile = songFile
 	filePath = jsonPath
-	var file = File.new()
-	file.open(jsonPath,File.READ)
+	var file = FileAccess.open(jsonPath,FileAccess.READ)
 	var json = file.get_as_text()
 	file.close()
 	var dn = json.find('"_name":')
@@ -519,10 +516,10 @@ func generate_vmapimp_id(sname:String,dname:String,useDifficultyName:bool=false)
 	return txt.trim_prefix("_").trim_suffix("_")
 
 func load_from_vulnus_map(folder_path:String,difficulty_id:int=0):
-	var file:File = File.new()
-	if !file.file_exists(folder_path + "/meta.json"): return
+	if !FileAccess.file_exists(folder_path + "/meta.json"): return
 	
-	var err = file.open(folder_path + "/meta.json",File.READ)
+	var file = FileAccess.open(folder_path + "/meta.json",FileAccess.READ)
+	var err = FileAccess.get_open_error()
 	if err != OK: return
 	var meta_json:String = file.get_as_text()
 	file.close()
@@ -542,8 +539,8 @@ func load_from_vulnus_map(folder_path:String,difficulty_id:int=0):
 	if music_path == "**missing**" or !music_path.is_valid_filename(): return
 	if mappers.size() == 0: mappers = ["Unknown"]
 	
-	if !file.file_exists(folder_path + "/" + music_path): return
-	if !file.file_exists(folder_path + "/" + difficulties[difficulty_id]): return
+	if !FileAccess.file_exists(folder_path + "/" + music_path): return
+	if !FileAccess.file_exists(folder_path + "/" + difficulties[difficulty_id]): return
 	var diff = Globals.DIFF_UNKNOWN
 	if difficulties[difficulty_id] == "official.json":
 		var audioid = int(music_path.split(".")[0])
@@ -557,10 +554,10 @@ func load_from_vulnus_map(folder_path:String,difficulty_id:int=0):
 	
 	#var song:Song = Song.new(id,,conc)
 	setup_from_vulnus_json(folder_path + "/" + difficulties[difficulty_id], folder_path + "/" + music_path)
-	id = generate_vmapimp_id(title,custom_data.get("difficulty_name",String(difficulty_id)), difficulty_id != 0)
+	id = generate_vmapimp_id(title,custom_data.get("difficulty_name",str(difficulty_id)), difficulty_id != 0)
 	
 	if difficulties.size() != 1:
-		name = "%s - %s [%s]" % [artist,title,custom_data.get("difficulty_name",String(difficulty_id))]
+		name = "%s - %s [%s]" % [artist,title,custom_data.get("difficulty_name",str(difficulty_id))]
 	else:
 		name = song
 	
@@ -574,10 +571,10 @@ func load_from_vulnus_map(folder_path:String,difficulty_id:int=0):
 	return self
 
 func get_vulnus_map_difficulty_list(folder_path:String):
-	var file:File = File.new()
-	if !file.file_exists(folder_path + "/meta.json"): return []
+	if !FileAccess.file_exists(folder_path + "/meta.json"): return []
 	
-	var err = file.open(folder_path + "/meta.json",File.READ)
+	var file:FileAccess = FileAccess.open(folder_path + "/meta.json",FileAccess.READ)
+	var err = FileAccess.get_open_error()
 	if err != OK: return []
 	var meta_json:String = file.get_as_text()
 	file.close()
@@ -592,7 +589,7 @@ func get_vulnus_map_difficulty_list(folder_path:String):
 	
 	for i in range(difficulties.size()):
 		var p = difficulties[i]
-		file.open(folder_path + "/" + p,File.READ)
+		file.open(folder_path + "/" + p,FileAccess.READ)
 		var json = file.get_as_text()
 		file.close()
 		var dn = json.find('"_name":')
@@ -633,8 +630,7 @@ func read_notes() -> Array:
 			return notes
 		elif songType == Globals.MAP_VULNUS:
 			print("Reading: VULNUS")
-			var file = File.new()
-			file.open(filePath,File.READ)
+			var file = FileAccess.open(filePath,FileAccess.READ)
 #			print(filePath)
 			var json = file.get_as_text()
 			file.close()
@@ -650,8 +646,8 @@ func read_notes() -> Array:
 			return notes
 		elif songType == Globals.MAP_SSPM:
 			print("Reading: SSPM")
-			var file:File = File.new()
-			var err = file.open(filePath,File.READ)
+			var file:FileAccess = FileAccess.open(filePath,FileAccess.READ)
+			var err = FileAccess.get_open_error()
 			if err != OK:
 				print("error opening file")
 				return []
@@ -735,8 +731,8 @@ func read_markers() -> Dictionary:
 				else:
 					mt_size[i] += 1
 		
-		var file:File = File.new()
-		var err = file.open(filePath,File.READ)
+		var file:FileAccess = FileAccess.open(filePath,FileAccess.READ)
+		var err = FileAccess.get_open_error()
 		if err != OK:
 			print("error opening file")
 			return markers
@@ -777,7 +773,7 @@ func read_markers() -> Dictionary:
 		
 		for arr in markers.values():
 			arr.sort_custom(Callable(self, "markersort"))
-#			print(String(arr.slice(0,35)).replace("], ","],\n "))
+#			print(str(arr.slice(0,35)).replace("], ","],\n "))
 		
 		return markers
 	else:
@@ -801,8 +797,8 @@ func change_difficulty(to:int):
 			print("invalid difficulty")
 			return ERR_INVALID_PARAMETER
 		
-		var file:File = File.new()
-		var err = file.open(filePath,File.READ_WRITE)
+		var file:FileAccess = FileAccess.open(filePath,FileAccess.READ_WRITE)
+		var err = FileAccess.get_open_error()
 		if err != OK:
 			print("file open failed: ",err)
 			return err
@@ -830,8 +826,8 @@ func change_difficulty(to:int):
 			print("invalid difficulty")
 			return ERR_INVALID_PARAMETER
 		
-		var file:File = File.new()
-		var err = file.open(filePath,File.READ_WRITE)
+		var file:FileAccess = FileAccess.open(filePath,FileAccess.READ_WRITE)
+		var err = FileAccess.get_open_error()
 		if err != OK:
 			print("file open failed: ",err)
 			return err
@@ -855,15 +851,14 @@ func change_difficulty(to:int):
 		return ERR_UNAVAILABLE
 
 func convert_to_sspm_v1():
-	var file:File = File.new()
-	var dir:DirAccess = DirAccess.new()
 	# Figure out the path and make sure it's usable
 	var path:String = Globals.p("user://maps/%s.sspm") % id
-	if !dir.dir_exists(Globals.p("user://maps")): dir.make_dir(Globals.p("user://maps"))
-	if file.file_exists(path): return "File already exists!"
+	if !DirAccess.dir_exists_absolute(Globals.p("user://maps")): DirAccess.make_dir_absolute(Globals.p("user://maps"))
+	if FileAccess.file_exists(path): return "File already exists!"
 	# Open the file for writing
-	var err = file.open(path,File.WRITE)
-	if err != OK: return "file.open errored - code " + String(err)
+	var file:FileAccess = FileAccess.open(path,FileAccess.WRITE)
+	var err = FileAccess.get_open_error()
+	if err != OK: return "file.open errored - code " + str(err)
 	
 	# Header
 	file.store_buffer(PackedByteArray([0x53,0x53,0x2b,0x6d])) # File signature
@@ -885,7 +880,6 @@ func convert_to_sspm_v1():
 	file.store_32(note_count) # Map note count
 	file.store_8(difficulty + 1)
 	
-	var file2:File = File.new()
 	# Cover
 	if has_cover and cover and (cover.get_height() + cover.get_width()) >= 9:
 		file.store_8(2)
@@ -901,7 +895,6 @@ func convert_to_sspm_v1():
 		file.store_8(0)
 	else:
 		file.store_8(1)
-		file2.close()
 		file.store_64(musicBuffer.size())
 		file.store_buffer(musicBuffer)
 	
@@ -952,7 +945,7 @@ func auto_data_type(value) -> int:
 		
 	return DT_UNKNOWN
 
-func store_data_type(file:File, type:int, value, skip_type:bool = false, array_type:int = DT_UNKNOWN, skip_array_type:bool = true):
+func store_data_type(file:FileAccess, type:int, value, skip_type:bool = false, array_type:int = DT_UNKNOWN, skip_array_type:bool = true):
 	match type:
 		DT_INT_8:
 			if !skip_type:
@@ -1021,7 +1014,7 @@ func store_data_type(file:File, type:int, value, skip_type:bool = false, array_t
 				store_data_type(file,array_type,v,true)
 
 func read_data_type(
-	file:File,
+	file:FileAccess,
 	skip_type:bool = false,
 	skip_array_type:bool = false,
 	type:int = DT_UNKNOWN, # Will be auto-detected if skip_type is false
@@ -1096,22 +1089,19 @@ func read_data_type(
 			return arr
 
 func convert_to_sspm(upgrade:bool=false):
-	var file:File = File.new()
-	var file2:File = File.new()
-	var dir:DirAccess = DirAccess.new()
 	# Figure out the path and make sure it's usable
 	var path:String = Globals.p("user://maps/%s.sspm") % id
-	if !dir.dir_exists(Globals.p("user://maps")): dir.make_dir(Globals.p("user://maps"))
+	if !DirAccess.dir_exists_absolute(Globals.p("user://maps")): DirAccess.make_dir_absolute(Globals.p("user://maps"))
 	
 	var oldPath = filePath
 	if upgrade:
 		if songType == Globals.MAP_SSPM or songType == Globals.MAP_SSPM2:
-			var res = dir.copy(filePath,Globals.p("user://upgrade_temp.sspm"))
+			var res = DirAccess.copy_absolute(filePath,Globals.p("user://upgrade_temp.sspm"))
 			if res != OK:
 				return "copy failed - err %s" % res
 			path = filePath
 			filePath = Globals.p("user://upgrade_temp.sspm")
-	elif file.file_exists(path):
+	elif FileAccess.file_exists(path):
 		return "File already exists!"
 	
 	var err:int
@@ -1140,13 +1130,10 @@ func convert_to_sspm(upgrade:bool=false):
 	read_markers()
 	
 	# Open the file for writing
-	err = file.open(path,File.WRITE_READ)
-	if err != OK: return "file.open errored - code " + String(err)
 	
-	
-	
-	
-	
+	var file:FileAccess = FileAccess.open(path,FileAccess.WRITE_READ)
+	err = FileAccess.get_open_error()
+	if err != OK: return "file.open errored - code " + str(err)
 	
 	# This format has documentation:
 	# https://github.com/basils-garden/types/blob/sspm-v2-draft/sspm/v2.md
@@ -1196,7 +1183,7 @@ func convert_to_sspm(upgrade:bool=false):
 	# We will to return to these values later.
 	
 	var point_cdb = file.get_position()
-	print("cdb: %s" % String(point_cdb))
+	print("cdb: %s" % str(point_cdb))
 	
 	# Position: 0x30
 	file.store_64(0) # Byte offset of the custom data block
@@ -1206,7 +1193,7 @@ func convert_to_sspm(upgrade:bool=false):
 	
 	
 	var point_ab = file.get_position()
-	print("ab: %s" % String(point_ab))
+	print("ab: %s" % str(point_ab))
 	
 	# Position: 0x40
 	file.store_64(0) # Byte offset of the audio block (0 if not present)
@@ -1216,7 +1203,7 @@ func convert_to_sspm(upgrade:bool=false):
 	
 	
 	var point_cb = file.get_position()
-	print("cb: %s" % String(point_cb))
+	print("cb: %s" % str(point_cb))
 	
 	# Position: 0x50
 	file.store_64(0) # Byte offset of the cover block (0 if not present)
@@ -1226,7 +1213,7 @@ func convert_to_sspm(upgrade:bool=false):
 	
 	
 	var point_mdb = file.get_position()
-	print("mdb: %s" % String(point_mdb))
+	print("mdb: %s" % str(point_mdb))
 	
 	# Position: 0x60
 	file.store_64(0) # Byte offset of the marker definitions block
@@ -1236,7 +1223,7 @@ func convert_to_sspm(upgrade:bool=false):
 	
 	
 	var point_mb = file.get_position()
-	print("mb: %s" % String(point_mb))
+	print("mb: %s" % str(point_mb))
 	
 	# Position: 0x70
 	file.store_64(0) # Byte offset of the marker block
@@ -1283,8 +1270,8 @@ func convert_to_sspm(upgrade:bool=false):
 		var v = custom_data[n]
 		var t = auto_data_type(v)
 		var at = DT_UNKNOWN
-		if t == DT_ARRAY and t.size() != 0:
-			at = auto_data_type(t[0])
+		if t == DT_ARRAY and v.size() != 0:
+			at = auto_data_type(v[0])
 		store_data_type(file,t,v,false,at,false)
 	
 	
@@ -1410,7 +1397,7 @@ func convert_to_sspm(upgrade:bool=false):
 	
 	songType = Globals.MAP_SSPM2
 	filePath = path
-	dir.remove(Globals.p("user://upgrade_temp.sspm"))
+	DirAccess.remove_absolute(Globals.p("user://upgrade_temp.sspm"))
 	
 	load_from_sspm(path)
 	
@@ -1423,10 +1410,10 @@ func load_from_sspm(path:String):
 	musicFile = path
 	if path.begins_with("res://"):
 		is_builtin = true
-	var file:File = File.new()
+	var file:FileAccess = FileAccess.open(path,FileAccess.READ)
 	# Open the file for reading
-	var err = file.open(path,File.READ)
-	if err != OK: return "file.open errored - code " + String(err)
+	var err = FileAccess.get_open_error()
+	if err != OK: return "file.open errored - code " + str(err)
 	
 	# Header
 	if file.get_buffer(4) != PackedByteArray([0x53,0x53,0x2b,0x6d]): return "File is not a valid super.sspm (or header is borked)"
@@ -1637,17 +1624,16 @@ func export_text(path:String):
 		for n in read_notes():
 			txt += "%s|%s|%s," % [2 - n[0], 2 - n[1], n[2]]
 
-	var file:File = File.new()
-	var err:int = file.open(path,File.WRITE)
-	if err != OK: return "file.open errored - code " + String(err)
+	var file:FileAccess = FileAccess.open(path,FileAccess.WRITE)
+	var err:int = FileAccess.get_open_error()
+	if err != OK: return "file.open errored - code " + str(err)
 	file.store_string(txt.trim_suffix(","))
 	file.close()
 	return "OK"
 
 func delete():
 	if songType == Globals.MAP_SSPM or songType == Globals.MAP_SSPM2:
-		var dir:DirAccess = DirAccess.new()
-		var err = dir.remove(Globals.p(filePath))
+		var err = DirAccess.remove_absolute(Globals.p(filePath))
 		if err == OK:
 			songType = -1
 			difficulty = -1

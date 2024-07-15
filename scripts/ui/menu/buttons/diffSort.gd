@@ -17,7 +17,7 @@ func upd(_1=0,_2=0,_3=0):
 func tg(d:int):
 	G.get_node("Press").play()
 	if G.difficulty_filter.has(d):
-		G.difficulty_filter.remove(G.difficulty_filter.find(d))
+		G.difficulty_filter.remove_at(G.difficulty_filter.find(d))
 	else: G.difficulty_filter.append(d)
 	G.update_search_dfil(G.difficulty_filter)
 

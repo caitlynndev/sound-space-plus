@@ -706,7 +706,7 @@ func _process(delta):
 		if i > 7: i -= 8
 	
 	for n in get_children():
-		var ni = int(n.name)
+		var ni = int(str(n.name))
 		if up and i == ni:
 			n.modulate.a = 1
 		else: n.modulate.a = max(n.modulate.a-(delta*1.35),0)
@@ -3617,9 +3617,6 @@ action_mode = 0
 text = "broken"
 flat = true
 script = ExtResource("19")
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Online" type="CheckBox" parent="Main/Maps/Filters"]
 custom_minimum_size = Vector2(0, 25)
@@ -3655,9 +3652,6 @@ action_mode = 0
 text = "difficulty"
 flat = true
 script = ExtResource("17")
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="NameSort" type="CheckBox" parent="Main/Maps/Filters"]
 custom_minimum_size = Vector2(0, 25)
@@ -3676,9 +3670,6 @@ action_mode = 0
 text = "name"
 flat = true
 script = ExtResource("23")
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="space" type="Control" parent="Main/Maps/Filters"]
 custom_minimum_size = Vector2(20, 0)

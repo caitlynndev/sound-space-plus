@@ -52,7 +52,7 @@ func press(bi:int,q:bool=false):
 	for i in range(pages.size()):
 		pages[i].visible = i == bi
 		buttons[i].button_pressed = i == bi
-	await get_tree().idle_frame
+	await get_tree().process_frame
 
 	get_node("../VersionNumber").visible = !use_ver_b[bi]
 	get_node("../VersionNumberB").visible = use_ver_b[bi]
@@ -126,7 +126,7 @@ func _input(ev):
 	if (ev is InputEventScreenTouch or ev is InputEventMouseButton):
 		if ev.pressed != true: return
 		open = ev.position.x < size.x and ev.position.y < size.y
-		await get_tree().idle_frame
+		await get_tree().process_frame
 		get_node("Click").visible = !open
 		get_node("../SidebarClick").visible = open
 	

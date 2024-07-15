@@ -496,7 +496,7 @@ func _ready():
 	add_child(missEffect)
 	
 	# force everything to be loaded now
-	await get_tree().idle_frame
+	await get_tree().process_frame
 	hitEffect.duplicate().spawn(get_parent(),Vector3(0,0,-400),Color(1,1,1),hit_id,false)
 	missEffect.duplicate().spawn(self,Vector3(0,0,-400),Color(1,1,1),miss_id,true)
 	$Notes.multimesh.set_instance_color(0,Color(0,0,0,0))
@@ -509,7 +509,7 @@ func _ready():
 		$SpawnEffect.multimesh.set_instance_color(0, Color(0,0,0,0))
 	$Note.visible = true
 	$Note.transform.origin = Vector3(0,0,-400)
-	await get_tree().idle_frame
+	await get_tree().process_frame
 	$Note.visible = false
 	
 	# Precache notes
@@ -615,7 +615,7 @@ func do_note_queue():
 	#			rem += 1
 	#
 	#			spawn_note(n)
-	#			noteQueue.remove(noteQueue.find(n))
+	#			noteQueue.remove_at(noteQueue.find(n))
 	#		else:
 	#			break
 

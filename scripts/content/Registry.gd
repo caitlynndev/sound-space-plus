@@ -17,13 +17,13 @@ var fast_idc:Dictionary = {}
 func check_and_remove_id(id:String):
 	var v = idx_id.find(id)
 	if v != null and v >= 0:
-		items.remove(v)
-		idx_id.remove(v)
-		idx_name.remove(v)
-		idx_creator.remove(v)
-		idx_difficulty.remove(v)
-		idx_rarity.remove(v)
-		idx_type.remove(v)
+		items.remove_at(v)
+		idx_id.remove_at(v)
+		idx_name.remove_at(v)
+		idx_creator.remove_at(v)
+		idx_difficulty.remove_at(v)
+		idx_rarity.remove_at(v)
+		idx_type.remove_at(v)
 		fast_idc.erase(id)
 
 func get_items():
@@ -151,8 +151,7 @@ signal percent_progress
 func load_registry_file(path:String,regtype:int,regDisplayName:String=""):
 	if regDisplayName == "": regDisplayName = path.get_base_dir().get_file()
 	print(path)
-	var file:File = File.new()
-	file.open(path,File.READ)
+	var file:FileAccess = FileAccess.open(path,FileAccess.READ)
 	if regtype == Globals.REGISTRY_MAP:
 		var home_path:String = path.get_base_dir() + "/"
 #		var home_path:String = "res://test_assets/"
@@ -161,7 +160,7 @@ func load_registry_file(path:String,regtype:int,regDisplayName:String=""):
 		print(lines.size())
 		for i in range(lines.size()):
 			var l = lines[i]
-			if fmod(i,12) == 0: await Globals.get_tree().idle_frame
+			if fmod(i,12) == 0: await Globals.get_tree().process_frame
 			# type:~:id:~:name:~:creator:~:difficulty:~:rarity:~:musicPath:~:dataOrPath
 			var split:Array = l.split(":~:")
 			if split.size() == 8 and !split[0].begins_with("#"):
@@ -181,7 +180,7 @@ func load_registry_file(path:String,regtype:int,regDisplayName:String=""):
 					Rhythia.emit_signal("init_stage_reached","Converting map archive to super.sspm\n(This could take a while)\n%.0f%%" % (
 						100*(float(i)/float(lines.size()))
 					))
-					if fmod(i,8) == 0: await Globals.get_tree().idle_frame
+					if fmod(i,8) == 0: await Globals.get_tree().process_frame
 					song.convert_to_sspm()
 				add_item(song)
 				song.discard_notes()
@@ -193,7 +192,7 @@ func get_item(value,searchType:int=Globals.SEARCH_ID,checkSubRegistries:bool=tru
 			var f = idx_id.find(value)
 			if f != -1: return items[f]
 			for i in range(items.size()):
-				if String(idx_id[i]) == String(value): return items[i]
+				if str(idx_id[i]) == str(value): return items[i]
 				if idx_type[i] == "Registry":
 					var result = items[i].get_item(value,searchType,checkSubRegistries)
 					if result: return result

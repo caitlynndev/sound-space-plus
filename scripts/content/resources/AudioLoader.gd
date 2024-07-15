@@ -53,20 +53,20 @@ func get_format(bytes:PackedByteArray) -> String:
 	# Figure out file format from signatures
 	# https://en.wikipedia.org/wiki/List_of_file_signatures
 	
-#	print(bytes.subarray(0,3).hex_encode())
+#	print(bytes.slice(0,3).hex_encode())
 	
 	# .ogg
-	if bytes.subarray(0,3) == PackedByteArray([0x4F,0x67,0x67,0x53]): return "ogg"
+	if bytes.slice(0,3) == PackedByteArray([0x4F,0x67,0x67,0x53]): return "ogg"
 	# .wav
 	# doesn't load correctly atm
-#	if (bytes.subarray(0,3) == PoolByteArray([0x52,0x49,0x46,0x46])
-#	and bytes.subarray(8,11) == PoolByteArray([0x57,0x41,0x56,0x45])): return "wav"
+#	if (bytes.slice(0,3) == PoolByteArray([0x52,0x49,0x46,0x46])
+#	and bytes.slice(8,11) == PoolByteArray([0x57,0x41,0x56,0x45])): return "wav"
 	# .mp3
-	if (bytes.subarray(0,1) == PackedByteArray([0xFF,0xFB])
-	or bytes.subarray(0,1) == PackedByteArray([0xFF,0xF3])
-	or bytes.subarray(0,1) == PackedByteArray([0xFF,0xFA])
-	or bytes.subarray(0,1) == PackedByteArray([0xFF,0xF2])
-	or bytes.subarray(0,2) == PackedByteArray([0x49,0x44,0x33])): return "mp3"
+	if (bytes.slice(0,1) == PackedByteArray([0xFF,0xFB])
+	or bytes.slice(0,1) == PackedByteArray([0xFF,0xF3])
+	or bytes.slice(0,1) == PackedByteArray([0xFF,0xFA])
+	or bytes.slice(0,1) == PackedByteArray([0xFF,0xF2])
+	or bytes.slice(0,2) == PackedByteArray([0x49,0x44,0x33])): return "mp3"
 	# unsupported
 	return "unknown"
 
@@ -147,7 +147,7 @@ func load_buffer(bytes:PackedByteArray,loop:bool=false):
 				var data_entry_point = (i+8)
 #				print ("Audio data starts at byte " + str(data_entry_point))
 				
-				var data = bytes.subarray(data_entry_point, data_entry_point+audio_data_size-1)
+				var data = bytes.slice(data_entry_point, data_entry_point+audio_data_size-1)
 				
 				if bits_per_sample in [24, 32]:
 					newstream.data = convert_to_16bit(data, bits_per_sample)
@@ -182,8 +182,8 @@ func load_buffer(bytes:PackedByteArray,loop:bool=false):
 		return Globals.error_sound
 
 func load_file(filepath:String,loop:bool=false):
-	var file = File.new()
-	var err = file.open(Globals.p(filepath), File.READ)
+	var file = FileAccess.open(Globals.p(filepath), FileAccess.READ)
+	var err = FileAccess.get_open_error()
 	if err != OK:
 		report_errors(err, Globals.p(filepath))
 		file.close()
@@ -222,7 +222,7 @@ func convert_to_16bit(data: PackedByteArray, from: int) -> PackedByteArray:
 		var single_float: float
 		var value: int
 		for i in range(0, data.size(), 4):
-			spb.data_array = data.subarray(i, i+3)
+			spb.data_array = data.slice(i, i+3)
 			single_float = spb.get_float()
 			value = single_float * 32768
 			data[i/2] = value

@@ -37,7 +37,7 @@ func loadMapFile():
 	if map.should_reload_on_play:
 		map.setup_from_file(map.initFile,map.musicFile)
 	notes = map.read_notes()
-	var file:File = File.new()
+	var file:FileAccess = File.new()
 	var song:AudioStream = map.stream()
 	
 	
@@ -307,10 +307,10 @@ func _ready():
 	
 	Rhythia.update_rpc_song()
 	
-	await get_tree().idle_frame
-	await get_tree().idle_frame
-	await get_tree().idle_frame
-	await get_tree().idle_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
 	black_fade_target = false
 	$ForceMatLoad.visible = false
 	$Spawn.active = true

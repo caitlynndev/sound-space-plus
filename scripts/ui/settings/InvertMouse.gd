@@ -1,10 +1,10 @@
 extends CheckBox
 
 func _process(_d):
-	if pressed != Rhythia.invert_mouse:
-		Rhythia.invert_mouse = pressed
+	if button_pressed != Rhythia.invert_mouse:
+		Rhythia.invert_mouse = button_pressed
 
-func upd(): pressed = Rhythia.invert_mouse
+func upd(): button_pressed = Rhythia.invert_mouse
 
 func _ready():
 	upd()

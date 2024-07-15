@@ -262,7 +262,7 @@ func _ready():
 	
 	if Rhythia.cursor_trail:
 		if Rhythia.smart_trail:
-			await get_tree().idle_frame
+			await get_tree().process_frame
 			for i in range(Rhythia.trail_detail * 3.5):
 				var trail = trail_base.duplicate()
 				get_node("../..").add_child(trail)

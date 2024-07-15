@@ -1,10 +1,10 @@
 extends CheckBox
 
 func _process(_d):
-	if pressed != Rhythia.mod_flashlight:
-		Rhythia.mod_flashlight = pressed
+	if button_pressed != Rhythia.mod_flashlight:
+		Rhythia.mod_flashlight = button_pressed
 
-func upd(): pressed = Rhythia.mod_flashlight
+func upd(): button_pressed = Rhythia.mod_flashlight
 
 func _ready():
 	upd()

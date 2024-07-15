@@ -51,7 +51,7 @@ func _process(delta):
 	
 	t += delta
 	$C/V/Next/H/ProgressBar.value = t
-	$C/V/Next/H/V/Time.text = String(max(ceil(10.0 - t),0))
+	$C/V/Next/H/V/Time.text = str(max(ceil(10.0 - t),0))
 	
 	if t >= 10:
 		leaving = true

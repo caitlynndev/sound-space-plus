@@ -4,7 +4,7 @@ class_name ColorSet
 @export var id: String
 @export var name: String
 @export var creator: String
-@export var colors : get = _get_colors, set = _set_colors # (Array,Color)
+@export var colors: Array : get = _get_colors, set = _set_colors # (Array,Color)
 var real_colors:Array
 @export var mirror: bool
 

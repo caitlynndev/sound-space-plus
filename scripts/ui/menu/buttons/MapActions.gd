@@ -32,8 +32,8 @@ func save_song_txt(path:String):
 
 func save_song_audio(path:String):
 	if path:
-		var file:File = File.new()
-		var err:int = file.open(path,File.WRITE)
+		var file:FileAccess = FileAccess.open(path,FileAccess.WRITE)
+		var err:int = FileAccess.get_open_error()
 		if err == OK:
 			file.store_buffer(audio_data)
 			file.close()
@@ -55,14 +55,14 @@ func diff_item_selected(idx:int):
 func copy_item_selected(idx:int):
 	match idx:
 		0:
-			OS.clipboard = Rhythia.selected_song.id
+			DisplayServer.clipboard_set(Rhythia.selected_song.id)
 			Globals.notify(Globals.NOTIFY_SUCCEED,"Copied map ID to clipboard.","Copied")
 		1:
 			if Rhythia.selected_song.songType == Globals.MAP_SSPM or Rhythia.selected_song.songType == Globals.MAP_SSPM2:
-				OS.clipboard = Rhythia.selected_song.filePath
+				DisplayServer.clipboard_set(Rhythia.selected_song.filePath)
 				Globals.notify(Globals.NOTIFY_SUCCEED,"Copied map path to clipboard.","Copied")
 		2:
-			OS.clipboard = Rhythia.selected_song.name
+			DisplayServer.clipboard_set(Rhythia.selected_song.name)
 			Globals.notify(Globals.NOTIFY_SUCCEED,"Copied map name to clipboard.","Copied")
 
 func item_selected(idx:int):
@@ -214,7 +214,7 @@ func _ready():
 	
 	if Rhythia.selected_song: upd()
 	Rhythia.connect("selected_song_changed", Callable(self, "upd"))
-	await get_tree().idle_frame
+	await get_tree().process_frame
 	copy_submenu.name = "Copy"
 	difficulty_submenu.name = "Difficulty"
 

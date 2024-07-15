@@ -1,16 +1,16 @@
 extends MenuButton
 
 var profiles
-var file:File
+var file:FileAccess
 
 var overwrite_submenu = PopupMenu.new()
 var delete_submenu = PopupMenu.new()
 
 func save_profile(path:String):
 	if path:
-		var saveLoc:File = File.new()
-		var err:int = saveLoc.open(path,File.WRITE)
-		if err != OK: print("file.open errored - code " + String(err))
+		var saveLoc:FileAccess = FileAccess.open(path,FileAccess.WRITE)
+		var err:int = FileAccess.get_open_error()
+		if err != OK: print("file.open errored - code " + str(err))
 		saveLoc.store_string(file.get_as_text())
 		saveLoc.close()
 		file.close()
@@ -65,11 +65,11 @@ func _ready():
 	delete_submenu.clear()
 	overwrite_submenu.clear()
 	# for every file Globals.p("user://<something>.settings.json") add an item with the name of the file
-	profiles = Globals.get_files_recursive([Globals.p("user://")], 1, "json").files # just putting super.settings.json here doesn't work :(
+	profiles = (await Globals.get_files_recursive([Globals.p("user://")], 1, "json")).files # just putting super.settings.json here doesn't work :(
 	# remove ones that are not settings profiles
 	for i in range(profiles.size() - 1, -1, -1): # reverse traversal, prevent bad index
 		if profiles[i].find(".settings.json") == -1:
-			profiles.remove(i)
+			profiles.remove_at(i)
 
 	#.substr(profiles[i].find_last("/") + 1, profiles[i].find(".settings.json") - profiles[i].find_last("/") - 1)
 	for i in range(profiles.size()):
@@ -102,8 +102,7 @@ func overwrite_profile(i):
 func delete_profile(i):
 	var profile = profiles[i]
 	print("Deleting profile: " + profile)
-	var userDir = DirAccess.new()
-	userDir.open(Globals.p("user://"))
+	var userDir = DirAccess.open(Globals.p("user://"))
 	var res:int = userDir.remove(profile)
 	if res != OK:
 		Globals.confirm_prompt.open(

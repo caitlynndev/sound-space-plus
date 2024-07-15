@@ -5,17 +5,17 @@ extends Node
 #var fake_consoles = []
 
 #func _process(delta):
-#	if get_parent().get_child(0) != self: raise()
+#	if get_parent().get_child(0) != self: move_to_front()
 
 func ensure_console_is_in_world(_n):
-	if get_parent().get_child(0) != self: raise()
+	if get_parent().get_child(0) != self: move_to_front()
 
 ##	var world = rootg.get_child(rootg.get_child_count()-1)
 #	if node:
 #		if node.get_path_to(rootg) == "..":
 #			#if fake_consoles.size():
 #				for i in range(fake_consoles.size()): 
-#					fake_consoles.remove(0)
+#					fake_consoles.remove_at(0)
 #			#var new_console = real_console.duplicate()
 #			#fake_consoles.append(new_console)
 #			#node.add_child(new_console)
@@ -26,7 +26,7 @@ func clear():
 func close():
 	real_console.close(true)
 
-#func _process(delta): raise()
+#func _process(delta): move_to_front()
 
 func _ready():
 	get_tree().connect("node_added", Callable(self, "ensure_console_is_in_world"))

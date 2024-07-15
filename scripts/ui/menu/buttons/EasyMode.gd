@@ -1,10 +1,10 @@
 extends CheckBox
 
 func _process(_d):
-	if pressed != Rhythia.mod_extra_energy:
-		Rhythia.mod_extra_energy = pressed
+	if button_pressed != Rhythia.mod_extra_energy:
+		Rhythia.mod_extra_energy = button_pressed
 
-func upd(): pressed = Rhythia.mod_extra_energy
+func upd(): button_pressed = Rhythia.mod_extra_energy
 
 func _ready():
 	upd()

@@ -95,7 +95,7 @@ func open_file(
 		$C/OpenFile.show()
 		$C/OpenFile.call_deferred("set_current_dir",Globals.p(initial_path))
 	visible = true
-	raise()
+	move_to_front()
 
 func save_file(
 	obj:Object,
@@ -119,7 +119,7 @@ func save_file(
 		$C/SaveFile.show()
 		$C/SaveFile.call_deferred("set_current_dir",Globals.p(initial_path))
 	visible = true
-	raise()
+	move_to_front()
 
 func open_folder(
 	obj:Object,
@@ -137,4 +137,4 @@ func open_folder(
 		$C/Folder.show()
 		$C/Folder.call_deferred("set_current_dir",Globals.p(initial_path))
 	visible = true
-	raise()
+	move_to_front()

@@ -1,10 +1,10 @@
 extends CheckBox
 
 func _process(_d):
-	if pressed != Rhythia.mod_no_regen:
-		Rhythia.mod_no_regen = pressed
+	if button_pressed != Rhythia.mod_no_regen:
+		Rhythia.mod_no_regen = button_pressed
 
-func upd(): pressed = Rhythia.mod_no_regen
+func upd(): button_pressed = Rhythia.mod_no_regen
 
 func _ready():
 	upd()

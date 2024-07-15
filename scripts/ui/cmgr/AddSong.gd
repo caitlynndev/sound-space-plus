@@ -1,8 +1,5 @@
 extends Panel
 
-var dir:DirAccess = DirAccess.new()
-var file:File = File.new()
-
 @export var cover_placeholder: Texture2D
 
 var song:Song
@@ -17,21 +14,21 @@ var dataPath:String = ""
 var difficulty_id:int = -1
 
 enum {
-	T_TXT
-	T_SSPM
-	T_VULNUS
+	T_TXT,
+	T_SSPM,
+	T_VULNUS,
 	T_SSPMR
 }
 enum {
-	F_DIR
+	F_DIR,
 	F_ZIP
 }
 enum {
-	FO_VZIP
-	FO_VDIR
-	FO_COVER
-	FO_SSPM
-	FO_TXT
+	FO_VZIP,
+	FO_VDIR,
+	FO_COVER,
+	FO_SSPM,
+	FO_TXT,
 	FO_SONG
 }
 
@@ -289,12 +286,12 @@ func populate_edit_screen():
 
 func import_vulnus_folder():
 	print("Locating meta.json...")
-	await get_tree().idle_frame
+	await get_tree().process_frame
 	
-	dir.open(path)
+	var dir = DirAccess.open(path)
 	if !dir.file_exists("meta.json"):
 		print("Possible nested folder - searching for meta.json AAAAAAAAAAAAAAAAAAAA")
-		await get_tree().idle_frame
+		await get_tree().process_frame
 		print('list_dir_begin before')
 		dir.list_dir_begin() # TODOConverter3To4 fill missing arguments https://github.com/godotengine/godot/pull/40547
 		var n = dir.get_next()
@@ -303,7 +300,7 @@ func import_vulnus_folder():
 			print(n)
 			if dir.file_exists(n.path_join("meta.json")):
 				print("Found meta.json in '%s'" % n)
-				await get_tree().idle_frame
+				await get_tree().process_frame
 				path = path.path_join(n)
 				break
 		dir.list_dir_end()
@@ -316,8 +313,9 @@ func import_vulnus_folder():
 			print("found meta.json at %s" % path)
 	
 	print("Located! Loading meta.json...")
-	await get_tree().idle_frame
-	var res = file.open(path.path_join("meta.json"),File.READ)
+	await get_tree().process_frame
+	var file = FileAccess.open(path.path_join("meta.json"),FileAccess.READ)
+	var res = FileAccess.get_open_error()
 	if res != OK:
 		print("meta.json: file open error %s" % res)
 		$VulnusFile/Error.text = "meta.json: error opening file (file error %s)" % res
@@ -327,12 +325,12 @@ func import_vulnus_folder():
 	var metatxt:String = file.get_as_text()
 	file.close()
 	print("Loaded! Reading metadata now...")
-	await get_tree().idle_frame
+	await get_tree().process_frame
 	var test_json_conv = JSON.new()
 	test_json_conv.parse(metatxt)
 	var meta:Dictionary = test_json_conv.get_data()
 	print("Parsed!")
-	await get_tree().idle_frame
+	await get_tree().process_frame
 	var artist:String = meta.get("_artist","Unknown Artist")
 	var difficulties:Array = meta.get("_difficulties",[])
 	var mappers:Array = meta.get("_mappers",[])
@@ -340,7 +338,7 @@ func import_vulnus_folder():
 	var title:String = meta.get("_title","Unknown Song")
 	
 	print("Data loaded! Making sure we have everything we need...")
-	await get_tree().idle_frame
+	await get_tree().process_frame
 	
 	if difficulties.size() == 0:
 		print("no difficulties")
@@ -353,7 +351,7 @@ func import_vulnus_folder():
 		$VulnusFile/Error.visible = true
 		return
 	
-	if !file.file_exists(path.path_join(music_path)):
+	if !FileAccess.file_exists(path.path_join(music_path)):
 		print("music file doesn't exist")
 		$VulnusFile/Error.text = "Music file does not exist (%s)" % [music_path]
 		$VulnusFile/Error.visible = true
@@ -361,7 +359,7 @@ func import_vulnus_folder():
 	
 	print("Everything seems to be present!")
 	print("Building metadata...")
-	await get_tree().idle_frame
+	await get_tree().process_frame
 	
 	var conc:String = ""
 	for i in range(mappers.size()):
@@ -371,12 +369,12 @@ func import_vulnus_folder():
 	var songname = "%s - %s" % [artist,title]
 	var id = generate_id(songname,conc)
 	print("Everything is ready! Loading map...")
-	await get_tree().idle_frame
+	await get_tree().process_frame
 	
 	song = Song.new(id,songname,conc)
 	
 	if difficulties.size() == 1:
-		if !file.file_exists(path.path_join(difficulties[0])):
+		if !FileAccess.file_exists(path.path_join(difficulties[0])):
 			print("map data file doesn't exist")
 			$VulnusFile/Error.text = "Map data file does not exist (%s)" % [difficulties[0]]
 			$VulnusFile/Error.visible = true
@@ -391,7 +389,7 @@ func import_vulnus_folder():
 		print("IMPORTED SUCCESS!!! PARTY TIME!")
 		$VulnusFile/Success.text = "map imported as %s!" % [id]
 		$VulnusFile/Success.visible = true
-		await get_tree().idle_frame
+		await get_tree().process_frame
 		
 		$VulnusFile.visible = false
 		populate_edit_screen()
@@ -445,7 +443,8 @@ func import_vmap_with_difficulty(difficulty_id:int,is_loop:bool=true):
 		return 0
 
 func vmap_difficulty_sel(i:int):
-	var res = file.open(path.path_join("meta.json"),File.READ)
+	var file = FileAccess.open(path.path_join("meta.json"),FileAccess.READ)
+	var res = FileAccess.get_open_error()
 	if res != OK:
 		print("meta.json: file open error %s" % res)
 		$Finish/Error.text = "meta.json: error opening file (file error %s)" % res
@@ -460,20 +459,20 @@ func vmap_difficulty_sel(i:int):
 	var metatxt:String = file.get_as_text()
 	file.close()
 	print("Loaded! Reading metadata now...")
-	await get_tree().idle_frame
+	await get_tree().process_frame
 	var test_json_conv = JSON.new()
 	test_json_conv.parse(metatxt)
 	var meta:Dictionary = test_json_conv.get_data()
 	print("Parsed!")
-	await get_tree().idle_frame
+	await get_tree().process_frame
 	var difficulties:Array = meta.get("_difficulties",[])
 	
 	if i == -1:
-		for i in range(difficulties.size()):
-			if i != 0: song = Song.new()
-			if !file.file_exists(path.path_join(difficulties[i])):
+		for j in range(difficulties.size()):
+			if j != 0: song = Song.new()
+			if !FileAccess.file_exists(path.path_join(difficulties[j])):
 				print("map data file doesn't exist")
-				$Finish/Error.text = "Map data file does not exist (%s)" % [difficulties[i]]
+				$Finish/Error.text = "Map data file does not exist (%s)" % [difficulties[j]]
 				$Finish/Error.visible = true
 				$Finish/Success.visible = false
 				$Finish/Wait.visible = false
@@ -481,10 +480,10 @@ func vmap_difficulty_sel(i:int):
 				$SelectDifficulty.visible = false
 				$Finish.visible = true
 				return
-			var result:int = import_vmap_with_difficulty(i)
+			var result:int = import_vmap_with_difficulty(j)
 			if result == 0:
 				print("import failed")
-				$Finish/Error.text = "Import failed (%s)" % [difficulties[i]]
+				$Finish/Error.text = "Import failed (%s)" % [difficulties[j]]
 				$Finish/Error.visible = true
 				$Finish/Success.visible = false
 				$Finish/Wait.visible = false
@@ -502,7 +501,7 @@ func vmap_difficulty_sel(i:int):
 		$SelectDifficulty.visible = false
 		$Finish.visible = true
 	else:
-		if !file.file_exists(path.path_join(difficulties[i])):
+		if !FileAccess.file_exists(path.path_join(difficulties[i])):
 			print("map data file doesn't exist")
 			$Finish/Error.text = "Map data file does not exist (%s)" % [difficulties[i]]
 			$Finish/Error.visible = true
@@ -547,98 +546,98 @@ func file_selected(files:PackedStringArray):
 			$SelectType.visible = false
 			populate_edit_screen()
 			$Edit.visible = true
-		FO_VZIP:
-			$VulnusFile/Success.visible = false
-			$VulnusFile/Error.visible = false
-			
-			print("Making temp dir")
-			await get_tree().idle_frame
-			dir.open(Globals.p("user://"))
-			if dir.dir_exists(Globals.p("user://temp")):
-				print("Removing old temp dir")
-				await get_tree().idle_frame
-				var found = Globals.get_files_recursive(
-					[Globals.p("user://temp")]
-				)
-				for p in found.files:
-					var res:int = dir.remove(p)
-					if res != OK:
-						print("file delete returned error %s for file '%s'" % [res,p])
-						$VulnusFile/Error.text = "failed to delete temp folder, file remove error %s" % [res]
-						$VulnusFile/Error.visible = true
-						return
-				found.folders.invert()
-				for p in found.folders:
-					var res:int = dir.remove(p)
-					if res != OK:
-						print("file delete returned error %s for folder '%s'" % [res,p])
-						$VulnusFile/Error.text = "failed to delete temp folder, folder remove error %s" % [res]
-						$VulnusFile/Error.visible = true
-						return
-				var res:int = dir.remove(Globals.p("user://temp"))
-				if res != OK:
-					print("file delete returned error %s for temp dir" % [res])
-					$VulnusFile/Error.text = "failed to delete temp folder, folder remove error %s" % [res]
-					$VulnusFile/Error.visible = true
-					return
-			dir.make_dir(Globals.p("user://temp"))
-			
-			print("Extracting zip file...")
-			await get_tree().idle_frame
-			
-			var output = []
-			var binarypath:String = ProjectSettings.get_setting("application/config/7zip_binary_path")
-			if binarypath != "":
-				if binarypath.begins_with("install_dir/"):
-					binarypath = OS.get_executable_path().get_base_dir().path_join(binarypath.trim_prefix("install_dir/"))
-				
-				var outpath:String = ProjectSettings.globalize_path(Globals.p("user://temp"))
-				var inpath:String = ProjectSettings.globalize_path(files[0])
-				
-				if inpath.ends_with(".vmap"):
-					dir.rename(files[0], files[0].trim_suffix("vmap") + "zip")
-				
-				if OS.has_feature("Windows"): # Windows has different requirements for its file paths
-					outpath = outpath.replace("\\","/")
-					inpath = inpath.replace("\\","/")
-				else:
-					outpath = outpath.replace('"','\\"')
-					inpath = inpath.replace('"','\\"')
-				
-				
-				var args = [
-					'x',
-					'-bb0',
-					'-y',
-					'-bd',
-					'-o"%s"' % [ProjectSettings.globalize_path(Globals.p("user://temp"))],
-					'"%s"' % [files[0].replace("\\","/")],
-					'*'
-				]
-				print(binarypath)
-				var exit_code = OS.execute(binarypath, args, true, output, true, OS.has_feature("debug"))
-				
-				for o in output:
-					print(o)
-				
-				if exit_code == -1:
-					print("nonzero exit code of -1 indicateds engine error")
-					$VulnusFile/Error.text = "engine error while extracting zip"
-					$VulnusFile/Error.visible = true
-					return
-				elif exit_code != 0:
-					print("nonzero exit code of %s" % [exit_code])
-					$VulnusFile/Error.text = "error occurred while extracting zip (exit code %s)" % [exit_code]
-					$VulnusFile/Error.visible = true
-					return
-			else:
-				print("platform doesn't have a 7zip binary")
-				$VulnusFile/Error.text = "zip imports currently aren't supported on this platform"
-				$VulnusFile/Error.visible = true
-				return
-			
-			path = Globals.p("user://temp")
-			import_vulnus_folder()
+		#FO_VZIP: # 7zip isn't included with the game anymore
+			#$VulnusFile/Success.visible = false
+			#$VulnusFile/Error.visible = false
+			#
+			#print("Making temp dir")
+			#await get_tree().process_frame
+			#var dir = DirAccess.open(Globals.p("user://"))
+			#if dir.dir_exists(Globals.p("user://temp")):
+				#print("Removing old temp dir")
+				#await get_tree().process_frame
+				#var found = await Globals.get_files_recursive(
+					#[Globals.p("user://temp")]
+				#)
+				#for p in found.files:
+					#var res:int = dir.remove(p)
+					#if res != OK:
+						#print("file delete returned error %s for file '%s'" % [res,p])
+						#$VulnusFile/Error.text = "failed to delete temp folder, file remove error %s" % [res]
+						#$VulnusFile/Error.visible = true
+						#return
+				#found.folders.invert()
+				#for p in found.folders:
+					#var res:int = dir.remove(p)
+					#if res != OK:
+						#print("file delete returned error %s for folder '%s'" % [res,p])
+						#$VulnusFile/Error.text = "failed to delete temp folder, folder remove error %s" % [res]
+						#$VulnusFile/Error.visible = true
+						#return
+				#var res:int = dir.remove(Globals.p("user://temp"))
+				#if res != OK:
+					#print("file delete returned error %s for temp dir" % [res])
+					#$VulnusFile/Error.text = "failed to delete temp folder, folder remove error %s" % [res]
+					#$VulnusFile/Error.visible = true
+					#return
+			#dir.make_dir(Globals.p("user://temp"))
+			#
+			#print("Extracting zip file...")
+			#await get_tree().process_frame
+			#
+			#var output = []
+			#var binarypath:String = ProjectSettings.get_setting("application/config/7zip_binary_path")
+			#if binarypath != "":
+				#if binarypath.begins_with("install_dir/"):
+					#binarypath = OS.get_executable_path().get_base_dir().path_join(binarypath.trim_prefix("install_dir/"))
+				#
+				#var outpath:String = ProjectSettings.globalize_path(Globals.p("user://temp"))
+				#var inpath:String = ProjectSettings.globalize_path(files[0])
+				#
+				#if inpath.ends_with(".vmap"):
+					#dir.rename(files[0], files[0].trim_suffix("vmap") + "zip")
+				#
+				#if OS.has_feature("Windows"): # Windows has different requirements for its file paths
+					#outpath = outpath.replace("\\","/")
+					#inpath = inpath.replace("\\","/")
+				#else:
+					#outpath = outpath.replace('"','\\"')
+					#inpath = inpath.replace('"','\\"')
+				#
+				#
+				#var args = [
+					#'x',
+					#'-bb0',
+					#'-y',
+					#'-bd',
+					#'-o"%s"' % [ProjectSettings.globalize_path(Globals.p("user://temp"))],
+					#'"%s"' % [files[0].replace("\\","/")],
+					#'*'
+				#]
+				#print(binarypath)
+				#var exit_code = OS.execute(binarypath, args, true, output, true, OS.has_feature("debug"))
+				#
+				#for o in output:
+					#print(o)
+				#
+				#if exit_code == -1:
+					#print("nonzero exit code of -1 indicateds engine error")
+					#$VulnusFile/Error.text = "engine error while extracting zip"
+					#$VulnusFile/Error.visible = true
+					#return
+				#elif exit_code != 0:
+					#print("nonzero exit code of %s" % [exit_code])
+					#$VulnusFile/Error.text = "error occurred while extracting zip (exit code %s)" % [exit_code]
+					#$VulnusFile/Error.visible = true
+					#return
+			#else:
+				#print("platform doesn't have a 7zip binary")
+				#$VulnusFile/Error.text = "zip imports currently aren't supported on this platform"
+				#$VulnusFile/Error.visible = true
+				#return
+			#
+			#path = Globals.p("user://temp")
+			#import_vulnus_folder()
 		FO_VDIR:
 			$VulnusFile/Success.visible = false
 			$VulnusFile/Error.visible = false
@@ -646,7 +645,7 @@ func file_selected(files:PackedStringArray):
 			import_vulnus_folder()
 		FO_TXT:
 			song.initFile = files[0]
-			file.open(files[0],File.READ)
+			var file = FileAccess.open(files[0],FileAccess.READ)
 			check_txt(file.get_as_text())
 			file.close()
 		FO_SONG:
@@ -822,7 +821,7 @@ func finish_map():
 	$Finish/Error.visible = false
 	$Finish/Success.visible = false
 	$Finish/Wait.visible = true
-	await get_tree().idle_frame # Make sure the screen updates
+	await get_tree().process_frame # Make sure the screen updates
 	
 	if (maptype == T_TXT and $TxtFile/H/Temp.pressed):
 		song.discard_notes()
