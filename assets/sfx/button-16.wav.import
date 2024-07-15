@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/button-16.wav-f7d1973e135c2be7fd12977fb6aef082.sample"
+type="AudioStreamWAV"
+uid="uid://dw0wmou7p7xb2"
+path="res://.godot/imported/button-16.wav-f7d1973e135c2be7fd12977fb6aef082.sample"
 
 [deps]
 
 source_file="res://assets/sfx/button-16.wav"
-dest_files=[ "res://.import/button-16.wav-f7d1973e135c2be7fd12977fb6aef082.sample" ]
+dest_files=["res://.godot/imported/button-16.wav-f7d1973e135c2be7fd12977fb6aef082.sample"]
 
 [params]
 

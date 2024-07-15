@@ -1,7 +1,7 @@
-extends RayCast
+extends RayCast3D
 
 func update_beam():
-	var dist = -cast_to.z
+	var dist = -target_position.z
 	if is_colliding():
 		dist = (get_collision_point() - global_transform.origin).length()
 	

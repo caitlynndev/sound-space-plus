@@ -8,6 +8,6 @@ func _pressed():
 		[{text="OK"}]
 	)
 	Globals.confirm_prompt.s_alert.play()
-	var option = yield(Globals.confirm_prompt,"option_selected")
+	var option = await Globals.confirm_prompt.option_selected
 	Globals.confirm_prompt.close()
 	Globals.confirm_prompt.s_next.play()

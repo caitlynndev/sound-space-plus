@@ -12,9 +12,9 @@ func on_map_selected(map):
 	self.value = 0
 
 func _ready():
-	connect("value_changed",self,"value_changed")
-	$TimeTextBox.connect("text_entered", self, "time_text_entered")
-	Rhythia.connect("selected_song_changed",self,"on_map_selected")
+	connect("value_changed", Callable(self, "value_changed"))
+	$TimeTextBox.connect("text_submitted", Callable(self, "time_text_entered"))
+	Rhythia.connect("selected_song_changed", Callable(self, "on_map_selected"))
 
 	if (Rhythia.selected_song != null):	# after song pass
 		on_map_selected(null)

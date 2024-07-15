@@ -1,33 +1,33 @@
-extends Spatial
+extends Node3D
 
 
-onready var Game:SongPlayerManager = get_parent()
-onready var Spawn:NoteManager = get_parent().get_node("Spawn")
+@onready var Game:SongPlayerManager = get_parent()
+@onready var Spawn:NoteManager = get_parent().get_node("Spawn")
 
 
-onready var timebar:ProgressBar = get_node("TimerVP/Control/Time")
-onready var timelabel:Label = get_node("TimerVP/Control/Label")
-onready var songnametxt:Label = get_node("TimerVP/Control/SongName")
-onready var acclabel:Label = get_node("LeftVP/Control/Accuracy")
-onready var accbar:ProgressBar = get_node("LeftVP/Control/AccuracyBar")
-onready var pauselabel:Label = get_node("LeftVP/Control/Pauses")
-onready var noteslabel:Label = get_node("RightVP/Control/Notes")
-onready var misseslabel:Label = get_node("RightVP/Control/Misses")
-onready var scorelabel:Label = get_node("RightVP/Control/Score")
-onready var energybar:ProgressBar = get_node("EnergyVP/Control/Energy")
-onready var modicons:HBoxContainer = get_node("EnergyVP/Control/Modifiers/Icons/H")
-onready var modtxt:Label = get_node("EnergyVP/Control/Modifiers/Text")
+@onready var timebar:ProgressBar = get_node("TimerVP/Control/Time")
+@onready var timelabel:Label = get_node("TimerVP/Control/Label")
+@onready var songnametxt:Label = get_node("TimerVP/Control/SongName")
+@onready var acclabel:Label = get_node("LeftVP/Control/Accuracy")
+@onready var accbar:ProgressBar = get_node("LeftVP/Control/AccuracyBar")
+@onready var pauselabel:Label = get_node("LeftVP/Control/Pauses")
+@onready var noteslabel:Label = get_node("RightVP/Control/Notes")
+@onready var misseslabel:Label = get_node("RightVP/Control/Misses")
+@onready var scorelabel:Label = get_node("RightVP/Control/Score")
+@onready var energybar:ProgressBar = get_node("EnergyVP/Control/Energy")
+@onready var modicons:HBoxContainer = get_node("EnergyVP/Control/Modifiers/Icons/H")
+@onready var modtxt:Label = get_node("EnergyVP/Control/Modifiers/Text")
 
-onready var comboring:Control = get_node("LeftVP/Control/Combo")
-onready var combotxt:Label = get_node("LeftVP/Control/Combo/Label")
-onready var truecombo:Label = get_node("ComboVP/Value")
+@onready var comboring:Control = get_node("LeftVP/Control/Combo")
+@onready var combotxt:Label = get_node("LeftVP/Control/Combo/Label")
+@onready var truecombo:Label = get_node("ComboVP/Value")
 
-onready var lettergrade:Label = get_node("LeftVP/Control/LetterGrade")
+@onready var lettergrade:Label = get_node("LeftVP/Control/LetterGrade")
 
-onready var friend:MeshInstance = Spawn.get_node("Friend")
+@onready var friend:MeshInstance3D = Spawn.get_node("Friend")
 
-onready var cur_pos = $"../Spawn/Cursor/Mesh".global_transform.origin
-onready var pcur_pos = cur_pos
+@onready var cur_pos = $"../Spawn/Cursor/Mesh".global_transform.origin
+@onready var pcur_pos = cur_pos
 
 
 
@@ -127,7 +127,7 @@ func update_static_values():
 	
 	if Game.combo != last_combo:
 		truecombo.text = String(Game.combo)
-		truecombo.rect_position.y = 100
+		truecombo.position.y = 100
 		last_combo = Game.combo
 	
 	pauselabel.text = Globals.comma_sep(Rhythia.song_end_pause_count)
@@ -174,11 +174,11 @@ func update_static_values():
 		gcol = grade_f_color
 	
 	lettergrade.text = grade
-	if shine != lettergrade.material.get_shader_param("amount"):
-		lettergrade.material.set_shader_param("amount",shine)
+	if shine != lettergrade.material.get_shader_parameter("amount"):
+		lettergrade.material.set_shader_parameter("amount",shine)
 	
 	if !Rhythia.rainbow_hud:
-		lettergrade.set("custom_colors/font_color",gcol)
+		lettergrade.set("theme_override_colors/font_color",gcol)
 
 var miss_flash:float = 0
 
@@ -199,20 +199,20 @@ func update_timer(ms:float,canSkip:bool=false):
 	
 	if !Rhythia.rainbow_hud:
 		if canSkip:
-			timebar.get("custom_styles/fg").bg_color = timer_fg_canskip
-			timebar.get("custom_styles/bg").bg_color = timer_bg_canskip
+			timebar.get("theme_override_styles/fg").bg_color = timer_fg_canskip
+			timebar.get("theme_override_styles/bg").bg_color = timer_bg_canskip
 			for n in get_tree().get_nodes_in_group("timer_text"):
 				paint(n,timer_text_canskip)
 			
 		elif !Rhythia.queue_active and Spawn.ms > Game.last_ms:
-			timebar.get("custom_styles/fg").bg_color = timer_fg_done
-			timebar.get("custom_styles/bg").bg_color = timer_bg_done
+			timebar.get("theme_override_styles/fg").bg_color = timer_fg_done
+			timebar.get("theme_override_styles/bg").bg_color = timer_bg_done
 			for n in get_tree().get_nodes_in_group("timer_text"):
 				paint(n,timer_text_done)
 			
 		else:
-			timebar.get("custom_styles/fg").bg_color = timer_fg
-			timebar.get("custom_styles/bg").bg_color = timer_bg
+			timebar.get("theme_override_styles/fg").bg_color = timer_fg
+			timebar.get("theme_override_styles/bg").bg_color = timer_bg
 			for n in get_tree().get_nodes_in_group("timer_text"):
 				paint(n,timer_text)
 	
@@ -236,11 +236,11 @@ func paint(node:Control,color:Color):
 		node.color = color
 	
 	elif node is Panel:
-		node.get("custom_styles/panel").bg_color = color
+		node.get("theme_override_styles/panel").bg_color = color
 	
 	elif node is Label:
-		if node.has_color_override("font_color"):
-			node.set("custom_colors/font_color",color)
+		if node.has_theme_color_override("font_color"):
+			node.set("theme_override_colors/font_color",color)
 		else:
 			node.modulate = color
 	
@@ -282,7 +282,7 @@ func _process(delta:float):
 		get_node("GiveUpHud").opacity = 0
 	
 	if rainbow_letter_grade and !Rhythia.rainbow_hud:
-		lettergrade.set("custom_colors/font_color",Color.from_hsv(Rhythia.rainbow_t*0.1, grade_ss_saturation, grade_ss_value))
+		lettergrade.set("theme_override_colors/font_color",Color.from_hsv(Rhythia.rainbow_t*0.1, grade_ss_saturation, grade_ss_value))
 	
 	if miss_flash != 0:
 		var miss_col = lerp(miss_text_color, miss_flash_color, miss_flash)
@@ -291,8 +291,8 @@ func _process(delta:float):
 		miss_flash = max(0, miss_flash - (delta * 3))
 	
 	if Rhythia.rainbow_hud:
-		energybar.get("custom_styles/fg").bg_color = Color.from_hsv(Rhythia.rainbow_t*0.1,0.4,1)
-		energybar.get("custom_styles/bg").bg_color = Color.from_hsv(Rhythia.rainbow_t*0.1,0.4,0.2,0.65)
+		energybar.get("theme_override_styles/fg").bg_color = Color.from_hsv(Rhythia.rainbow_t*0.1,0.4,1)
+		energybar.get("theme_override_styles/bg").bg_color = Color.from_hsv(Rhythia.rainbow_t*0.1,0.4,0.2,0.65)
 		$TimerHud.modulate = Color.from_hsv(Rhythia.rainbow_t*0.1,0.4,1)
 		$ComboHud.modulate = Color.from_hsv(Rhythia.rainbow_t*0.1,0.4,1)
 		$LeftHud.modulate = Color.from_hsv(Rhythia.rainbow_t*0.1,0.4,1)
@@ -325,9 +325,9 @@ func _process(delta:float):
 	var fstr = "cursor speed\n{current} m/sec/{frames}fr\n\ntop speed\n{top} m/sec/{frames}fr\n\nrec interval\n{rec}"
 	$Stats/Label.text = fstr.format(
 		{
-			"current": stepify(s_curspd,0.1),
+			"current": snapped(s_curspd,0.1),
 			"frames": Engine.get_frames_per_second(),
-			"top": stepify(s_tcurspd,0.1),
+			"top": snapped(s_tcurspd,0.1),
 			"rec": round(Spawn.rec_interval)
 		}
 	)
@@ -343,7 +343,7 @@ func _process(delta:float):
 
 
 func _ready():
-	Game.connect("miss",self,"on_miss")
+	Game.connect("miss", Callable(self, "on_miss"))
 	
 	$Stats/Label.visible = Rhythia.show_stats
 	
@@ -377,13 +377,13 @@ func _ready():
 		
 		comboring.fill_color = Color(cf,cf,cf,combo_fill_color.a)
 		comboring.empty_color = Color(ce,ce,ce,combo_empty_color.a)
-		accbar.get("custom_styles/fg").bg_color = Color(af,af,af,acc_fill_color.a)
-		accbar.get("custom_styles/bg").bg_color = Color(ae,ae,ae,acc_empty_color.a)
+		accbar.get("theme_override_styles/fg").bg_color = Color(af,af,af,acc_fill_color.a)
+		accbar.get("theme_override_styles/bg").bg_color = Color(ae,ae,ae,acc_empty_color.a)
 	else:
 		comboring.fill_color = combo_fill_color
 		comboring.empty_color = combo_empty_color
-		accbar.get("custom_styles/fg").bg_color = acc_fill_color
-		accbar.get("custom_styles/bg").bg_color = acc_empty_color
+		accbar.get("theme_override_styles/fg").bg_color = acc_fill_color
+		accbar.get("theme_override_styles/bg").bg_color = acc_empty_color
 	
 	
 	
@@ -431,7 +431,7 @@ func _ready():
 	
 	if Rhythia.visual_mode or !Rhythia.show_hp_bar:
 		energybar.visible = false
-		$EnergyVP/Control/Modifiers.margin_top -= 30
+		$EnergyVP/Control/Modifiers.offset_top -= 30
 	
 	if !Rhythia.show_timer:
 		$TimerHud.visible = false
@@ -454,11 +454,11 @@ func _ready():
 		
 		for n in $LeftVP/Control.get_children():
 			n.visible = n.name == "SimpleBg" or n.name == "Pauses" or n.name == "PausesTitle"
-			if n.visible: n.rect_position.y += 100
+			if n.visible: n.position.y += 100
 		
 		for n in $RightVP/Control.get_children():
 			n.visible = n.name == "SimpleBg" or n.name == "Misses" or n.name == "MissesTitle"
-			if n.visible: n.rect_position.y += 100
+			if n.visible: n.position.y += 100
 		
 	if Rhythia.faraway_hud:
 		transform.origin = Vector3(0,0,-10)

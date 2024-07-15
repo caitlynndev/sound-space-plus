@@ -1,4 +1,4 @@
-extends Spatial
+extends Node3D
 
 var rate:float = 6
 var s:float = -26
@@ -13,20 +13,20 @@ func hit(col:Color):
 	color = col
 	if !Rhythia.disable_bg_effects:
 		var particle_instance = particle.instance()
-		particle_instance.translate(Vector3(rand_range(-$emissionArea.scale.x, $emissionArea.scale.x), 4, rand_range(-$emissionArea.scale.z, $emissionArea.scale.z)))
-		if (particle_instance.translation.x >= -5 and particle_instance.translation.x <= 5):
+		particle_instance.translate(Vector3(randf_range(-$emissionArea.scale.x, $emissionArea.scale.x), 4, randf_range(-$emissionArea.scale.z, $emissionArea.scale.z)))
+		if (particle_instance.position.x >= -5 and particle_instance.position.x <= 5):
 			return
 		particle_instance.process_material.color = color
-		particle_instance.process_material.scale = rand_range(0.5, 1)
-		particle_instance.speed_scale = rand_range(1, 2)
+		particle_instance.process_material.scale = randf_range(0.5, 1)
+		particle_instance.speed_scale = randf_range(1, 2)
 		particle_instance.lifetime = 2
 		particle_instance.restart()
 		particle_instance.emitting = true
 		$Particles.call_deferred("add_child", particle_instance)
-		get_tree().create_timer(particle_instance.lifetime).connect("timeout", particle_instance, "queue_free")
+		get_tree().create_timer(particle_instance.lifetime).connect("timeout", Callable(particle_instance, "queue_free"))
 
 func _ready():
-	get_parent().get_node("Game").connect("hit",self,"hit")
+	get_parent().get_node("Game").connect("hit", Callable(self, "hit"))
 	# Shaders
 	var env = get_node("WorldEnvironment").environment
 	if Rhythia.glow > 0:
@@ -41,11 +41,11 @@ func _ready():
 		
 		
 func _process(delta):
-	$gridBottom.translation.z += rate * delta 
-	$gridTop.translation.z += rate * delta 
+	$gridBottom.position.z += rate * delta 
+	$gridTop.position.z += rate * delta 
 	
-	$gridBottom.translation.z = wrapf($gridBottom.translation.z,s,e)
-	$gridTop.translation.z = wrapf($gridTop.translation.z,s,e)
+	$gridBottom.position.z = wrapf($gridBottom.position.z,s,e)
+	$gridTop.position.z = wrapf($gridTop.position.z,s,e)
 
 	gcol = Color(color.r,color.g,color.b,0.01)
 

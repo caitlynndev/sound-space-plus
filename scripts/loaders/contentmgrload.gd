@@ -25,7 +25,7 @@ func _ready():
 	if res != OK:
 		Rhythia.errorstr = "queue_resource returned %s" % res
 		Rhythia.menu_target = "res://scenes/menu/contentmgr.tscn"
-		get_tree().change_scene("res://scenes/errors/menuload.tscn")
+		get_tree().change_scene_to_file("res://scenes/errors/menuload.tscn")
 
 var result
 var result2
@@ -49,7 +49,7 @@ func _process(delta):
 			if !(result is Object):
 				Rhythia.errorstr = "get_resource returned non-object (probably null)"
 				Rhythia.menu_target = "res://scenes/menu/contentmgr.tscn"
-				get_tree().change_scene("res://scenes/errors/menuload.tscn")
+				get_tree().change_scene_to_file("res://scenes/errors/menuload.tscn")
 	
 	if leaving and result and black_fade == 1:
-		get_tree().change_scene_to(result)
+		get_tree().change_scene_to_packed(result)

@@ -1,6 +1,6 @@
 extends VBoxContainer
 
-onready var G = get_parent().get_node("MapRegistry/S/VBoxContainer")
+@onready var G = get_parent().get_node("MapRegistry/S/VBoxContainer")
 
 func setc(n:Control,v:bool):
 	if v: n.modulate = Color(1,1,1,1)
@@ -22,11 +22,11 @@ func tg(d:int):
 	G.update_search_dfil(G.difficulty_filter)
 
 func _ready():
-	$NODIF/Select.connect("pressed",self,"tg",[Globals.DIFF_UNKNOWN])
-	$EASY/Select.connect("pressed",self,"tg",[Globals.DIFF_EASY])
-	$MEDIUM/Select.connect("pressed",self,"tg",[Globals.DIFF_MEDIUM])
-	$HARD/Select.connect("pressed",self,"tg",[Globals.DIFF_HARD])
-	$LOGIC/Select.connect("pressed",self,"tg",[Globals.DIFF_LOGIC])
-	$AMOGUS/Select.connect("pressed",self,"tg",[Globals.DIFF_AMOGUS])
-	G.connect("search_updated",self,"upd")
+	$NODIF/Select.connect("pressed", Callable(self, "tg").bind(Globals.DIFF_UNKNOWN))
+	$EASY/Select.connect("pressed", Callable(self, "tg").bind(Globals.DIFF_EASY))
+	$MEDIUM/Select.connect("pressed", Callable(self, "tg").bind(Globals.DIFF_MEDIUM))
+	$HARD/Select.connect("pressed", Callable(self, "tg").bind(Globals.DIFF_HARD))
+	$LOGIC/Select.connect("pressed", Callable(self, "tg").bind(Globals.DIFF_LOGIC))
+	$AMOGUS/Select.connect("pressed", Callable(self, "tg").bind(Globals.DIFF_AMOGUS))
+	G.connect("search_updated", Callable(self, "upd"))
 	upd()

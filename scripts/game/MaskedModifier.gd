@@ -1,17 +1,17 @@
-extends Spatial
+extends Node3D
 
-export var lspd = 0.025 # lerp speed
+@export var lspd = 0.025 # lerp speed
 var target:Vector3 # general target
 var tps:float # target pixel scale
 var top:float # target opacity
-onready var Game:SongPlayerManager = $".." # game instance (to detect combo)
+@onready var Game:SongPlayerManager = $".." # game instance (to detect combo)
 
 func _process(delta):
 	
 	# set lerp targets
 	target = Vector3(
-		$"../Spawn/Cursor/Mesh".global_translation.x,
-		$"../Spawn/Cursor/Mesh".global_translation.y,
+		$"../Spawn/Cursor/Mesh".global_position.x,
+		$"../Spawn/Cursor/Mesh".global_position.y,
 		-0.1
 	)
 	if Rhythia.get("cam_unlock") == true:
@@ -36,7 +36,7 @@ func _process(delta):
 			top = 1 # # opacity always 1 no matter what because fog thinks it cring! (keeping variable incase)
 	
 	# application onto nodes
-	global_translation = lerp(global_translation,target,lspd*40) # lspd multiplied by 40 to increase speed
-	$Sprite.pixel_size = lerp($Sprite.pixel_size,tps,lspd/2) # lspd divided by 2 to increase time
-	$Sprite.opacity = lerp($Sprite.opacity,top,lspd/2) # lspd divided by 2 to increase time
+	global_position = lerp(global_position,target,lspd*40) # lspd multiplied by 40 to increase speed
+	$Sprite2D.pixel_size = lerp($Sprite2D.pixel_size,tps,lspd/2) # lspd divided by 2 to increase time
+	$Sprite2D.opacity = lerp($Sprite2D.opacity,top,lspd/2) # lspd divided by 2 to increase time
 	

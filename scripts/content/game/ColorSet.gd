@@ -1,12 +1,12 @@
 extends Resource
 class_name ColorSet
 
-export(String) var id
-export(String) var name
-export(String) var creator
-export(Array,Color) var colors setget _set_colors,_get_colors
+@export var id: String
+@export var name: String
+@export var creator: String
+@export var colors : get = _get_colors, set = _set_colors # (Array,Color)
 var real_colors:Array
-export(bool) var mirror
+@export var mirror: bool
 
 func _get_colors():
 	if mirror:

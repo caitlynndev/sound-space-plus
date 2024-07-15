@@ -1,14 +1,14 @@
 extends SpinBox
 
 func _on_Scale_value_changed(value):
-	var resolution = OS.window_size
-	if OS.window_fullscreen: resolution = OS.get_screen_size()
+	var resolution = get_window().size
+	if ((get_window().mode == Window.MODE_EXCLUSIVE_FULLSCREEN) or (get_window().mode == Window.MODE_FULLSCREEN)): resolution = DisplayServer.screen_get_size()
 	Rhythia.render_scale = value
 	get_tree().set_screen_stretch(SceneTree.STRETCH_MODE_VIEWPORT, SceneTree.STRETCH_ASPECT_IGNORE, resolution * value)
 
 func viewport_size_changed():
-	var resolution = OS.window_size
-	if OS.window_fullscreen: resolution = OS.get_screen_size()
+	var resolution = get_window().size
+	if ((get_window().mode == Window.MODE_EXCLUSIVE_FULLSCREEN) or (get_window().mode == Window.MODE_FULLSCREEN)): resolution = DisplayServer.screen_get_size()
 	get_tree().set_screen_stretch(SceneTree.STRETCH_MODE_VIEWPORT, SceneTree.STRETCH_ASPECT_IGNORE, resolution * Rhythia.render_scale)
 	
 # func _ready():

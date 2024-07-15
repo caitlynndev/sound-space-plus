@@ -1,10 +1,10 @@
 [gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://assets/worlds/neon_tunnel/neon_tunnel.gd" type="Script" id=1]
-[ext_resource path="res://assets/worlds/neon_tunnel/ring.png" type="Texture" id=2]
+[ext_resource path="res://assets/worlds/neon_tunnel/ring.png" type="Texture2D" id=2]
 [ext_resource path="res://assets/worlds/neon_tunnel/ring.gd" type="Script" id=3]
 
-[sub_resource type="SpatialMaterial" id=1]
+[sub_resource type="StandardMaterial3D" id=1]
 flags_transparent = true
 flags_unshaded = true
 params_cull_mode = 2
@@ -35,88 +35,88 @@ fog_height_curve = 0.68302
 material = SubResource( 1 )
 size = Vector2( 8, 8 )
 
-[node name="Space" type="Spatial"]
+[node name="Space" type="Node3D"]
 script = ExtResource( 1 )
 mat = SubResource( 1 )
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource( 2 )
 
-[node name="Rings" type="Spatial" parent="."]
+[node name="Rings" type="Node3D" parent="."]
 
-[node name="1" type="MeshInstance" parent="Rings"]
+[node name="1" type="MeshInstance3D" parent="Rings"]
 cast_shadow = 0
 mesh = SubResource( 3 )
 script = ExtResource( 3 )
 
-[node name="2" type="MeshInstance" parent="Rings"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7.5 )
+[node name="2" type="MeshInstance3D" parent="Rings"]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7.5 )
 cast_shadow = 0
 mesh = SubResource( 3 )
 script = ExtResource( 3 )
 
-[node name="3" type="MeshInstance" parent="Rings"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -15 )
+[node name="3" type="MeshInstance3D" parent="Rings"]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -15 )
 cast_shadow = 0
 mesh = SubResource( 3 )
 script = ExtResource( 3 )
 
-[node name="4" type="MeshInstance" parent="Rings"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -22.5 )
+[node name="4" type="MeshInstance3D" parent="Rings"]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -22.5 )
 cast_shadow = 0
 mesh = SubResource( 3 )
 script = ExtResource( 3 )
 
-[node name="5" type="MeshInstance" parent="Rings"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -30 )
+[node name="5" type="MeshInstance3D" parent="Rings"]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -30 )
 cast_shadow = 0
 mesh = SubResource( 3 )
 script = ExtResource( 3 )
 
-[node name="6" type="MeshInstance" parent="Rings"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -37.5 )
+[node name="6" type="MeshInstance3D" parent="Rings"]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -37.5 )
 cast_shadow = 0
 mesh = SubResource( 3 )
 script = ExtResource( 3 )
 
-[node name="7" type="MeshInstance" parent="Rings"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -45 )
+[node name="7" type="MeshInstance3D" parent="Rings"]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -45 )
 cast_shadow = 0
 mesh = SubResource( 3 )
 script = ExtResource( 3 )
 
-[node name="9" type="MeshInstance" parent="Rings"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.5 )
+[node name="9" type="MeshInstance3D" parent="Rings"]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.5 )
 cast_shadow = 0
 mesh = SubResource( 3 )
 script = ExtResource( 3 )
 
-[node name="10" type="MeshInstance" parent="Rings"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15 )
+[node name="10" type="MeshInstance3D" parent="Rings"]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15 )
 cast_shadow = 0
 mesh = SubResource( 3 )
 script = ExtResource( 3 )
 
-[node name="11" type="MeshInstance" parent="Rings"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 22.5 )
+[node name="11" type="MeshInstance3D" parent="Rings"]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 22.5 )
 cast_shadow = 0
 mesh = SubResource( 3 )
 script = ExtResource( 3 )
 
-[node name="12" type="MeshInstance" parent="Rings"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 30 )
+[node name="12" type="MeshInstance3D" parent="Rings"]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 30 )
 cast_shadow = 0
 mesh = SubResource( 3 )
 script = ExtResource( 3 )
 
-[node name="13" type="MeshInstance" parent="Rings"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 37.5 )
+[node name="13" type="MeshInstance3D" parent="Rings"]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 37.5 )
 cast_shadow = 0
 mesh = SubResource( 3 )
 script = ExtResource( 3 )
 
-[node name="14" type="MeshInstance" parent="Rings"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 45 )
+[node name="14" type="MeshInstance3D" parent="Rings"]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 45 )
 cast_shadow = 0
 mesh = SubResource( 3 )
 script = ExtResource( 3 )

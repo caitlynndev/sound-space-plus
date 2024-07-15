@@ -1,15 +1,15 @@
 extends Button
-var dir:Directory = Directory.new()
+var dir:DirAccess = DirAccess.new()
 
-export(String) var target = "cursor"
-export(Texture) var default_image
+@export var target: String = "cursor"
+@export var default_image: Texture2D
 
 enum KIND {
 	IMAGE
 	SOUND
 }
 
-export(KIND) var kind = KIND.IMAGE
+@export var kind: KIND = KIND.IMAGE
 
 var copy_old_from:String
 
@@ -26,7 +26,7 @@ func load_img():
 		$Clear.disabled = true
 
 func rename_old(ext:String):
-	var dt = OS.get_datetime()
+	var dt = Time.get_datetime_dict_from_system()
 	copy_old_from = Globals.p("user://%s.%s" % [target,ext])
 	Globals.file_sel.save_file(
 		self,
@@ -47,14 +47,14 @@ func reset_to_default():
 				{ text = "OK", wait = 2 }
 			]
 		)
-		var response:int = yield(Globals.confirm_prompt,"option_selected")
+		var response:int = await Globals.confirm_prompt.option_selected
 		while response == 1:
 			if dir.file_exists(Globals.p("user://%s.png" % target)): rename_old("png")
 			elif dir.file_exists(Globals.p("user://%s.jpg" % target)): rename_old("jpg")
 			elif dir.file_exists(Globals.p("user://%s.jpeg" % target)): rename_old("jpeg")
 			elif dir.file_exists(Globals.p("user://%s.webp" % target)): rename_old("webp")
 			elif dir.file_exists(Globals.p("user://%s.bmp" % target)): rename_old("bmp")
-			response = yield(Globals.confirm_prompt,"option_selected")
+			response = await Globals.confirm_prompt.option_selected
 		if response == 2:
 			if dir.file_exists(Globals.p("user://%s.png" % target)): dir.remove(Globals.p("user://%s.png" % target))
 			elif dir.file_exists(Globals.p("user://%s.jpg" % target)): dir.remove(Globals.p("user://%s.jpg" % target))
@@ -63,7 +63,7 @@ func reset_to_default():
 			elif dir.file_exists(Globals.p("user://%s.bmp" % target)): dir.remove(Globals.p("user://%s.bmp" % target))
 			
 			load_img()
-		else: print("cancelled")
+		else: print("canceled")
 		Globals.confirm_prompt.close()
 	else:
 		pass
@@ -80,14 +80,14 @@ func sel(files:Array):
 					{ text = "OK", wait = 2 }
 				]
 			)
-			var response:int = yield(Globals.confirm_prompt,"option_selected")
+			var response:int = await Globals.confirm_prompt.option_selected
 			while response == 1:
 				if dir.file_exists(Globals.p("user://%s.png" % target)): rename_old("png")
 				elif dir.file_exists(Globals.p("user://%s.jpg" % target)): rename_old("jpg")
 				elif dir.file_exists(Globals.p("user://%s.jpeg" % target)): rename_old("jpeg")
 				elif dir.file_exists(Globals.p("user://%s.webp" % target)): rename_old("webp")
 				elif dir.file_exists(Globals.p("user://%s.bmp" % target)): rename_old("bmp")
-				response = yield(Globals.confirm_prompt,"option_selected")
+				response = await Globals.confirm_prompt.option_selected
 			if response == 2:			
 				if dir.file_exists(Globals.p("user://%s.png" % target)): dir.remove(Globals.p("user://%s.png" % target))
 				elif dir.file_exists(Globals.p("user://%s.jpg" % target)): dir.remove(Globals.p("user://%s.jpg" % target))
@@ -98,17 +98,17 @@ func sel(files:Array):
 				dir.copy(files[0],Globals.p("user://%s.%s" % [target,files[0].get_extension()]))
 				
 				load_img()
-			else: print("cancelled")
+			else: print("canceled")
 			Globals.confirm_prompt.close()
 		else:
 			pass
 
 func _pressed():
 	if kind == KIND.IMAGE:
-		Globals.file_sel.open_file(self,"sel",PoolStringArray(["*.png, *.jpg, *.jpeg, *.webp, *.bmp ; Image files"]))
+		Globals.file_sel.open_file(self,"sel",PackedStringArray(["*.png, *.jpg, *.jpeg, *.webp, *.bmp ; Image files"]))
 
 func _ready():
-	$Clear.connect("pressed",self,"reset_to_default")
+	$Clear.connect("pressed", Callable(self, "reset_to_default"))
 	if kind == KIND.IMAGE:
 		$ImgPreview.visible = true
 		load_img()

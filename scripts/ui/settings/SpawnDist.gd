@@ -7,5 +7,5 @@ func _process(_d):
 	if value != Rhythia.spawn_distance: upd()
 
 func _ready():
-	connect("changed",self,"upd")
+	connect("changed", Callable(self, "upd"))
 	value = Rhythia.spawn_distance

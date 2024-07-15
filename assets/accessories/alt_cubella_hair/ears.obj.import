@@ -1,20 +1,22 @@
 [remap]
 
 importer="wavefront_obj"
+importer_version=1
 type="Mesh"
-path="res://.import/ears.obj-30772b8bf9186f0c2c723ede1810d521.mesh"
+uid="uid://2fitcp46tkt4"
+path="res://.godot/imported/ears.obj-30772b8bf9186f0c2c723ede1810d521.mesh"
 
 [deps]
 
-files=[ "res://.import/ears.obj-30772b8bf9186f0c2c723ede1810d521.mesh" ]
+files=["res://.godot/imported/ears.obj-30772b8bf9186f0c2c723ede1810d521.mesh"]
 
 source_file="res://assets/accessories/alt_cubella_hair/ears.obj"
-dest_files=[ "res://.import/ears.obj-30772b8bf9186f0c2c723ede1810d521.mesh", "res://.import/ears.obj-30772b8bf9186f0c2c723ede1810d521.mesh" ]
+dest_files=["res://.godot/imported/ears.obj-30772b8bf9186f0c2c723ede1810d521.mesh", "res://.godot/imported/ears.obj-30772b8bf9186f0c2c723ede1810d521.mesh"]
 
 [params]
 
 generate_tangents=true
-scale_mesh=Vector3( 1, 1, 1 )
-offset_mesh=Vector3( 0, 0, 0 )
-octahedral_compression=true
-optimize_mesh_flags=4286
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

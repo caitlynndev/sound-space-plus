@@ -6,7 +6,7 @@ var dance:DanceMover
 var ms:float = -1000
 var active:bool = false
 
-var last_usec = OS.get_ticks_usec()
+var last_usec = Time.get_ticks_usec()
 
 func comma_sep(number:float) -> String:
 	var string = str(number)
@@ -45,9 +45,9 @@ func update_cursor():
 	]
 
 func _process(delta:float):
-	var u = OS.get_ticks_usec()
+	var u = Time.get_ticks_usec()
 	delta = float(u - last_usec) / 1_000_000.0
-	last_usec = OS.get_ticks_usec()
+	last_usec = Time.get_ticks_usec()
 	if active:
 		ms += delta*1000.0*Globals.speed_multi[Rhythia.mod_speed_level]
 		update_cursor()
@@ -112,12 +112,12 @@ func _ready():
 	dance = DirectionalDanceMover.new(song)
 	update_cursor()
 	
-	yield($Buttons/StartStop/H/Start,"pressed")
+	await $Buttons/StartStop/H/Start.pressed
 	$Buttons/StartStop/H/Start.disabled = true
 	$Buttons/StartStop/H/Stop.disabled = false
 	active = true
 	
-	$Buttons/StartStop/H/Start.connect("pressed",self,"set_playing",[true])
-	$Buttons/StartStop/H/Stop.connect("pressed",self,"set_playing",[true])
-	$Buttons/Seek/H/Seek.connect("pressed",self,"direct_seek")
-	$Time.connect("value_changed",self,"timebar_seek")
+	$Buttons/StartStop/H/Start.connect("pressed", Callable(self, "set_playing").bind(true))
+	$Buttons/StartStop/H/Stop.connect("pressed", Callable(self, "set_playing").bind(true))
+	$Buttons/Seek/H/Seek.connect("pressed", Callable(self, "direct_seek"))
+	$Time.connect("value_changed", Callable(self, "timebar_seek"))

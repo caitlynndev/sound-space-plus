@@ -8,4 +8,4 @@ func upd(): pressed = Rhythia.mod_flashlight
 
 func _ready():
 	upd()
-	Rhythia.connect("mods_changed",self,"upd")
+	Rhythia.connect("mods_changed", Callable(self, "upd"))

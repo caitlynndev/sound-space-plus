@@ -28,5 +28,5 @@ func on_model_selected(model:int):
 func _ready():
 	for i in range(names.size()):
 		get_popup().add_check_item(names[i],i)
-	get_popup().connect("id_pressed",self,"on_pressed")
+	get_popup().connect("id_pressed", Callable(self, "on_pressed"))
 	on_model_selected(Rhythia.health_model)

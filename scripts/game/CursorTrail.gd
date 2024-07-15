@@ -1,14 +1,14 @@
-extends Spatial
+extends Node3D
 
 signal cache_me
 
-export(float) var offset = 0
+@export var offset: float = 0
 
 var started:bool = false
 var t:float = 0
 
-onready var cursor = get_node("../Spawn/Cursor")
-onready var cursormesh = get_node("../Spawn/Cursor/Mesh")
+@onready var cursor = get_node("../Spawn/Cursor")
+@onready var cursormesh = get_node("../Spawn/Cursor/Mesh")
 
 var last_origin = Vector3(-100,0,0)
 var before
@@ -63,7 +63,7 @@ var init_done:bool = false
 func init():
 	if init_done: return
 	init_done = true
-	var mat:SpatialMaterial = $Mesh.get("material/0").duplicate()
+	var mat:StandardMaterial3D = $Mesh.get("material/0").duplicate()
 	$Mesh.scale = Vector3(0,1,0)
 	if not Rhythia.trail_mode_scale:
 		$Mesh.scale = Vector3(Rhythia.cursor_scale,1,Rhythia.cursor_scale)

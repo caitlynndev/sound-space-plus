@@ -1,13 +1,13 @@
 extends CheckBox
 
-export(String) var target
+@export var target: String
 
 func upd():
 #	print('scb "%s"' % name)
 	pressed = Rhythia.get(target)
 	
 func _pressed():
-	var a = OS.get_ticks_usec()
+	var a = Time.get_ticks_usec()
 #	print('scb "%s" press' % name)
 	if pressed != Rhythia.get(target):
 		Rhythia.set(target,pressed)

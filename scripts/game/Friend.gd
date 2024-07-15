@@ -1,9 +1,9 @@
-extends MeshInstance
+extends MeshInstance3D
 
 var failed = false
 
-onready var Game = get_node("../..")
-onready var Spawn = get_node("..")
+@onready var Game = get_node("../..")
+@onready var Spawn = get_node("..")
 
 func does_state_apply(state:String):
 	var hp = Game.energy

@@ -1,20 +1,22 @@
 [remap]
 
 importer="wavefront_obj"
+importer_version=1
 type="Mesh"
-path="res://.import/alt_mouth.obj-f248f70123f71cd2e56b20d1dcc493f3.mesh"
+uid="uid://cs4xqljn4iebd"
+path="res://.godot/imported/alt_mouth.obj-f248f70123f71cd2e56b20d1dcc493f3.mesh"
 
 [deps]
 
-files=[ "res://.import/alt_mouth.obj-f248f70123f71cd2e56b20d1dcc493f3.mesh" ]
+files=["res://.godot/imported/alt_mouth.obj-f248f70123f71cd2e56b20d1dcc493f3.mesh"]
 
 source_file="res://assets/accessories/cubella_hair/alt_mouth.obj"
-dest_files=[ "res://.import/alt_mouth.obj-f248f70123f71cd2e56b20d1dcc493f3.mesh", "res://.import/alt_mouth.obj-f248f70123f71cd2e56b20d1dcc493f3.mesh" ]
+dest_files=["res://.godot/imported/alt_mouth.obj-f248f70123f71cd2e56b20d1dcc493f3.mesh", "res://.godot/imported/alt_mouth.obj-f248f70123f71cd2e56b20d1dcc493f3.mesh"]
 
 [params]
 
 generate_tangents=true
-scale_mesh=Vector3( 1, 1, 1 )
-offset_mesh=Vector3( 0, 0, 0 )
-octahedral_compression=true
-optimize_mesh_flags=4286
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

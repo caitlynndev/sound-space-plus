@@ -1,6 +1,6 @@
 extends SpinBox
 
-export(String) var target
+@export var target: String
 
 func upd():
 	Rhythia.set(target,value)
@@ -10,4 +10,4 @@ func _process(_d):
 	
 func _ready():
 	value = Rhythia.get(target)
-	connect("changed",self,"upd")
+	connect("changed", Callable(self, "upd"))

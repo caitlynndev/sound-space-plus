@@ -50,12 +50,12 @@ func update_letter_grade(acc:float=0):
 		gcol = Color("#ff8282")
 	
 	$LetterGrade.text = grade
-	$LetterGrade.material.set_shader_param("shine",shine)
-	$LetterGrade.set("custom_colors/font_color",gcol)
+	$LetterGrade.material.set_shader_parameter("shine",shine)
+	$LetterGrade.set("theme_override_colors/font_color",gcol)
 
 func _process(delta):
 	if rainbow_letter_grade:
-		$LetterGrade.set("custom_colors/font_color",Color.from_hsv(Rhythia.rainbow_t*0.1,0.4,1))
+		$LetterGrade.set("theme_override_colors/font_color",Color.from_hsv(Rhythia.rainbow_t*0.1,0.4,1))
 
 func _ready():
 	$NewBest.stream = Rhythia.pb_snd
@@ -68,11 +68,11 @@ func _ready():
 		if Rhythia.was_replay: $Result.text = "Replay passed"
 		elif is_best: $Result.text = "New best!"
 		else: $Result.text = "You passed!"
-		$Result.set("custom_colors/font_color",Color("#6ff1ff"))
+		$Result.set("theme_override_colors/font_color",Color("#6ff1ff"))
 	elif Rhythia.was_replay: $Result.text = "Replay failed"
 	elif is_best:
 		$Result.text = "You failed (new best!)"
-		$Result.set("custom_colors/font_color",Color("#ea4aca"))
+		$Result.set("theme_override_colors/font_color",Color("#ea4aca"))
 	else: $Result.text = "You failed!"
 	
 	

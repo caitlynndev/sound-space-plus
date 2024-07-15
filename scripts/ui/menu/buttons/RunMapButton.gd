@@ -5,7 +5,7 @@ signal lock_type
 var has_been_pressed:bool = false
 var detected_controllers = Input.get_connected_joypads().size()
 
-func files_dropped(files:PoolStringArray,_screen:int):
+func files_dropped(files:PackedStringArray,_screen:int):
 	if has_been_pressed: return
 	if files.size() == 1 and files[0].get_extension() == "sspre":
 		has_been_pressed = true
@@ -13,8 +13,8 @@ func files_dropped(files:PoolStringArray,_screen:int):
 		Rhythia.replaying = true
 		Rhythia.replay_path = files[0]
 		get_viewport().get_node("Menu").black_fade_target = true
-		yield(get_tree().create_timer(0.35),"timeout")
-		get_tree().change_scene("res://scenes/loaders/songload.tscn")
+		await get_tree().create_timer(0.35).timeout
+		get_tree().change_scene_to_file("res://scenes/loaders/songload.tscn")
 	else:
 		var song
 		for file in files:
@@ -35,8 +35,8 @@ func files_dropped(files:PoolStringArray,_screen:int):
 
 func _input(event:InputEvent):
 	if not is_visible_in_tree(): return
-	if get_focus_owner() == $"/root/Menu/Main/Maps/MapRegistry/T/Search": return
-	if get_focus_owner() == $"/root/Menu/Main/Maps/MapRegistry/T/AuthorSearch": return
+	if get_viewport().gui_get_focus_owner() == $"/root/Menu/Main/Maps/MapRegistry/T/Search": return
+	if get_viewport().gui_get_focus_owner() == $"/root/Menu/Main/Maps/MapRegistry/T/AuthorSearch": return
 	if get_viewport().get_node("Menu/Main/Maps/Results").visible == true:
 		if !disabled && !has_been_pressed && event is InputEventJoypadButton:
 			if event.button_index == JOY_XBOX_A && event.pressed:
@@ -44,7 +44,7 @@ func _input(event:InputEvent):
 				grab_click_focus()
 				pressed = true
 		if !disabled && !has_been_pressed && event is InputEventKey:
-			if event.pressed and event.scancode == KEY_SPACE:
+			if event.pressed and event.keycode == KEY_SPACE:
 				grab_focus()
 				grab_click_focus()
 				pressed = true
@@ -60,21 +60,21 @@ func _pressed():
 		var sel = 1
 		Globals.confirm_prompt.s_alert.play()
 		Globals.confirm_prompt.open("A controller or joypad was detected.\nWould you like to play the song with it?\n\n(Connected controllers may cause your cursor to not work when using your mouse!)","Possible controller detected",[{text="No"},{text="Yes",wait=2}])
-		sel = yield(Globals.confirm_prompt,"option_selected")
+		sel = await Globals.confirm_prompt.option_selected
 		Globals.confirm_prompt.s_next.play()
 		Globals.confirm_prompt.close()
-		yield(Globals.confirm_prompt,"done_closing")
+		await Globals.confirm_prompt.done_closing
 		if bool(sel):
 			Rhythia.ignore_controller_detection = true
 			has_been_pressed = true
 			get_viewport().get_node("Menu").black_fade_target = true
-			yield(get_tree().create_timer(0.35),"timeout")
-			get_tree().change_scene("res://scenes/loaders/songload.tscn")
+			await get_tree().create_timer(0.35).timeout
+			get_tree().change_scene_to_file("res://scenes/loaders/songload.tscn")
 			return
 	else:
 		get_viewport().get_node("Menu").black_fade_target = true
-		yield(get_tree().create_timer(0.35),"timeout")
-		get_tree().change_scene("res://scenes/loaders/songload.tscn")
+		await get_tree().create_timer(0.35).timeout
+		get_tree().change_scene_to_file("res://scenes/loaders/songload.tscn")
 
 	# Debug printing
 #	print("Connected controllers:\n")
@@ -82,4 +82,4 @@ func _pressed():
 #	print("\n\n\n\n")
 
 func _ready():
-	get_tree().connect("files_dropped",self,"files_dropped")
+	get_tree().connect("files_dropped", Callable(self, "files_dropped"))

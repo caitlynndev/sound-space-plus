@@ -31,7 +31,7 @@ var EndY:float
 func T(time:float) -> float:
 	return abs(time - StartTime) / max(Duration,0.01)
 
-var notes:PoolVector3Array = PoolVector3Array()
+var notes:PackedVector3Array = PackedVector3Array()
 
 func _init(song:Song):
 	for n in song.read_notes():

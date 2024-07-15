@@ -50,19 +50,19 @@ func update_letter_grade(acc:float=0):
 		gcol = Color("#ff8282")
 	
 	$LetterGrade.text = grade
-	$LetterGrade.material.set_shader_param("shine",shine)
-	$LetterGrade.set("custom_colors/font_color",gcol)
+	$LetterGrade.material.set_shader_parameter("shine",shine)
+	$LetterGrade.set("theme_override_colors/font_color",gcol)
 	
 	# make gcol more transparent
 	gcol.a = 0.1
 	$LetterGrade2.text = grade
-	$LetterGrade2.set("custom_colors/font_color",gcol)
+	$LetterGrade2.set("theme_override_colors/font_color",gcol)
 	
 
 func _process(delta):
 	if rainbow_letter_grade:
-		$LetterGrade.set("custom_colors/font_color",Color.from_hsv(Rhythia.rainbow_t*0.1,0.4,1))
-		$LetterGrade2.set("custom_colors/font_color",Color.from_hsv(Rhythia.rainbow_t*0.1,0.4,0.1))
+		$LetterGrade.set("theme_override_colors/font_color",Color.from_hsv(Rhythia.rainbow_t*0.1,0.4,1))
+		$LetterGrade2.set("theme_override_colors/font_color",Color.from_hsv(Rhythia.rainbow_t*0.1,0.4,0.1))
 
 func show_pb(_s=null):
 	if Rhythia.selected_song != null:
@@ -72,10 +72,10 @@ func show_pb(_s=null):
 			var misses = pb.total_notes - pb.hit_notes
 			if pb.has_passed:
 				$Result.text = "Personal Best"
-				$Result.set("custom_colors/font_color",Color("#6ff1ff"))
+				$Result.set("theme_override_colors/font_color",Color("#6ff1ff"))
 			else:
 				$Result.text = "Best Attempt"
-				$Result.set("custom_colors/font_color",Color("#ea4aca"))
+				$Result.set("theme_override_colors/font_color",Color("#ea4aca"))
 			
 			$FullCombo.visible = misses == 0 && pb.has_passed
 			$Misses.visible = !misses == 0 || !pb.has_passed
@@ -105,9 +105,9 @@ func show_pb(_s=null):
 			$LetterGrade.text = "-"
 			$LetterGrade2.text = ""
 			rainbow_letter_grade = false
-			$LetterGrade.set("custom_colors/font_color",Color(1,1,1))
-			$LetterGrade.material.set_shader_param("shine",0)
-			$Result.set("custom_colors/font_color",Color("#ffdd99"))
+			$LetterGrade.set("theme_override_colors/font_color",Color(1,1,1))
+			$LetterGrade.material.set_shader_parameter("shine",0)
+			$Result.set("theme_override_colors/font_color",Color("#ffdd99"))
 			$FullCombo.visible = false
 			$Misses.visible = true
 			$Misses.text = "-"
@@ -119,9 +119,9 @@ func show_pb(_s=null):
 			$MaxCombo.text = "-\n"
 
 func _ready():
-	Rhythia.connect("selected_song_changed",self,"show_pb")
-	Rhythia.connect("mods_changed",self,"show_pb")
-	yield(Rhythia,"map_list_ready")
+	Rhythia.connect("selected_song_changed", Callable(self, "show_pb"))
+	Rhythia.connect("mods_changed", Callable(self, "show_pb"))
+	await Rhythia.map_list_ready
 	if !Rhythia.selected_song: return
 	$NewBest.stream = Rhythia.pb_snd
 	if $NewBest.stream != Rhythia.normal_pb_sound:
@@ -134,11 +134,11 @@ func _ready():
 			if Rhythia.was_replay: $Result.text = "Replay passed"
 			elif is_best: $Result.text = "New best!"
 			else: $Result.text = "You passed!"
-			$Result.set("custom_colors/font_color",Color("#6ff1ff"))
+			$Result.set("theme_override_colors/font_color",Color("#6ff1ff"))
 		elif Rhythia.was_replay: $Result.text = "Replay failed"
 		elif is_best:
 			$Result.text = "You failed (new best!)"
-			$Result.set("custom_colors/font_color",Color("#ea4aca"))
+			$Result.set("theme_override_colors/font_color",Color("#ea4aca"))
 		else: $Result.text = "You failed!"
 		
 		

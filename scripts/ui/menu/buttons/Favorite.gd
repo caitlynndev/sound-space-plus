@@ -19,6 +19,6 @@ func upd(_s=null):
 		disabled = true
 
 func _ready():
-	Rhythia.connect("selected_song_changed",self,"upd")
-	Rhythia.connect("favorite_songs_changed",self,"upd")
+	Rhythia.connect("selected_song_changed", Callable(self, "upd"))
+	Rhythia.connect("favorite_songs_changed", Callable(self, "upd"))
 	upd()

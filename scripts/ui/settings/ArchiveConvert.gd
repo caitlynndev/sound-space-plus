@@ -1,6 +1,6 @@
 extends Button
 
-var dir:Directory = Directory.new()
+var dir:DirAccess = DirAccess.new()
 
 var confirm:bool = false
 
@@ -10,12 +10,12 @@ func _pressed():
 		OS.shell_open(ProjectSettings.globalize_path(Globals.p("user://packs")))
 	elif confirm:
 		Rhythia.do_archive_convert = true
-		get_tree().change_scene("res://scenes/init.tscn")
+		get_tree().change_scene_to_file("res://scenes/init.tscn")
 	else:
 		confirm = true
 		text = "8 GB space required. Continue?"
 		disabled = true
-		yield(get_tree().create_timer(0.5),"timeout")
+		await get_tree().create_timer(0.5).timeout
 		disabled = false
 
 func _ready():

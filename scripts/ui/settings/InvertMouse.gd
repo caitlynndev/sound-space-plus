@@ -8,4 +8,4 @@ func upd(): pressed = Rhythia.invert_mouse
 
 func _ready():
 	upd()
-	Rhythia.connect("mods_changed",self,"upd")
+	Rhythia.connect("mods_changed", Callable(self, "upd"))

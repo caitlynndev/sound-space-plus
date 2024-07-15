@@ -9,13 +9,13 @@ func item_selected(idx:int):
 			disabled = true
 			text = "Updated difficulty!"
 			Rhythia.emit_signal("favorite_songs_changed") # Force a map list reload
-			yield(get_tree().create_timer(0.75),"timeout")
+			await get_tree().create_timer(0.75).timeout
 			text = "Change Difficulty"
 			disabled = false
 		else:
 			disabled = true
 			text = "Failed"
-			yield(get_tree().create_timer(0.75),"timeout")
+			await get_tree().create_timer(0.75).timeout
 			text = "Change Difficulty"
 			disabled = false
 
@@ -29,12 +29,12 @@ func upd(_s=null):
 #	set_item_text(0,"None")
 
 func _ready():
-	Rhythia.connect("selected_song_changed",self,"upd")
+	Rhythia.connect("selected_song_changed", Callable(self, "upd"))
 	add_item("N/A",0)
 	add_item("Easy",1)
 	add_item("Medium",2)
 	add_item("Hard",3)
 	add_item("Logic?",4)
 	add_item("助",5)
-	connect("item_selected",self,"item_selected")
+	connect("item_selected", Callable(self, "item_selected"))
 	text = "Change Difficulty"

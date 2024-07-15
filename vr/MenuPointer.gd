@@ -1,7 +1,7 @@
-extends Area
+extends Area3D
 
-onready var viewport:Viewport = get_node("Viewport")
-export(Vector2) var size
+@onready var viewport:SubViewport = get_node("SubViewport")
+@export var size: Vector2
 
 var last_screen_pos:Vector2 = Vector2(0,0)
 var active:bool = false # Cursor is on this screen
@@ -13,9 +13,9 @@ func _input(event:InputEvent):
 		elif event.is_action("vr_click"):
 			var ev:InputEventMouseButton = InputEventMouseButton.new()
 			ev.position = last_screen_pos
-			ev.button_index = BUTTON_LEFT
-			ev.button_mask = BUTTON_MASK_LEFT
-			ev.pressed = Input.is_action_pressed("vr_click")
+			ev.button_index = MOUSE_BUTTON_LEFT
+			ev.button_mask = MOUSE_BUTTON_MASK_LEFT
+			ev.button_pressed = Input.is_action_pressed("vr_click")
 			viewport.input(ev)
 
 func _process(delta):
@@ -24,7 +24,7 @@ func _process(delta):
 		# Cursor
 		var p = Rhythia.vr_player.primary_ray.get_collision_point()
 		
-		var lp3 = global_transform.xform_inv(p)
+		var lp3 = (p) * global_transform
 		var local_pos = Vector2(lp3.x,lp3.y)
 		var percent = Vector2(
 			clamp((local_pos.x + (size.x/2.0)) / size.x,  0,1),

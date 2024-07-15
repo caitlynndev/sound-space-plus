@@ -1,6 +1,6 @@
 extends GridContainer
 
-onready var base = $Color
+@onready var base = $Color
 
 var btns = {}
 
@@ -11,7 +11,7 @@ func upd(_c=null):
 		if v: btns[k].self_modulate = Color(1,1,1)
 		else: btns[k].self_modulate = Color(0.5,0.5,0.5)
 
-func col(): columns = rect_size.x / 100
+func col(): columns = size.x / 100
 
 func _ready():
 	for cs in Rhythia.registry_colorset.items:
@@ -23,7 +23,7 @@ func _ready():
 		var color_count = set.real_colors.size()
 		var sel = btn.get_node("Select")
 		btn.get_node("Mirror").visible = set.mirror
-		sel.hint_tooltip = set.name + "\nby " + set.creator
+		sel.tooltip_text = set.name + "\nby " + set.creator
 		
 		var color_grid = btn.get_node("Colors")
 		var col_template = btn.get_node("Colors/T")
@@ -43,10 +43,10 @@ func _ready():
 #		color_grid.set("custom_constants/vseparation",even_v+1)
 #		color_grid.set("custom_constants/vseparation",even_h+1)
 		
-		sel.connect("pressed",Rhythia,"select_colorset",[cs])
+		sel.connect("pressed", Callable(Rhythia, "select_colorset").bind(cs))
 		btns[cs] = btn
 		call_deferred("add_child",btn)
 	upd()
-	Rhythia.connect("selected_colorset_changed",self,"upd")
-	connect("resized",self,"col")
+	Rhythia.connect("selected_colorset_changed", Callable(self, "upd"))
+	connect("resized", Callable(self, "col"))
 	col()

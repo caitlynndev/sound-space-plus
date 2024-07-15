@@ -45,4 +45,4 @@ func _ready():
 		if current_sel == i:
 			get_popup().set_item_checked(i,true)
 			text = presets[i].name
-	get_popup().connect("id_pressed",self,"on_pressed")
+	get_popup().connect("id_pressed", Callable(self, "on_pressed"))

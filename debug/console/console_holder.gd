@@ -1,7 +1,7 @@
 extends Node
 
-onready var rootg = get_tree().root
-onready var real_console = $ConsoleWindow
+@onready var rootg = get_tree().root
+@onready var real_console = $ConsoleWindow
 #var fake_consoles = []
 
 #func _process(delta):
@@ -29,6 +29,6 @@ func close():
 #func _process(delta): raise()
 
 func _ready():
-	get_tree().connect("node_added",self,"ensure_console_is_in_world")
+	get_tree().connect("node_added", Callable(self, "ensure_console_is_in_world"))
 	call_deferred("raise")
 #	ensure_console_is_in_world(rootg.get_child(rootg.get_child_count()-1))

@@ -1,4 +1,4 @@
-extends MeshInstance
+extends MeshInstance3D
 
 var rot:Vector3 = Vector3()
 var boost:float = 0
@@ -7,7 +7,7 @@ func _ready():
 	var mat:ShaderMaterial = mesh.surface_get_material(0).duplicate()
 	mesh = mesh.duplicate()
 	mesh.surface_set_material(0,mat)
-	mat.set_shader_param("albedo",Color.firebrick * clamp((76 + global_transform.origin.z)/75,0.35,1))
+	mat.set_shader_parameter("albedo",Color.FIREBRICK * clamp((76 + global_transform.origin.z)/75,0.35,1))
 	rot = Vector3(randf(),randf(),randf()).normalized()
 	rotate(rot,randf())
 	# Shaders

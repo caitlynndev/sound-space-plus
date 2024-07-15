@@ -1,4 +1,4 @@
-extends Spatial
+extends Node3D
 
 var colors:Array = Rhythia.selected_colorset.colors
 
@@ -6,7 +6,7 @@ func hit(noteColor:Color):
 	pass
 
 func _ready():
-	get_parent().get_node("Game").connect("hit",self,"hit")
+	get_parent().get_node("Game").connect("hit", Callable(self, "hit"))
 	# Shaders
 	var env = get_node("WorldEnvironment").environment
 	if Rhythia.glow > 0:

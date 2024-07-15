@@ -8,4 +8,4 @@ func upd(): pressed = Rhythia.mod_mirror_y
 
 func _ready():
 	upd()
-	Rhythia.connect("mods_changed",self,"upd")
+	Rhythia.connect("mods_changed", Callable(self, "upd"))

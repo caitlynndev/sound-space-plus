@@ -10,9 +10,9 @@ func confirm(v:int):
 		if v == 1:
 			Globals.confirm_prompt.s_next.play()
 			Globals.confirm_prompt.close()
-			var dir:Directory = Directory.new()
+			var dir:DirAccess = DirAccess.new()
 			var res:int = dir.remove(Globals.p("user://settings.json"))
-			yield(Globals.confirm_prompt,"done_closing")
+			await Globals.confirm_prompt.done_closing
 			if res != OK and res != ERR_FILE_NOT_FOUND:
 				Globals.confirm_prompt.open(
 					"An error occurred while deleting your settings file. "+
@@ -30,11 +30,11 @@ func confirm(v:int):
 					"Success",
 					[{text="OK"}]
 				)
-				yield(Globals.confirm_prompt,"done_closing")
+				await Globals.confirm_prompt.done_closing
 				#get_node("../BlackFade").target = true
 				#yield(get_node("../BlackFade"),"done_fading")
 				Engine.target_fps = 0
-				get_tree().change_scene("res://scenes/init.tscn")
+				get_tree().change_scene_to_file("res://scenes/init.tscn")
 				return
 		else:
 			Globals.confirm_prompt.s_back.play()
@@ -45,4 +45,4 @@ func _pressed():
 	Globals.confirm_prompt.open("Are you sure you want to reset your settings?")
 
 func _ready():
-	Globals.confirm_prompt.connect("option_selected",self,"confirm")
+	Globals.confirm_prompt.connect("option_selected", Callable(self, "confirm"))

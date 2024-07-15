@@ -48,7 +48,7 @@ func upd(s=null):
 			if $Song.stream == Globals.error_sound:
 				has_auto_previewed = false
 				return
-			if ($Song.stream is AudioStreamMP3 or $Song.stream is AudioStreamOGGVorbis):
+			if ($Song.stream is AudioStreamMP3 or $Song.stream is AudioStreamOggVorbis):
 				$Song.stream.loop = true
 			$Song.pitch_scale = Globals.speed_multi[Rhythia.mod_speed_level]
 #			print(Rhythia.mod_speed_level)
@@ -62,14 +62,14 @@ func upd(s=null):
 		song = Rhythia.selected_song
 
 func _ready():
-	Rhythia.connect("selected_song_changed",self,"upd")
-	Rhythia.connect("speed_mod_changed",self,"upd")
-	Rhythia.connect("menu_music_state_changed",self,"upd_mm")
+	Rhythia.connect("selected_song_changed", Callable(self, "upd"))
+	Rhythia.connect("speed_mod_changed", Callable(self, "upd"))
+	Rhythia.connect("menu_music_state_changed", Callable(self, "upd_mm"))
 	$MenuSong.stream = Rhythia.get_stream_with_default("user://menu",load("res://assets/sfx/music/menu_loop.ogg"))
-	if $MenuSong.stream is AudioStreamSample: $MenuSong.stream.loop_mode = 1
+	if $MenuSong.stream is AudioStreamWAV: $MenuSong.stream.loop_mode = 1
 	else: $MenuSong.stream.loop = true
 	if Rhythia.play_menu_music:
-		yield(get_tree().create_timer(0.5),"timeout")
+		await get_tree().create_timer(0.5).timeout
 		if !$Song.playing:
 #			$MenuSong.volume_db = -45
 			$MenuSong.play()

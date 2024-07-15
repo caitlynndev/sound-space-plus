@@ -28,7 +28,7 @@ func _wait(_caller):
 
 
 func queue_resource(path, p_in_front = false):
-	if Input.is_key_pressed(KEY_CONTROL) and Input.is_key_pressed(KEY_P): return ERR_SKIP
+	if Input.is_key_pressed(KEY_CTRL) and Input.is_key_pressed(KEY_P): return ERR_SKIP
 	_lock("queue_resource")
 	if path in pending:
 		_unlock("queue_resource")
@@ -39,7 +39,7 @@ func queue_resource(path, p_in_front = false):
 		_unlock("queue_resource")
 		return OK
 	else:
-		var res = ResourceLoader.load_interactive(path)
+		var res = ResourceLoader.load_threaded_request(path)
 		if !res: return FAILED
 		res.set_meta("path", path)
 		if p_in_front:
@@ -55,7 +55,7 @@ func queue_resource(path, p_in_front = false):
 func cancel_resource(path):
 	_lock("cancel_resource")
 	if path in pending:
-		if pending[path] is ResourceInteractiveLoader:
+		if pending[path] is ResourceLoader:
 			queue.erase(pending[path])
 		pending.erase(path)
 	_unlock("cancel_resource")
@@ -65,7 +65,7 @@ func get_progress(path):
 	_lock("get_progress")
 	var ret = -1
 	if path in pending:
-		if pending[path] is ResourceInteractiveLoader:
+		if pending[path] is ResourceLoader:
 			ret = float(pending[path].get_stage()) / float(pending[path].get_stage_count())
 		else:
 			ret = 1.0
@@ -77,7 +77,7 @@ func is_ready(path):
 	var ret
 	_lock("is_ready")
 	if path in pending:
-		ret = !(pending[path] is ResourceInteractiveLoader)
+		ret = !(pending[path] is ResourceLoader)
 	else:
 		ret = false
 	_unlock("is_ready")
@@ -87,7 +87,7 @@ func is_ready(path):
 func _wait_for_resource(res, path):
 	_unlock("wait_for_resource")
 	while true:
-		VisualServer.sync()
+		RenderingServer.sync()
 		OS.delay_usec(16000) # Wait approximately 1 frame.
 		_lock("wait_for_resource")
 		if queue.size() == 0 || queue[0] != res:
@@ -98,7 +98,7 @@ func _wait_for_resource(res, path):
 func get_resource(path):
 	_lock("get_resource")
 	if path in pending:
-		if pending[path] is ResourceInteractiveLoader:
+		if pending[path] is ResourceLoader:
 			var res = pending[path]
 			if res != queue[0]:
 				var pos = queue.find(res)
@@ -157,7 +157,7 @@ func start():
 	mutex = Mutex.new()
 	semaphore = Semaphore.new()
 	thread = Thread.new()
-	thread.start(self, "thread_func", 0)
+	thread.start(Callable(self, "thread_func").bind(0))
 
 # Triggered by calling "get_tree().quit()".
 func _exit_tree():

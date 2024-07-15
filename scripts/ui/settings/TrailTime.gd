@@ -8,4 +8,4 @@ func _process(_d):
 
 func _ready():
 	value = float(str(Rhythia.trail_time))
-	connect("changed",self,"upd")
+	connect("changed", Callable(self, "upd"))

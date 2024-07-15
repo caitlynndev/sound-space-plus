@@ -23,23 +23,23 @@ var presets = [
 #	{ name = "Basil's Choice", cam = -7.2, ui = 0, grid = 0, spin = false, faraway = true },
 ]
 
-onready var cam = get_node("../../Parallax/Parallax")
-onready var ui = get_node("../../UIParallax/UIParallax")
-onready var grid = get_node("../../GridParallax/GridParallax")
-onready var spin = get_node("../../Spin")
-onready var faraway = get_node("../../FarawayHud")
+@onready var cam = get_node("../../Parallax/Parallax")
+@onready var ui = get_node("../../UIParallax/UIParallax")
+@onready var grid = get_node("../../GridParallax/GridParallax")
+@onready var spin = get_node("../../Spin")
+@onready var faraway = get_node("../../FarawayHud")
 
 func on_pressed(i):
 	var preset = presets[i]
 	cam.value = preset.cam
 	ui.value = preset.ui
 	grid.value = preset.grid
-	spin.pressed = preset.spin
+	spin.button_pressed = preset.spin
 	spin._pressed()
-	faraway.pressed = preset.faraway
+	faraway.button_pressed = preset.faraway
 	faraway._pressed()
 
 func _ready():
 	for i in range(presets.size()):
 		get_popup().add_item(presets[i].name,i)
-	get_popup().connect("id_pressed",self,"on_pressed")
+	get_popup().connect("id_pressed", Callable(self, "on_pressed"))

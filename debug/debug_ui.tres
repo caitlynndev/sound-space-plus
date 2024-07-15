@@ -1,7 +1,7 @@
 [gd_resource type="Theme" load_steps=29 format=2]
 
-[ext_resource path="res://assets/font/Roboto/Regular.ttf" type="DynamicFontData" id=1]
-[ext_resource path="res://assets/font/main.tres" type="DynamicFont" id=2]
+[ext_resource path="res://assets/font/Roboto/Regular.ttf" type="FontFile" id=1]
+[ext_resource path="res://assets/font/main.tres" type="FontFile" id=2]
 
 
 [sub_resource type="StyleBoxFlat" id=1]
@@ -94,7 +94,7 @@ content_margin_top = 5.0
 content_margin_bottom = 5.0
 bg_color = Color( 0.0509804, 0.0509804, 0.0509804, 0.784314 )
 
-[sub_resource type="DynamicFont" id=18]
+[sub_resource type="FontFile" id=18]
 size = 12
 font_data = ExtResource( 1 )
 
@@ -161,7 +161,7 @@ bg_color = Color( 0.05, 0.05, 0.05, 0.588235 )
 border_width_top = 20
 border_color = Color( 0.15, 0.15, 0.15, 1 )
 
-[sub_resource type="DynamicFont" id=26]
+[sub_resource type="FontFile" id=26]
 size = 14
 use_filter = true
 font_data = ExtResource( 1 )
@@ -381,7 +381,7 @@ OptionButton/styles/normal = SubResource( 15 )
 OptionButton/styles/pressed = SubResource( 16 )
 Panel/styles/panel = SubResource( 8 )
 PanelContainer/styles/panel = SubResource( 8 )
-PopupDialog/styles/panel = SubResource( 8 )
+Popup/styles/panel = SubResource( 8 )
 PopupMenu/colors/font_color = Color( 0.8, 0.8, 0.8, 1 )
 PopupMenu/colors/font_color_accel = Color( 0, 0, 0, 1 )
 PopupMenu/colors/font_color_disabled = Color( 0.4, 0.4, 0.4, 1 )
@@ -444,25 +444,25 @@ TabContainer/styles/panel = SubResource( 20 )
 TabContainer/styles/tab_bg = SubResource( 21 )
 TabContainer/styles/tab_disabled = SubResource( 22 )
 TabContainer/styles/tab_fg = SubResource( 23 )
-Tabs/colors/font_color_bg = Color( 0, 0, 0, 1 )
-Tabs/colors/font_color_disabled = Color( 0, 0, 0, 1 )
-Tabs/colors/font_color_fg = Color( 0, 0, 0, 1 )
-Tabs/constants/hseparation = 4
-Tabs/constants/label_valign_bg = 2
-Tabs/constants/label_valign_fg = 0
-Tabs/constants/top_margin = 24
-Tabs/fonts/font = null
-Tabs/icons/close = null
-Tabs/icons/decrement = null
-Tabs/icons/decrement_highlight = null
-Tabs/icons/increment = null
-Tabs/icons/increment_highlight = null
-Tabs/styles/button = null
-Tabs/styles/button_pressed = null
-Tabs/styles/panel = null
-Tabs/styles/tab_bg = SubResource( 4 )
-Tabs/styles/tab_disabled = SubResource( 1 )
-Tabs/styles/tab_fg = SubResource( 4 )
+TabBar/colors/font_color_bg = Color( 0, 0, 0, 1 )
+TabBar/colors/font_color_disabled = Color( 0, 0, 0, 1 )
+TabBar/colors/font_color_fg = Color( 0, 0, 0, 1 )
+TabBar/constants/hseparation = 4
+TabBar/constants/label_valign_bg = 2
+TabBar/constants/label_valign_fg = 0
+TabBar/constants/top_margin = 24
+TabBar/fonts/font = null
+TabBar/icons/close = null
+TabBar/icons/decrement = null
+TabBar/icons/decrement_highlight = null
+TabBar/icons/increment = null
+TabBar/icons/increment_highlight = null
+TabBar/styles/button = null
+TabBar/styles/button_pressed = null
+TabBar/styles/panel = null
+TabBar/styles/tab_bg = SubResource( 4 )
+TabBar/styles/tab_disabled = SubResource( 1 )
+TabBar/styles/tab_fg = SubResource( 4 )
 TextEdit/colors/background_color = Color( 0, 0, 0, 1 )
 TextEdit/colors/bookmark_color = Color( 0, 0, 0, 1 )
 TextEdit/colors/brace_mismatch_color = Color( 0, 0, 0, 1 )
@@ -502,17 +502,17 @@ TextEdit/styles/completion = null
 TextEdit/styles/focus = SubResource( 9 )
 TextEdit/styles/normal = SubResource( 10 )
 TextEdit/styles/read_only = SubResource( 11 )
-ToolButton/colors/font_color = Color( 0.8, 0.8, 0.8, 1 )
-ToolButton/colors/font_color_disabled = Color( 0.6, 0.6, 0.6, 1 )
-ToolButton/colors/font_color_hover = Color( 0.85, 0.85, 0.85, 1 )
-ToolButton/colors/font_color_pressed = Color( 0.9, 0.9, 0.9, 1 )
-ToolButton/constants/hseparation = 3
-ToolButton/fonts/font = null
-ToolButton/styles/disabled = null
-ToolButton/styles/focus = null
-ToolButton/styles/hover = null
-ToolButton/styles/normal = null
-ToolButton/styles/pressed = SubResource( 16 )
+Button/colors/font_color = Color( 0.8, 0.8, 0.8, 1 )
+Button/colors/font_color_disabled = Color( 0.6, 0.6, 0.6, 1 )
+Button/colors/font_color_hover = Color( 0.85, 0.85, 0.85, 1 )
+Button/colors/font_color_pressed = Color( 0.9, 0.9, 0.9, 1 )
+Button/constants/hseparation = 3
+Button/fonts/font = null
+Button/styles/disabled = null
+Button/styles/focus = null
+Button/styles/hover = null
+Button/styles/normal = null
+Button/styles/pressed = SubResource( 16 )
 TooltipLabel/colors/font_color = Color( 0, 0, 0, 1 )
 TooltipLabel/colors/font_color_shadow = Color( 0, 0, 0, 1 )
 TooltipLabel/constants/shadow_offset_x = 1
@@ -578,12 +578,12 @@ VSplitContainer/constants/autohide = 1
 VSplitContainer/constants/separation = 12
 VSplitContainer/icons/grabber = null
 VSplitContainer/styles/bg = null
-WindowDialog/colors/title_color = Color( 0, 0, 0, 1 )
-WindowDialog/constants/close_h_ofs = 18
-WindowDialog/constants/close_v_ofs = 18
-WindowDialog/constants/scaleborder_size = 4
-WindowDialog/constants/title_height = 20
-WindowDialog/fonts/title_font = null
-WindowDialog/icons/close = null
-WindowDialog/icons/close_highlight = null
-WindowDialog/styles/panel = SubResource( 25 )
+Window/colors/title_color = Color( 0, 0, 0, 1 )
+Window/constants/close_h_ofs = 18
+Window/constants/close_v_ofs = 18
+Window/constants/scaleborder_size = 4
+Window/constants/title_height = 20
+Window/fonts/title_font = null
+Window/icons/close = null
+Window/icons/close_highlight = null
+Window/styles/panel = SubResource( 25 )

@@ -1,10 +1,10 @@
 extends Control
 
-onready var parts:Array = [$Part]
+@onready var parts:Array = [$Part]
 
-export(float) var percent = 0 setget _set_percent
-export(Color) var fill_color = Color.white
-export(Color) var empty_color = Color("#6f6f6f")
+@export var percent: float = 0: set = _set_percent
+@export var fill_color: Color = Color.WHITE
+@export var empty_color: Color = Color("#6f6f6f")
 var _last_percent = -1
 
 func _update_progress(value:float=percent):
@@ -24,6 +24,6 @@ func _ready():
 		var n:Control = parts[0].duplicate()
 		parts.append(n)
 		add_child(n)
-		n.rect_rotation = 5*i
+		n.rotation = 5*i
 		n.raise()
 	_update_progress()

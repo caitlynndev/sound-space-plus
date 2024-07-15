@@ -23,4 +23,4 @@ func _ready():
 		value = Rhythia.note_spin_y
 	elif name == "NoteSpinZ":
 		value = Rhythia.note_spin_z
-	connect("changed",self,"upd")
+	connect("changed", Callable(self, "upd"))

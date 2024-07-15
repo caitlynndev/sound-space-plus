@@ -1,4 +1,4 @@
-extends Spatial
+extends Node3D
 
 var active:bool = false
 var rainbow:bool = false
@@ -19,7 +19,7 @@ func get_color_mat(parent:Node,col:Color,miss:bool):
 		if miss: cache = parent.matcache_miss
 		else: cache = parent.get_node("Spawn").matcache_hit
 	
-	var mat:SpatialMaterial
+	var mat:StandardMaterial3D
 	if cache.get(col):
 		mat = cache[col]
 	else:
@@ -29,7 +29,7 @@ func get_color_mat(parent:Node,col:Color,miss:bool):
 		
 	return mat
 
-func spawn_menu(parent:Node,col:Color,transform:Transform):
+func spawn_menu(parent:Node,col:Color,transform:Transform3D):
 	menu = true
 	setup("ssp_ripple_n",false)
 	global_transform = transform

@@ -3,7 +3,7 @@ extends Panel
 var open:bool = false
 var open_amt:float = 1
 
-onready var pages:Array = [
+@onready var pages:Array = [
 #	get_node("../Main/Results"),
 	get_node("../Main/Maps"),
 	get_node("../Main/Settings"),
@@ -11,7 +11,7 @@ onready var pages:Array = [
 	get_node("../Main/Content"),
 	get_node("../Main/Language")
 ]
-onready var buttons:Array = [
+@onready var buttons:Array = [
 	$L/Results,
 #	$L/MapSelect,
 	$L/Settings,
@@ -35,7 +35,7 @@ var hide_ver:Array = [
 	false,
 	false
 ]
-onready var smm_visibility:Dictionary = {
+@onready var smm_visibility:Dictionary = {
 	$L/Results: true,
 #	$L/MapSelect: true,
 	$L/Settings: true,
@@ -51,8 +51,8 @@ func press(bi:int,q:bool=false):
 	if !q: get_node("../Press").play()
 	for i in range(pages.size()):
 		pages[i].visible = i == bi
-		buttons[i].pressed = i == bi
-	yield(get_tree(),"idle_frame")
+		buttons[i].button_pressed = i == bi
+	await get_tree().idle_frame
 
 	get_node("../VersionNumber").visible = !use_ver_b[bi]
 	get_node("../VersionNumberB").visible = use_ver_b[bi]
@@ -73,32 +73,32 @@ func to_old_menu():
 			Rhythia.select_song(Rhythia.registry_song.items[0])
 		Rhythia.menu_target = "res://scripts/cursordance/dancetest.tscn"
 	else: Rhythia.menu_target = "res://scenes/menu/menu.tscn"
-	yield(get_tree().create_timer(0.35),"timeout")
-	get_tree().change_scene("res://scenes/loaders/menuload.tscn")
+	await get_tree().create_timer(0.35).timeout
+	get_tree().change_scene_to_file("res://scenes/loaders/menuload.tscn")
 
 func to_vr():
 	get_node("../Press").play()
 	get_viewport().get_node("Menu").black_fade_target = true
-	yield(get_tree().create_timer(0.35),"timeout")
+	await get_tree().create_timer(0.35).timeout
 	Rhythia.start_vr()
 
 func quit():
 	get_node("../Press").play()
 	get_viewport().get_node("Menu").black_fade_target = true
-	yield(get_tree().create_timer(0.35),"timeout")
+	await get_tree().create_timer(0.35).timeout
 	get_tree().quit()
 	
 func _ready():
 	for i in range(buttons.size()):
-		buttons[i].connect("pressed",self,"press",[i])
+		buttons[i].connect("pressed", Callable(self, "press").bind(i))
 	
 	press(0,true)
-	$Click.connect("mouse_entered",self,"_on_Sidebar", [true])
-	$L.connect("mouse_entered",self,"_on_Sidebar", [true])
-	connect("mouse_exited",self,"_on_Sidebar", [false])
-	$L/OldMenu.connect("pressed",self,"to_old_menu")
-	$L/StartVR.connect("pressed",self,"to_vr")
-	$L/Quit.connect("pressed",self,"quit")
+	$Click.connect("mouse_entered", Callable(self, "_on_Sidebar").bind(true))
+	$L.connect("mouse_entered", Callable(self, "_on_Sidebar").bind(true))
+	connect("mouse_exited", Callable(self, "_on_Sidebar").bind(false))
+	$L/OldMenu.connect("pressed", Callable(self, "to_old_menu"))
+	$L/StartVR.connect("pressed", Callable(self, "to_vr"))
+	$L/Quit.connect("pressed", Callable(self, "quit"))
 	
 	$L/ContentMgr.visible = not Rhythia.vr
 #	$L/StartVR.visible = Rhythia.vr_available and not Rhythia.vr
@@ -120,13 +120,13 @@ func _process(delta:float):
 		open_amt = max(open_amt + min((0 - open_amt) * delta * 12, -0.05*delta),0)
 #		if open_amt < 0.01: open_amt = 0
 	
-	rect_size.x = 60 + (180 * open_amt)
+	size.x = 60 + (180 * open_amt)
 
 func _input(ev):
 	if (ev is InputEventScreenTouch or ev is InputEventMouseButton):
 		if ev.pressed != true: return
-		open = ev.position.x < rect_size.x and ev.position.y < rect_size.y
-		yield(get_tree(),"idle_frame")
+		open = ev.position.x < size.x and ev.position.y < size.y
+		await get_tree().idle_frame
 		get_node("Click").visible = !open
 		get_node("../SidebarClick").visible = open
 	

@@ -1,7 +1,7 @@
-extends Spatial
+extends Node3D
 
-export(SpatialMaterial) var mat
-export(SpatialMaterial) var mat2
+@export var mat: StandardMaterial3D
+@export var mat2: StandardMaterial3D
 var colors:Array = Rhythia.selected_colorset.colors
 
 
@@ -27,7 +27,7 @@ func _ready():
 		env.glow_bicubic_upscale = true
 	mat.albedo_color = colors[0]
 	mat2.albedo_color = colors[0]
-	get_parent().get_node("Game").connect("hit",self,"hit")
+	get_parent().get_node("Game").connect("hit", Callable(self, "hit"))
 	#$WorldEnvironment.environment = $WorldEnvironment.environment.duplicate()
 
 #func _ready():

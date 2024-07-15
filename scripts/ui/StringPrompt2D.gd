@@ -5,14 +5,14 @@ signal option_selected
 signal done_opening
 signal done_closing
 
-onready var s_alert = $Alert
-onready var s_next = $Next
-onready var s_back = $Back
+@onready var s_alert = $Alert
+@onready var s_next = $Next
+@onready var s_back = $Back
 
-onready var title_label = $C/Main/V/Title/L
-onready var body_label = $C/Main/V/Body/L
-onready var input = $"C/Main/V/Buttons/H/LineEdit"
-onready var buttons = [
+@onready var title_label = $C/Main/V/Title/L
+@onready var body_label = $C/Main/V/Body/L
+@onready var input = $"C/Main/V/Buttons/H/LineEdit"
+@onready var buttons = [
 	$"C/Main/V/Buttons/H/0",
 	$"C/Main/V/Buttons/H/1",
 	$"C/Main/V/Buttons/H/2",
@@ -47,14 +47,14 @@ func open(body:String, title:String="Confirm", input:String="Profile Name",
 		else:
 			button.visible = false
 	twn.stop_all()
-	$C.rect_position = Vector2(-300,0)
+	$C.position = Vector2(-300,0)
 	modulate = Color(1,1,1,0)
 	visible = true
 	raise()
-	twn.interpolate_property($C,"rect_position",Vector2(-300,0),Vector2(0,0),transition_time,Tween.TRANS_SINE,Tween.EASE_OUT)
+	twn.interpolate_property($C,"position",Vector2(-300,0),Vector2(0,0),transition_time,Tween.TRANS_SINE,Tween.EASE_OUT)
 	twn.interpolate_property(self,"modulate",Color(1,1,1,0),Color(1,1,1,1),transition_time,Tween.TRANS_SINE,Tween.EASE_OUT)
 	twn.start()
-	yield(twn,"tween_all_completed")
+	await twn.tween_all_completed
 	for i in range(buttons.size()):
 		var button:Button = buttons[i]
 		if i < options.size():
@@ -66,13 +66,13 @@ func open(body:String, title:String="Confirm", input:String="Profile Name",
 
 func close():
 	twn.stop_all()
-	twn.interpolate_property($C,"rect_position",Vector2(0,0),Vector2(300,0),transition_time,Tween.TRANS_SINE,Tween.EASE_IN)
+	twn.interpolate_property($C,"position",Vector2(0,0),Vector2(300,0),transition_time,Tween.TRANS_SINE,Tween.EASE_IN)
 	twn.interpolate_property(self,"modulate",Color(1,1,1,1),Color(1,1,1,0),transition_time,Tween.TRANS_SINE,Tween.EASE_IN)
 	twn.start()
 	is_open = false
 	current_options = []
 	for button in buttons: button.disabled = true
-	yield(twn,"tween_all_completed")
+	await twn.tween_all_completed
 	visible = false
 	emit_signal("done_closing")
 
@@ -94,4 +94,4 @@ func _ready():
 	visible = false
 	add_child(twn)
 	for i in range(buttons.size()):
-		buttons[i].connect("pressed",self,"emit_signal",["option_selected",i])
+		buttons[i].connect("pressed", Callable(self, "emit_signal").bind("option_selected",i))

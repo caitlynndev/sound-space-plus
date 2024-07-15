@@ -47,7 +47,7 @@ func AngleBetween(centre:Vector2, v1:Vector2, v2:Vector2)->float:
 
 
 
-var notes:PoolVector3Array = PoolVector3Array()
+var notes:PackedVector3Array = PackedVector3Array()
 
 func _init(song:Song):
 	for n in song.read_notes():

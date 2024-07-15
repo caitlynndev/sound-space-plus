@@ -12,7 +12,7 @@ func _ready():
 	if Rhythia.vr:
 		target = "res://vr/vrmenu.tscn"
 		Rhythia.vr_player.transform.origin = Vector3(0,0,0)
-	PhysicsServer.set_active(true)
+	PhysicsServer3D.set_active(true)
 	Input.set_custom_mouse_cursor(null)
 	Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 	Rhythia.load_color_txt()
@@ -38,7 +38,7 @@ func _ready():
 	var res = RQueue.queue_resource(target)
 	if res != OK:
 		Rhythia.errorstr = "queue_resource returned %s" % res
-		get_tree().change_scene("res://scenes/errors/menuload.tscn")
+		get_tree().change_scene_to_file("res://scenes/errors/menuload.tscn")
 
 var result
 var left:bool = false
@@ -60,7 +60,7 @@ func _process(delta):
 			black_fade_target = true
 			if !(result is Object):
 				Rhythia.errorstr = "get_resource returned non-object (probably null)"
-				get_tree().change_scene("res://scenes/errors/menuload.tscn")
+				get_tree().change_scene_to_file("res://scenes/errors/menuload.tscn")
 	
 	if leaving and result and black_fade == 1:
-		get_tree().change_scene_to(result)
+		get_tree().change_scene_to_packed(result)

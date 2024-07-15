@@ -1,4 +1,4 @@
-extends Spatial
+extends Node3D
 class_name SongPlayerManager
 
 signal hit
@@ -7,8 +7,8 @@ signal miss
 var rawMapData:String
 var notes:Array
 var last_ms:float = 0
-onready var colors:Array = Rhythia.selected_colorset.colors
-onready var speed_multi = Globals.speed_multi[Rhythia.mod_speed_level]
+@onready var colors:Array = Rhythia.selected_colorset.colors
+@onready var speed_multi = Globals.speed_multi[Rhythia.mod_speed_level]
 
 var score:int = 0
 var combo:int = 0
@@ -16,7 +16,7 @@ var combo_level:int = 1
 var lvl_progress:int = 0
 var song_has_failed:bool = false
 
-export(StyleBox) var timer_fg_done
+@export var timer_fg_done: StyleBox
 
 func comma_sep(number):
 	var string = str(number)
@@ -46,7 +46,7 @@ func loadMapFile():
 	
 	get_node("Spawn/Music").stream = song
 
-onready var head:Spatial = get_node("Avatar/Head")
+@onready var head:Node3D = get_node("Avatar/Head")
 
 var hits:float = 0
 var misses:float = 0
@@ -125,11 +125,11 @@ func end(end_type:int):
 		- helmeto
 		"""
 		
-		get_tree().change_scene("res://scenes/song.tscn")
+		get_tree().change_scene_to_file("res://scenes/song.tscn")
 	else:
 		black_fade_target = true
-		yield(get_tree().create_timer(0.35),"timeout")
-		get_tree().change_scene("res://scenes/loaders/menuload.tscn")
+		await get_tree().create_timer(0.35).timeout
+		get_tree().change_scene_to_file("res://scenes/loaders/menuload.tscn")
 
 func update_timer(ms:float,canSkip:bool=false):
 	var qms = ms + $Spawn.ms_offset
@@ -182,7 +182,7 @@ func _process(delta):
 		head.get_node("HappyR").visible = true
 		
 	if passed:
-		$Avatar/ArmR.translation.y += (1 - $Avatar/ArmR.translation.y) * 0.01
+		$Avatar/ArmR.position.y += (1 - $Avatar/ArmR.position.y) * 0.01
 	
 	if !ending:
 		if Input.is_action_pressed("give_up"):
@@ -197,7 +197,7 @@ func _process(delta):
 		get_tree().paused = !get_tree().paused
 	
 	if get_tree().paused:
-		$Spawn.last_usec = OS.get_ticks_usec()
+		$Spawn.last_usec = Time.get_ticks_usec()
 	
 	
 	if black_fade_target && black_fade != 1:
@@ -247,11 +247,11 @@ func hit(col):
 	
 	if Rhythia.hit_fov:
 		if Rhythia.hit_fov_additive:
-			$"../Camera".fov += Rhythia.hit_fov_amplifier
+			$"../Camera3D".fov += Rhythia.hit_fov_amplifier
 		elif Rhythia.hit_fov_exponential:
-			$"../Camera".fov *= Rhythia.hit_fov_amplifier
+			$"../Camera3D".fov *= Rhythia.hit_fov_amplifier
 		else:
-			$"../Camera".fov = Rhythia.get("fov") - Rhythia.hit_fov_amplifier
+			$"../Camera3D".fov = Rhythia.get("fov") - Rhythia.hit_fov_amplifier
 	
 	score += points
 	return points
@@ -292,25 +292,25 @@ func _ready():
 	
 	energy = max_energy
 #	var space = Rhythia.loaded_world
-	var spinst = Rhythia.loaded_world.instance()
+	var spinst = Rhythia.loaded_world.instantiate()
 	get_parent().call_deferred("add_child",spinst)
 	spinst.name = "Space"
 #	call_deferred("raise")
 	$BlackFade.visible = true
 	$BlackFade.color = Color(0,0,0,black_fade)
 	get_tree().paused = false
-	$Spawn.connect("timer_update",self,"update_timer")
+	$Spawn.connect("timer_update", Callable(self, "update_timer"))
 #	$Spawn.connect("hit",self,"hit")
-	$Spawn.connect("miss",self,"miss")
+	$Spawn.connect("miss", Callable(self, "miss"))
 	loadMapFile()
 	
 	
 	Rhythia.update_rpc_song()
 	
-	yield(get_tree(),"idle_frame")
-	yield(get_tree(),"idle_frame")
-	yield(get_tree(),"idle_frame")
-	yield(get_tree(),"idle_frame")
+	await get_tree().idle_frame
+	await get_tree().idle_frame
+	await get_tree().idle_frame
+	await get_tree().idle_frame
 	black_fade_target = false
 	$ForceMatLoad.visible = false
 	$Spawn.active = true

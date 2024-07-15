@@ -169,7 +169,7 @@ func runTypedCommand(commandString):
 						if text.is_valid_float(): cmd.node.set(cmd.variable,text.to_float())
 						else: consolePrint("argument 1 must be a number",PRINT_TYPE.ERROR)
 					VAR_TYPE.INT:
-						if text.is_valid_integer(): cmd.node.set(cmd.variable,text.to_int())
+						if text.is_valid_int(): cmd.node.set(cmd.variable,text.to_int())
 						else: consolePrint("argument 1 must be an integer",PRINT_TYPE.ERROR)
 					VAR_TYPE.STRING: cmd.node.set(cmd.variable,text)
 					_: consolePrint("invalid var type %s" % cmd.varType,PRINT_TYPE.ERROR)
@@ -185,4 +185,4 @@ func checkForBrokenCalls():
 				_unregisterCommand(id)
 
 func _ready():
-	get_tree().connect("tree_changed",self,"checkForBrokenCalls")
+	get_tree().connect("tree_changed", Callable(self, "checkForBrokenCalls"))

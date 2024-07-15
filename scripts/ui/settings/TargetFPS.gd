@@ -10,4 +10,4 @@ func _process(_d):
 	
 func _ready():
 	value = Engine.target_fps
-	connect("changed",self,"upd")
+	connect("changed", Callable(self, "upd"))

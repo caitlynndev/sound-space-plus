@@ -1,4 +1,4 @@
-extends Sprite
+extends Sprite2D
 
 func _input(event):
 	if event is InputEventMouse:

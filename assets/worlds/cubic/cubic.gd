@@ -1,4 +1,4 @@
-extends Spatial
+extends Node3D
 
 #export(SpatialMaterial) var mat
 #var colors:Array = Rhythia.selected_colorset.colors
@@ -10,7 +10,7 @@ func hit(col:Color):
 	$Cubes.get_child(randi() % $Cubes.get_child_count()).boost = 1
 
 func _ready():
-	get_parent().get_node("Game").connect("hit",self,"hit")
+	get_parent().get_node("Game").connect("hit", Callable(self, "hit"))
 	# Shaders
 	var env = get_node("WorldEnvironment").environment
 	if Rhythia.glow > 0:

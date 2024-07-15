@@ -1,14 +1,14 @@
-extends Spatial
+extends Node3D
 
 var state = (Rhythia.replaying and Rhythia.alt_cam)
 var debug:bool = OS.has_feature("debug")
 
 func _ready():
-	PhysicsServer.set_active(!Rhythia.visual_mode and (Rhythia.get("cam_unlock") or Rhythia.vr))
+	PhysicsServer3D.set_active(!Rhythia.visual_mode and (Rhythia.get("cam_unlock") or Rhythia.vr))
 	
 	# alt camera init
 	if state:
-		$Camera.current = false
+		$Camera3D.current = false
 		$AltCam.current = true
 		$AltCam.set_enabled(true)
 		$Game/Avatar.visible = true
@@ -17,7 +17,7 @@ func _ready():
 	else:
 		$AltCam.set_enabled(false)
 		$Game/Avatar.visible = false
-		$Camera.current = true
+		$Camera3D.current = true
 		$AltCam.current = false
 	
 	if Rhythia.mod_flashlight:
@@ -31,10 +31,10 @@ func _ready():
 
 	# Shaders
 	if Rhythia.vhs_shader:
-		$Camera/VHS.visible = true
+		$Camera3D/VHS.visible = true
 		$AltCam/VHS.visible = true
 	else:
-		$Camera/VHS.visible = false
+		$Camera3D/VHS.visible = false
 		$AltCam/VHS.visible = false
 
 func _process(delta):

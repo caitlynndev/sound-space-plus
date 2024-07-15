@@ -9,6 +9,6 @@ func _process(delta):
 func upd(): target_volume_db = Rhythia.music_volume_db
 
 func _ready():
-	Rhythia.connect("volume_changed",self,"upd")
+	Rhythia.connect("volume_changed", Callable(self, "upd"))
 	upd()
 	volume_db = target_volume_db

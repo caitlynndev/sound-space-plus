@@ -1,5 +1,5 @@
 class_name Note
-extends Spatial
+extends Node3D
 
 var grid_pushback:float = 0.1 # default 0.1
 var pushback_defaults:Dictionary = {
@@ -7,15 +7,15 @@ var pushback_defaults:Dictionary = {
 	"never": 0.1
 }
 
-export(ShaderMaterial) var solid_mat
-export(ShaderMaterial) var transparent_mat
+@export var solid_mat: ShaderMaterial
+@export var transparent_mat: ShaderMaterial
 
 var notems:float
 var was_visible:bool = false
 var id:int = -1
 var state:int = 0
 var spawn_effect_t:float = 0
-onready var speed_multi:float = get_parent().speed_multi
+@onready var speed_multi:float = get_parent().speed_multi
 var col:Color
 
 var chaos_offset:Vector2 = Vector2()
@@ -78,7 +78,7 @@ func reposition(ms:float,approachSpeed:float):
 			$Approach.scale.y = 0.4 * ((current_dist / Rhythia.get("spawn_distance")) + 0.6)
 			
 			if not Rhythia.visual_approach_follow:
-				$Approach.global_translation.z = 0
+				$Approach.global_position.z = 0
 			
 		# note spin; not doing this all in a single Vector3 because we're trying to rotate locally
 		rotate(Vector3(1,0,0),Rhythia.note_spin_x / 2000)
@@ -98,8 +98,8 @@ func reposition(ms:float,approachSpeed:float):
 			
 			$Mesh.visible = (alpha != 0)
 			if mat_s and mat_t:
-				mat_s.set_shader_param("fade",alpha)
-				mat_t.set_shader_param("fade",alpha)
+				mat_s.set_shader_parameter("fade",alpha)
+				mat_t.set_shader_parameter("fade",alpha)
 			
 		
 		return true
@@ -124,18 +124,18 @@ func check(cpos:Vector3,prevpos:Vector3=Vector3.ZERO):
 
 func setup(color:Color):
 	var tcol = Color(color.r,color.g,color.b,Rhythia.note_opacity)
-	var mat2:SpatialMaterial = get_node("Spawn/Mesh").get_surface_material(0).duplicate()
+	var mat2:StandardMaterial3D = get_node("Spawn/Mesh").get_surface_override_material(0).duplicate()
 	set_physics_process(false)
 	mat_s = solid_mat.duplicate()
 	mat_t = transparent_mat.duplicate()
-	$Mesh.set_surface_material(0,mat_s)
-	if $Mesh.get_surface_material_count() > 1:
-		$Mesh.set_surface_material(1,mat_t)
-	if $Mesh.get_surface_material_count() > 2:
-		$Mesh.set_surface_material(2,mat_s)
-	get_node("Spawn/Mesh").set_surface_material(0,mat2)
-	mat_s.set_shader_param("notecolor",tcol)
-	mat_t.set_shader_param("notecolor",tcol)
+	$Mesh.set_surface_override_material(0,mat_s)
+	if $Mesh.get_surface_override_material_count() > 1:
+		$Mesh.set_surface_override_material(1,mat_t)
+	if $Mesh.get_surface_override_material_count() > 2:
+		$Mesh.set_surface_override_material(2,mat_s)
+	get_node("Spawn/Mesh").set_surface_override_material(0,mat2)
+	mat_s.set_shader_parameter("notecolor",tcol)
+	mat_t.set_shader_parameter("notecolor",tcol)
 	mat2.albedo_color = tcol
 	col = tcol
 	

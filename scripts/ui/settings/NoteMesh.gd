@@ -25,6 +25,6 @@ func _ready():
 		if mesh == Rhythia.selected_mesh:
 			current_sel = i
 			get_popup().set_item_checked(i,true)
-	Rhythia.connect("selected_mesh_changed",self,"on_mesh_selected")
-	get_popup().connect("id_pressed",self,"on_pressed")
+	Rhythia.connect("selected_mesh_changed", Callable(self, "on_mesh_selected"))
+	get_popup().connect("id_pressed", Callable(self, "on_pressed"))
 	on_mesh_selected(Rhythia.selected_mesh)

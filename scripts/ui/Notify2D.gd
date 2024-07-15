@@ -8,7 +8,7 @@ const colors:Dictionary = {
 	3: { line = Color("#257f33"), title = Color("#b1ff89") } # Succeed
 }
 
-onready var base = $Notify
+@onready var base = $Notify
 
 func notify(type:int,body:String,title:String="Notification",time:float=5):
 	var notif = base.duplicate()
@@ -25,12 +25,12 @@ func notify(type:int,body:String,title:String="Notification",time:float=5):
 	twn.interpolate_property(notif,"modulate",Color(1,1,1,0),Color(1,1,1,1),0.25)
 	twn.start()
 	
-	yield(get_tree().create_timer(time - 2),"timeout")
+	await get_tree().create_timer(time - 2).timeout
 	
 	twn.stop_all()
 	twn.interpolate_property(notif,"modulate",Color(1,1,1,1),Color(1,1,1,0),2)
 	twn.start()
 	
-	yield(get_tree().create_timer(2),"timeout")
+	await get_tree().create_timer(2).timeout
 	
 	notif.queue_free()

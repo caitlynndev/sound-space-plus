@@ -17,7 +17,7 @@ func setup():
 			var hitsound = AudioStreamPlayer.new()
 			hitsound.set_stream(Rhythia.hit_snd)
 			hitsound.set_bus("HitSound")
-			hitsound.pause_mode = PAUSE_MODE_PROCESS
+			hitsound.process_mode = PROCESS_MODE_ALWAYS
 			hitSounds.append(hitsound)
 			hitSoundsParent.add_child(hitsound)
 	elif (!Rhythia.sfx_2d):
@@ -28,7 +28,7 @@ func setup():
 			hitsound.set_attenuation_model(AudioStreamPlayer3D.ATTENUATION_DISABLED)
 			hitsound.attenuation_filter_cutoff_hz = 20500
 			hitsound.attenuation_filter_db = 0
-			hitsound.pause_mode = PAUSE_MODE_PROCESS
+			hitsound.process_mode = PROCESS_MODE_ALWAYS
 			hitSounds.append(hitsound)
 			hitSoundsParent.add_child(hitsound)
 

@@ -1,6 +1,6 @@
 extends ColorRect
 
-onready var languageselect = $ChangeLanguage/SelectLanguageWindow/languageselector
+@onready var languageselect = $ChangeLanguage/SelectLanguageWindow/languageselector
 
 
 # en = 0

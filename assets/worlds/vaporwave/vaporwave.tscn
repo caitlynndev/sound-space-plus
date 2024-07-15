@@ -17,9 +17,9 @@ glow_hdr_threshold = 1.11
 glow_bicubic_upscale = true
 glow_high_quality = true
 
-[sub_resource type="OpenSimplexNoise" id=7]
+[sub_resource type="FastNoiseLite" id=7]
 seed = 43
-octaves = 5
+fractal_octaves = 5
 period = 256.0
 persistence = 0.294
 lacunarity = 1.52
@@ -50,20 +50,20 @@ shader_param/time_float = null
 [sub_resource type="PlaneMesh" id=11]
 material = SubResource( 10 )
 
-[node name="vaporwave" type="Spatial"]
+[node name="vaporwave" type="Node3D"]
 script = ExtResource( 1 )
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource( 6 )
 
-[node name="MeshInstance" type="MeshInstance" parent="WorldEnvironment"]
-transform = Transform( -100, 0, -1.50996e-05, 0, 20, 0, 1.50996e-05, 0, -100, 0.001, -10.8, -110 )
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldEnvironment"]
+transform = Transform3D( -100, 0, -1.50996e-05, 0, 20, 0, 1.50996e-05, 0, -100, 0.001, -10.8, -110 )
 mesh = SubResource( 5 )
 skeleton = NodePath("../..")
 script = ExtResource( 5 )
 
-[node name="MeshInstance2" type="MeshInstance" parent="WorldEnvironment"]
-transform = Transform( 80, 0.00254105, -1.11073e-10, 0, -3.49691e-06, -80, -0.00254105, 80, -3.49691e-06, 0, 100, -200 )
+[node name="MeshInstance2" type="MeshInstance3D" parent="WorldEnvironment"]
+transform = Transform3D( 80, 0.00254105, -1.11073e-10, 0, -3.49691e-06, -80, -0.00254105, 80, -3.49691e-06, 0, 100, -200 )
 mesh = SubResource( 11 )
 skeleton = NodePath("../../../../..")
 script = ExtResource( 5 )

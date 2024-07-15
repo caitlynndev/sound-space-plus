@@ -50,12 +50,12 @@ func update_letter_grade(acc:float=0):
 		gcol = Color("#ff8282")
 	
 	$LetterGrade.text = grade
-	$LetterGrade.material.set_shader_param("shine",shine)
-	$LetterGrade.set("custom_colors/font_color",gcol)
+	$LetterGrade.material.set_shader_parameter("shine",shine)
+	$LetterGrade.set("theme_override_colors/font_color",gcol)
 
 func _process(delta):
 	if rainbow_letter_grade:
-		$LetterGrade.set("custom_colors/font_color",Color.from_hsv(Rhythia.rainbow_t*0.1,0.4,1))
+		$LetterGrade.set("theme_override_colors/font_color",Color.from_hsv(Rhythia.rainbow_t*0.1,0.4,1))
 
 func upd():
 	var ls = floor(Rhythia.queue_end_length/1000)

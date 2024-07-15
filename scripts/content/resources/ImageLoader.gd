@@ -49,23 +49,23 @@ func report_errors(err, filepath):
 	else:
 		print("Unknown error with file ", filepath, " error code: ", err)
 
-func get_format(bytes:PoolByteArray) -> String:
+func get_format(bytes:PackedByteArray) -> String:
 	if bytes.size() < 10: return "unknown"
 	# Figure out file format from signatures
 	# https://en.wikipedia.org/wiki/List_of_file_signatures
 	
-	if bytes.subarray(0,7) == PoolByteArray([0x89,0x50,0x4E,0x47,0x0D,0x0A,0x1A,0x0A]): return "png"
-	if bytes.subarray(0,2) == PoolByteArray([0x42,0x4D]): return "bmp"
-	if bytes.subarray(0,2) == PoolByteArray([0xFF,0xD8,0xFF]): return "jpg"
-	if bytes.subarray(0,3) == PoolByteArray([0x52,0x49,0x46,0x46]) and bytes.subarray(8,11) == PoolByteArray([0x57,0x45,0x42,0x50]): return "webp"
+	if bytes.subarray(0,7) == PackedByteArray([0x89,0x50,0x4E,0x47,0x0D,0x0A,0x1A,0x0A]): return "png"
+	if bytes.subarray(0,2) == PackedByteArray([0x42,0x4D]): return "bmp"
+	if bytes.subarray(0,2) == PackedByteArray([0xFF,0xD8,0xFF]): return "jpg"
+	if bytes.subarray(0,3) == PackedByteArray([0x52,0x49,0x46,0x46]) and bytes.subarray(8,11) == PackedByteArray([0x57,0x45,0x42,0x50]): return "webp"
 	
 	# unsupported
 	return "unknown"
 
-var error_texture:Texture = load("res://assets/images/error.jpg")
-var invalid_texture:Texture = load("res://assets/images/error2.jpg") # make the invalid texture show up instead of being treated 
+var error_texture:Texture2D = load("res://assets/images/error.jpg")
+var invalid_texture:Texture2D = load("res://assets/images/error2.jpg") # make the invalid texture show up instead of being treated 
 
-func load_buffer(bytes:PoolByteArray) -> Texture:
+func load_buffer(bytes:PackedByteArray) -> Texture2D:
 	var format = get_format(bytes)
 	var img:Image = Image.new()
 	
@@ -79,7 +79,7 @@ func load_buffer(bytes:PoolByteArray) -> Texture:
 	imgtex.create_from_image(img)
 	return imgtex
 
-func load_file(filepath:String) -> Texture:
+func load_file(filepath:String) -> Texture2D:
 	var file = File.new()
 	var err = file.open(Globals.p(filepath), File.READ)
 	if err != OK:
@@ -87,7 +87,7 @@ func load_file(filepath:String) -> Texture:
 		file.close()
 		return error_texture
 	
-	var bytes:PoolByteArray = file.get_buffer(file.get_len())
+	var bytes:PackedByteArray = file.get_buffer(file.get_length())
 	file.close()
 	return load_buffer(bytes)
 

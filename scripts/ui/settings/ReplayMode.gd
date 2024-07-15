@@ -9,4 +9,4 @@ func _process(_d):
 func _ready():
 	print(Rhythia.record_mode,get_item_index(Rhythia.record_mode))
 	selected = get_item_index(Rhythia.record_mode)
-	connect("item_selected",self,"upd")
+	connect("item_selected", Callable(self, "upd"))

@@ -15,11 +15,11 @@ func idle_status():
 func _ready():
 	get_tree().paused = false
 	if Rhythia.arcw_mode:
-		get_tree().change_scene("res://w.tscn")
+		get_tree().change_scene_to_file("res://w.tscn")
 	if Rhythia.sex_mode:
-		get_tree().change_scene("res://sex.tscn")
+		get_tree().change_scene_to_file("res://sex.tscn")
 	if Rhythia.memory_lane:
-		get_tree().change_scene("res://dya.tscn")
+		get_tree().change_scene_to_file("res://dya.tscn")
 	
 	# fix audio pitchshifts
 	if AudioServer.get_bus_effect_count(AudioServer.get_bus_index("Music")) > 0:
@@ -40,14 +40,14 @@ func _ready():
 
 		Discord.activity_manager.update_activity(activity)
 		
-		get_tree().create_timer(300).connect("timeout",self,"idle_status")
+		get_tree().create_timer(300).connect("timeout", Callable(self, "idle_status"))
 
 var black_fade_target:bool = false
 var black_fade:float = 1
 
 func _process(delta):
 	if Input.is_action_just_pressed("ui_end") and Input.is_key_pressed(KEY_SHIFT):
-		get_tree().change_scene("res://scenes/loaders/menuload.tscn")
+		get_tree().change_scene_to_file("res://scenes/loaders/menuload.tscn")
 
 	if black_fade_target && black_fade != 1:
 		black_fade = min(black_fade + (delta/0.3),1)

@@ -5,12 +5,12 @@ func update_txt(_v=null):
 	Rhythia.last_author_search_str = text
 
 func _ready():
-	connect("text_changed",self,"update_txt")
+	connect("text_changed", Callable(self, "update_txt"))
 	text = Rhythia.last_author_search_str
 	update_txt()
-	get_parent().get_parent().get_node("S/VBoxContainer").connect("reset_filters",self,"_on_reset_filters")
-	get_parent().get_parent().get_node("S/VBoxContainer").connect("lock_type",self,"_on_lock_type")
-	get_parent().get_parent().get_parent().get_node("Results/Results/RS/H1/Info/Run").connect("lock_type",self,"_on_lock_type")
+	get_parent().get_parent().get_node("S/VBoxContainer").connect("reset_filters", Callable(self, "_on_reset_filters"))
+	get_parent().get_parent().get_node("S/VBoxContainer").connect("lock_type", Callable(self, "_on_lock_type"))
+	get_parent().get_parent().get_parent().get_node("Results/Results/RS/H1/Info/Run").connect("lock_type", Callable(self, "_on_lock_type"))
 
 
 func _on_reset_filters():

@@ -15,11 +15,11 @@ func save_sel(file:String):
 
 func files_single(file:String):
 	if target_object and target_object != self:
-		target_object.call(target_method,PoolStringArray([file]))
+		target_object.call(target_method,PackedStringArray([file]))
 		target_object = self
 		visible = false
 
-func files_sel(files:PoolStringArray):
+func files_sel(files:PackedStringArray):
 	if target_object and target_object != self:
 		target_object.call(target_method,files)
 		target_object = self
@@ -41,21 +41,21 @@ func _ready():
 		$Folder.has_signal("folder_selected")
 	):
 		use_native = true
-		$OpenFile.connect("files_selected",self,"files_sel")
-		$SaveFile.connect("file_selected",self,"save_sel")
-		$Folder.connect("folder_selected",self,"folder_sel")
+		$OpenFile.connect("files_selected", Callable(self, "files_sel"))
+		$SaveFile.connect("file_selected", Callable(self, "save_sel"))
+		$Folder.connect("folder_selected", Callable(self, "folder_sel"))
 		
 		$Spinner.visible = true
 		$Label.visible = true
 	else:
-		$C/SaveFile.connect("file_selected",self,"save_sel")
-		$C/OpenFile.connect("file_selected",self,"files_single")
-		$C/OpenFile.connect("files_selected",self,"files_sel")
-		$C/Folder.connect("dir_selected",self,"folder_sel")
+		$C/SaveFile.connect("file_selected", Callable(self, "save_sel"))
+		$C/OpenFile.connect("file_selected", Callable(self, "files_single"))
+		$C/OpenFile.connect("files_selected", Callable(self, "files_sel"))
+		$C/Folder.connect("dir_selected", Callable(self, "folder_sel"))
 		
-		$C/OpenFile.connect("hide",self,"files_sel",[PoolStringArray()])
-		$C/SaveFile.connect("hide",self,"save_sel",[""])
-		$C/Folder.connect("hide",self,"folder_sel",[""])
+		$C/OpenFile.connect("hide", Callable(self, "files_sel").bind(PackedStringArray()))
+		$C/SaveFile.connect("hide", Callable(self, "save_sel").bind(""))
+		$C/Folder.connect("hide", Callable(self, "folder_sel").bind(""))
 		
 		$Spinner.visible = false
 		$Label.visible = false
@@ -64,15 +64,15 @@ func _ready():
 func open_file(
 	obj:Object,
 	method:String,
-	filters:PoolStringArray = PoolStringArray(["* ; All Files"]),
+	filters:PackedStringArray = PackedStringArray(["* ; All Files"]),
 	multiselect:bool = false,
 	initial_path:String = "user://"
 ):
 	target_object = obj
 	target_method = method
 	
-	$C/OpenFile.rect_pivot_offset = get_viewport_rect().size / 2
-	$C/OpenFile.rect_scale = Vector2(clamp(Rhythia.render_scale,0.5,1), clamp(Rhythia.render_scale,0.5,1))
+	$C/OpenFile.pivot_offset = get_viewport_rect().size / 2
+	$C/OpenFile.scale = Vector2(clamp(Rhythia.render_scale,0.5,1), clamp(Rhythia.render_scale,0.5,1))
 	
 	if use_native:
 		$OpenFile.filters = filters
@@ -87,10 +87,10 @@ func open_file(
 	else:
 		$C/OpenFile.filters = filters
 		if multiselect:
-			$C/OpenFile.mode = $C/OpenFile.MODE_OPEN_FILES
+			$C/OpenFile.mode = $C/OpenFile.FILE_MODE_OPEN_FILES
 			$C/OpenFile.window_title = "Select files..."
 		else:
-			$C/OpenFile.mode = $C/OpenFile.MODE_OPEN_FILE
+			$C/OpenFile.mode = $C/OpenFile.FILE_MODE_OPEN_FILE
 			$C/OpenFile.window_title = "Select file..."
 		$C/OpenFile.show()
 		$C/OpenFile.call_deferred("set_current_dir",Globals.p(initial_path))
@@ -100,14 +100,14 @@ func open_file(
 func save_file(
 	obj:Object,
 	method:String,
-	filters:PoolStringArray = PoolStringArray(["* ; All Files"]),
+	filters:PackedStringArray = PackedStringArray(["* ; All Files"]),
 	initial_path:String = "user://"
 ):
 	target_object = obj
 	target_method = method
 	
-	$C/OpenFile.rect_pivot_offset = get_viewport_rect().size / 2
-	$C/OpenFile.rect_scale = Vector2(clamp(Rhythia.render_scale,0.5,1), clamp(Rhythia.render_scale,0.5,1))
+	$C/OpenFile.pivot_offset = get_viewport_rect().size / 2
+	$C/OpenFile.scale = Vector2(clamp(Rhythia.render_scale,0.5,1), clamp(Rhythia.render_scale,0.5,1))
 	
 	if use_native:
 		$SaveFile.filters = filters

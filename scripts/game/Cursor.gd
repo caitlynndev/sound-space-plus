@@ -1,4 +1,4 @@
-extends Spatial
+extends Node3D
 
 var rpos:Vector2 = Vector2(transform.origin.x,-transform.origin.y)
 
@@ -78,7 +78,7 @@ func move_cursor_abs(mdel:Vector2):
 	drift_cursor(rx,ry,cx,cy)
 
 
-onready var absCamera = get_node("../../../AbsCamera")
+@onready var absCamera = get_node("../../../AbsCamera")
 func get_absolute_position():
 	absCamera.fov = Rhythia.get("fov")
 	var pos = absCamera.project_position(get_viewport().get_mouse_position(),3.75) * Rhythia.absolute_scale
@@ -118,7 +118,7 @@ func _input(event:InputEvent):
 			
 		if (event is InputEventScreenDrag):
 			$VisualPos.visible = true
-			$VisualPos.rect_position = event.position
+			$VisualPos.position = event.position
 		elif event is InputEventScreenTouch:
 			$VisualPos.visible = event.pressed
 
@@ -135,9 +135,9 @@ var segl:float = 0.01
 
 var total_trail_segments = 0
 
-onready var trail_base = get_node("../../CursorTrail")
+@onready var trail_base = get_node("../../CursorTrail")
 
-func cache_trail(part:Spatial):
+func cache_trail(part:Node3D):
 	trail_cache.append(part)
 
 func recolor(col:Color):
@@ -161,10 +161,10 @@ func _process(delta):
 			mt = 0
 	frame = Engine.get_frames_drawn()
 	if Rhythia.cursor_spin != 0 and !Rhythia.cursor_face_velocity:
-		$Mesh.rotate_z(deg2rad(-delta*Rhythia.cursor_spin))
-		$Mesh2.rotate_z(deg2rad(-delta*Rhythia.cursor_spin))
+		$Mesh.rotate_z(deg_to_rad(-delta*Rhythia.cursor_spin))
+		$Mesh2.rotate_z(deg_to_rad(-delta*Rhythia.cursor_spin))
 	if Rhythia.cursor_face_velocity:
-		$Mesh.rotation_degrees.x += ((rad2deg(face.angle()) + 180) - $Mesh.rotation_degrees.x) * 0.025
+		$Mesh.rotation_degrees.x += ((rad_to_deg(face.angle()) + 180) - $Mesh.rotation_degrees.x) * 0.025
 	if Rhythia.cursor_color_type == Globals.CURSOR_RAINBOW:
 		$Mesh.get("material/0").albedo_color = Color.from_hsv(Rhythia.rainbow_t*0.1,0.65,1)
 	if Input.is_key_pressed(KEY_C):
@@ -173,8 +173,8 @@ func _process(delta):
 	
 	if Rhythia.replaying:
 		var p
-		if Rhythia.replay.sv == 1 or Rhythia.replay.autoplayer: p = Rhythia.replay.get_cursor_position(get_parent().ms)
-		else: p = Rhythia.replay.get_cursor_position(get_parent().rms)
+		if Rhythia.replay.sv == 1 or Rhythia.replay.autoplayer: p = Rhythia.replay.get_caret_column(get_parent().ms)
+		else: p = Rhythia.replay.get_caret_column(get_parent().rms)
 		if Rhythia.replay.sv < 3:
 			transform.origin.x = p.x
 			transform.origin.y = p.y
@@ -194,7 +194,7 @@ func _process(delta):
 		var new = 0
 		var cached = 0
 		for i in range(amt):
-			var trail:Spatial
+			var trail:Node3D
 			var v = float(i)/float(amt)
 			var pos = lerp(start_p,end_p,v)
 			var rot = lerp(start_r,end_r,v)
@@ -204,7 +204,7 @@ func _process(delta):
 			else:
 				trail = trail_base.duplicate()
 				get_node("../..").add_child(trail)
-				trail.connect("cache_me",self,"cache_trail",[trail])
+				trail.connect("cache_me", Callable(self, "cache_trail").bind(trail))
 				total_trail_segments += 1
 				new += 1
 			
@@ -233,7 +233,7 @@ func _ready():
 	else:
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	
-	var mat:SpatialMaterial = $Mesh.get("material/0")
+	var mat:StandardMaterial3D = $Mesh.get("material/0")
 	$Mesh.scale = Vector3(Rhythia.cursor_scale,Rhythia.cursor_scale,Rhythia.cursor_scale)
 	$Mesh2.scale = Vector3(Rhythia.cursor_scale,Rhythia.cursor_scale,Rhythia.cursor_scale)
 	var img = Globals.imageLoader.load_if_exists("user://cursor")
@@ -256,22 +256,22 @@ func _ready():
 	
 	if Rhythia.cursor_color_type == Globals.CURSOR_NOTE_COLOR:
 		recolor(Rhythia.selected_colorset.colors[-1])
-		get_parent().connect("hit",self,"recolor")
+		get_parent().connect("hit", Callable(self, "recolor"))
 	elif Rhythia.cursor_color_type == Globals.CURSOR_CUSTOM_COLOR:
 		recolor(Rhythia.cursor_color)
 	
 	if Rhythia.cursor_trail:
 		if Rhythia.smart_trail:
-			yield(get_tree(),"idle_frame")
+			await get_tree().idle_frame
 			for i in range(Rhythia.trail_detail * 3.5):
 				var trail = trail_base.duplicate()
 				get_node("../..").add_child(trail)
-				trail.connect("cache_me",self,"cache_trail",[trail])
+				trail.connect("cache_me", Callable(self, "cache_trail").bind(trail))
 				trail_cache.append(trail)
 				trail.start_smart(1,Vector3(0,0,-4),0)
 		else:
 			for i in range(Rhythia.trail_detail):
-				var trail:Spatial = trail_base
+				var trail:Node3D = trail_base
 				if i != 0:
 					trail = trail.duplicate()
 					get_node("../..").call_deferred("add_child",trail)

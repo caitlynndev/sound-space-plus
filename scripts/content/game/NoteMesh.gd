@@ -7,7 +7,7 @@ var creator:String
 
 var path:String
 
-var cover:Texture
+var cover:Texture2D
 var has_cover:bool = false
 
 func load_png(file:String):

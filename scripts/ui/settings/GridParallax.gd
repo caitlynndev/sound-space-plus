@@ -8,4 +8,4 @@ func _process(_d):
 	
 func _ready():
 	value = Rhythia.grid_parallax
-	connect("changed",self,"upd")
+	connect("changed", Callable(self, "upd"))

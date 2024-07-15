@@ -4,7 +4,7 @@ var presets = [
 	
 	{
 		name = "Classic",
-		panel_bg = Color("#9b000000"),
+		panel_bg = Color("#0000009b"),
 		panel_text = Color("#ffffff"),
 
 		unpause_fill_color = Color("#80fff3"),
@@ -12,10 +12,10 @@ var presets = [
 		how_to_quit = Color("#ffdb00"),
 
 		combo_fill_color = Color("#7bfff3"),
-		combo_empty_color = Color("#b94b4b4b"),
+		combo_empty_color = Color("#4b4b4bb9"),
 
 		acc_fill_color = Color("#8cff00"),
-		acc_empty_color = Color("#b08f8f8f"),
+		acc_empty_color = Color("#8f8f8fb0"),
 
 		giveup_text = Color("#ffffff"),
 		giveup_fill_color = Color("#ff8f2c"),
@@ -26,11 +26,11 @@ var presets = [
 		timer_text_canskip = Color("#b3ffff"),
 
 		timer_fg = Color("#ffffff"),
-		timer_bg = Color("#af8f8f8f"),
+		timer_bg = Color("#8f8f8faf"),
 		timer_fg_done = Color("#25bf00"),
-		timer_bg_done = Color("#af008f00"),
+		timer_bg_done = Color("#008f00af"),
 		timer_fg_canskip = Color("#b3ffff"),
-		timer_bg_canskip = Color("#b0638f8f"),
+		timer_bg_canskip = Color("#638f8fb0"),
 
 		miss_flash_color = Color("#ff0000"),
 		pause_used_color = Color("#ff66ff"),
@@ -56,7 +56,7 @@ var presets = [
 	},
 	{
 		name = "Inverted",
-		panel_bg = Color("#9bcecece"),
+		panel_bg = Color("#cecece9b"),
 		panel_text = Color("#000000"),
 
 		unpause_fill_color = Color("#fd00ff"),
@@ -64,10 +64,10 @@ var presets = [
 		how_to_quit = Color("#be0000"),
 
 		combo_fill_color = Color("#ff00c5"),
-		combo_empty_color = Color("#d64b4b4b"),
+		combo_empty_color = Color("#4b4b4bd6"),
 
 		acc_fill_color = Color("#8cff00"),
-		acc_empty_color = Color("#b08f8f8f"),
+		acc_empty_color = Color("#8f8f8fb0"),
 
 		giveup_text = Color("#000000"),
 		giveup_fill_color = Color("#ff8f2c"),
@@ -78,11 +78,11 @@ var presets = [
 		timer_text_canskip = Color("#60005c"),
 
 		timer_fg = Color("#000000"),
-		timer_bg = Color("#af000000"),
+		timer_bg = Color("#000000af"),
 		timer_fg_done = Color("#25bf00"),
-		timer_bg_done = Color("#af008f00"),
+		timer_bg_done = Color("#008f00af"),
 		timer_fg_canskip = Color("#760070"),
-		timer_bg_canskip = Color("#b02b172a"),
+		timer_bg_canskip = Color("#2b172ab0"),
 
 		miss_flash_color = Color("#ff0000"),
 		pause_used_color = Color("#2600c2"),
@@ -113,7 +113,7 @@ var presets = [
 func _ready():
 	for i in range(presets.size()):
 		get_popup().add_item(presets[i].name,i)
-	get_popup().connect("id_pressed",self,"on_pressed")
+	get_popup().connect("id_pressed", Callable(self, "on_pressed"))
 	for k in presets[0].keys():
 		if k != "name":
 			var target = get_node("../../" + k).get_child(0)

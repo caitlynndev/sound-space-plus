@@ -30,10 +30,10 @@ func _ready():
 	var res2 = RQueue.queue_resource(target2)
 	if res != OK:
 		Rhythia.errorstr = "song.tscn queue_resource returned %s" % res
-		get_tree().change_scene("res://scenes/errors/songload.tscn")
+		get_tree().change_scene_to_file("res://scenes/errors/songload.tscn")
 	elif res2 != OK:
 		Rhythia.errorstr = "bg world queue_resource returned %s" % res
-		get_tree().change_scene("res://scenes/errors/songload.tscn")
+		get_tree().change_scene_to_file("res://scenes/errors/songload.tscn")
 	
 	Rhythia.miss_snd = Rhythia.get_stream_with_default("user://miss",Rhythia.def_miss_snd)
 	Rhythia.hit_snd = Rhythia.get_stream_with_default("user://hit",Rhythia.def_hit_snd)
@@ -49,8 +49,8 @@ var left:bool = false
 var finishing = false
 func warning_menu_exit():
 	Globals.confirm_prompt.s_back.play()
-	yield(Globals.confirm_prompt,"done_closing")
-	get_tree().change_scene("res://scenes/loaders/menuload.tscn")
+	await Globals.confirm_prompt.done_closing
+	get_tree().change_scene_to_file("res://scenes/loaders/menuload.tscn")
 
 func progress(v):
 	$P.visible = true
@@ -64,10 +64,10 @@ func finish():
 	Rhythia.loaded_world = result2
 	if !(result is Object):
 		Rhythia.errorstr = "song.tscn get_resource returned non-object (probably null)"
-		get_tree().change_scene("res://scenes/errors/songload.tscn")
+		get_tree().change_scene_to_file("res://scenes/errors/songload.tscn")
 	if !(result2 is Object):
 		Rhythia.errorstr = "bg world get_resource returned non-object (probably null)"
-		get_tree().change_scene("res://scenes/errors/songload.tscn")
+		get_tree().change_scene_to_file("res://scenes/errors/songload.tscn")
 	
 	Rhythia.load_color_txt()
 	
@@ -77,12 +77,12 @@ func finish():
 	
 	if Rhythia.replaying:
 		Rhythia.save_current_state()
-		Rhythia.replay.connect("progress",self,"progress")
+		Rhythia.replay.connect("progress", Callable(self, "progress"))
 		Rhythia.replay.read_data(Rhythia.replay_path)
-		yield(Rhythia.replay,"done_loading")
+		await Rhythia.replay.done_loading
 	
 	black_fade_target = true
-	yield(get_tree().create_timer(0.5),"timeout")
+	await get_tree().create_timer(0.5).timeout
 
 	
 	# Warnings that can't be disabled (since they're always a problem)
@@ -92,7 +92,7 @@ func finish():
 			"Warning",
 			[{text="Return to menu"}]
 		)
-		var option = yield(Globals.confirm_prompt,"option_selected")
+		var option = await Globals.confirm_prompt.option_selected
 		Globals.confirm_prompt.close()
 		warning_menu_exit()
 		return
@@ -103,14 +103,14 @@ func finish():
 			"Warning",
 			[{text="Return to menu"},{text="Continue"}]
 		)
-		var option = yield(Globals.confirm_prompt,"option_selected")
+		var option = await Globals.confirm_prompt.option_selected
 		Globals.confirm_prompt.close()
 		if option == 0:
 			warning_menu_exit()
 			return
 		else:
 			Globals.confirm_prompt.s_next.play()
-			yield(Globals.confirm_prompt,"done_closing")
+			await Globals.confirm_prompt.done_closing
 	
 	# Warnings that can be disabled (since they're mostly performance or gameplay related)
 	if Rhythia.show_warnings:
@@ -129,14 +129,14 @@ func finish():
 				"Warning",
 				[{text="Return to menu"},{text="Continue"}]
 			)
-			var option = yield(Globals.confirm_prompt,"option_selected")
+			var option = await Globals.confirm_prompt.option_selected
 			Globals.confirm_prompt.close()
 			if option == 0:
 				warning_menu_exit()
 				return
 			else:
 				Globals.confirm_prompt.s_next.play()
-				yield(Globals.confirm_prompt,"done_closing")
+				await Globals.confirm_prompt.done_closing
 		
 		if Rhythia.get("approach_rate") <= 0:
 			Globals.confirm_prompt.open(
@@ -144,14 +144,14 @@ func finish():
 				"Warning",
 				[{text="Return to menu"},{text="Continue"}]
 			)
-			var option = yield(Globals.confirm_prompt,"option_selected")
+			var option = await Globals.confirm_prompt.option_selected
 			Globals.confirm_prompt.close()
 			if option == 0:
 				warning_menu_exit()
 				return
 			else:
 				Globals.confirm_prompt.s_next.play()
-				yield(Globals.confirm_prompt,"done_closing")
+				await Globals.confirm_prompt.done_closing
 		
 		if Rhythia.hitwindow_ms <= 18:
 			Globals.confirm_prompt.open(
@@ -159,14 +159,14 @@ func finish():
 				"Warning",
 				[{text="Return to menu"},{text="Continue"}]
 			)
-			var option = yield(Globals.confirm_prompt,"option_selected")
+			var option = await Globals.confirm_prompt.option_selected
 			Globals.confirm_prompt.close()
 			if option == 0:
 				warning_menu_exit()
 				return
 			else:
 				Globals.confirm_prompt.s_next.play()
-				yield(Globals.confirm_prompt,"done_closing")
+				await Globals.confirm_prompt.done_closing
 	
 	leaving = true
 
@@ -185,4 +185,4 @@ func _process(delta):
 			finish()
 	
 	if leaving and result and black_fade == 1:
-		get_tree().change_scene_to(result)
+		get_tree().change_scene_to_packed(result)

@@ -1,6 +1,6 @@
-extends MeshInstance
+extends MeshInstance3D
 
-export(float) var spin_speed = 3.14/7.5
+@export var spin_speed: float = 3.14/7.5
 
 var gottamovespeed:float = 45
 

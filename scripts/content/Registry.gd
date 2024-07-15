@@ -161,7 +161,7 @@ func load_registry_file(path:String,regtype:int,regDisplayName:String=""):
 		print(lines.size())
 		for i in range(lines.size()):
 			var l = lines[i]
-			if fmod(i,12) == 0: yield(Globals.get_tree(),"idle_frame")
+			if fmod(i,12) == 0: await Globals.get_tree().idle_frame
 			# type:~:id:~:name:~:creator:~:difficulty:~:rarity:~:musicPath:~:dataOrPath
 			var split:Array = l.split(":~:")
 			if split.size() == 8 and !split[0].begins_with("#"):
@@ -178,10 +178,10 @@ func load_registry_file(path:String,regtype:int,regDisplayName:String=""):
 					Globals.MAPR_EMBEDDED_SONG_ABSOLUTE: song.setup_from_data(split[7],split[6])
 				
 				if Rhythia.do_archive_convert and regDisplayName == "ssarchive": 
-					Rhythia.emit_signal("init_stage_reached","Converting map archive to .sspm\n(This could take a while)\n%.0f%%" % (
+					Rhythia.emit_signal("init_stage_reached","Converting map archive to super.sspm\n(This could take a while)\n%.0f%%" % (
 						100*(float(i)/float(lines.size()))
 					))
-					if fmod(i,8) == 0: yield(Globals.get_tree(),"idle_frame")
+					if fmod(i,8) == 0: await Globals.get_tree().idle_frame
 					song.convert_to_sspm()
 				add_item(song)
 				song.discard_notes()

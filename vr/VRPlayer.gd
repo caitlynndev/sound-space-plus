@@ -1,14 +1,14 @@
-extends Spatial
+extends Node3D
 class_name VRPlayer
 
-onready var origin:Spatial = $Origin
-onready var head:Camera = $Origin/Head
-onready var left_hand:Spatial = $Origin/LeftHand
-onready var left_ray:RayCast = $Origin/LeftHand/Ray
-onready var right_hand:Spatial = $Origin/RightHand
-onready var right_ray:RayCast = $Origin/RightHand/Ray
+@onready var origin:Node3D = $Origin
+@onready var head:Camera3D = $Origin/Head
+@onready var left_hand:Node3D = $Origin/LeftHand
+@onready var left_ray:RayCast3D = $Origin/LeftHand/Ray
+@onready var right_hand:Node3D = $Origin/RightHand
+@onready var right_ray:RayCast3D = $Origin/RightHand/Ray
 
-var primary_ray:RayCast
+var primary_ray:RayCast3D
 
 func update_primary_ray():
 	if Rhythia.vr_left_handed:
@@ -32,7 +32,7 @@ func _ready():
 	origin.visible = true
 	update_primary_ray()
 	set_process(true)
-	pause_mode = PAUSE_MODE_PROCESS
+	process_mode = PROCESS_MODE_ALWAYS
 
 
 

@@ -1,7 +1,7 @@
 extends MenuButton
 
-export(Array,String) var options = []
-export(String) var target
+@export var options = [] # (Array,String)
+@export var target: String
 var current_sel:int
 
 func on_pressed(i):
@@ -19,4 +19,4 @@ func _ready():
 		if current_sel == i:
 			get_popup().set_item_checked(i,true)
 			text = options[i]
-	get_popup().connect("id_pressed",self,"on_pressed")
+	get_popup().connect("id_pressed", Callable(self, "on_pressed"))

@@ -8,4 +8,4 @@ func _process(_d):
 
 func _ready():
 	value = Rhythia.fade_length * 100
-	connect("changed",self,"upd")
+	connect("changed", Callable(self, "upd"))

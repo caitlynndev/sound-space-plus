@@ -59,6 +59,6 @@ func _process(delta):
 	if leaving and black_fade == 1:
 		if Rhythia.queue_active:
 			Rhythia.select_song(next_song)
-			get_tree().change_scene("res://scenes/loaders/songload.tscn")
+			get_tree().change_scene_to_file("res://scenes/loaders/songload.tscn")
 		else:
-			get_tree().change_scene("res://scenes/loaders/menuload.tscn")
+			get_tree().change_scene_to_file("res://scenes/loaders/menuload.tscn")

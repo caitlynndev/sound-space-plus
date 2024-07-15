@@ -25,6 +25,6 @@ func _ready():
 		if world == Rhythia.selected_space:
 			current_sel = i
 			get_popup().set_item_checked(i,true)
-	Rhythia.connect("selected_space_changed",self,"on_world_selected")
-	get_popup().connect("id_pressed",self,"on_pressed")
+	Rhythia.connect("selected_space_changed", Callable(self, "on_world_selected"))
+	get_popup().connect("id_pressed", Callable(self, "on_pressed"))
 	on_world_selected(Rhythia.selected_space)

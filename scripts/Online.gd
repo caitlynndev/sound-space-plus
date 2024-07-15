@@ -16,7 +16,7 @@ var mapdl_bs:float = 1
 var mapdl_bd:float = 0
 
 signal _mapdl_req
-func _on_mapdl_request_completed(result:int,response_code:int,headers:PoolStringArray,body:PoolByteArray):
+func _on_mapdl_request_completed(result:int,response_code:int,headers:PackedStringArray,body:PackedByteArray):
 	emit_signal("_mapdl_req",{result=result,response_code=response_code,headers=headers,body=body})
 
 func cancel():
@@ -33,7 +33,7 @@ func _process(_d):
 
 signal _connection_test
 var ctest_hr:HTTPRequest = HTTPRequest.new()
-func _on_ctest_request_completed(result:int,response_code:int,headers:PoolStringArray,body:PoolByteArray):
+func _on_ctest_request_completed(result:int,response_code:int,headers:PackedStringArray,body:PackedByteArray):
 	if result == HTTPRequest.RESULT_SUCCESS:
 		emit_signal("_connection_test",true)
 	else:
@@ -53,10 +53,10 @@ func _mapdl_handler(id:String,map:Song):
 		mapdl_error(id,"MapDB API Invalid",map); return
 	
 	call_deferred("test_connection")
-	if !yield(self,"_connection_test"):
+	if !await self._connection_test:
 		mapdl_error(id,"Failed to connect",map); return
 	
-	var dir:Directory = Directory.new()
+	var dir:DirAccess = DirAccess.new()
 	if dir.file_exists(Globals.p("user://mapdl.sspm.part")):
 		dir.remove(Globals.p("user://mapdl.sspm.part"))
 	
@@ -67,7 +67,7 @@ func _mapdl_handler(id:String,map:Song):
 		elif res == ERR_CANT_CONNECT: mapdl_error(id,"Can't Connect",map)
 		else: mapdl_error(id,"Unknown Error (%s)" % res,map)
 	else:
-		var mapdl_res = yield(self,"_mapdl_req")
+		var mapdl_res = await self._mapdl_req
 		
 		if mapdl_res.result == HTTPRequest.RESULT_CANT_RESOLVE:
 			mapdl_error(id,"Can't Resolve",map)
@@ -102,10 +102,12 @@ func _mapdl_handler(id:String,map:Song):
 				map.load_from_sspm(Globals.p("user://maps/%s.sspm" % map.id))
 				emit_signal("map_downloaded",{id=id, success=true})
 			else:
-				var resp = parse_json(mapdl_res.body.get_string_from_utf8())
+				var test_json_conv = JSON.new()
+				test_json_conv.parse(mapdl_res.body.get_string_from_utf8())
+				var resp = test_json_conv.get_data()
 				if resp: mapdl_error(id, resp.error, map)
 				else: mapdl_error(id, "HTTP-%s" % mapdl_res.response_code, map)
-		elif mapdl_res.result == -1: # cancelled
+		elif mapdl_res.result == -1: # canceled
 			mapdl_error(id,"Cancelled", map)
 		else: # Unknown error
 			mapdl_error(id,"Unknown Error", map)
@@ -119,7 +121,7 @@ func download_map(map:Song):
 
 var netmaps_hr:HTTPRequest = HTTPRequest.new()
 signal _netmaps_req
-func _on_netmaps_request_completed(result:int,response_code:int,headers:PoolStringArray,body:PoolByteArray):
+func _on_netmaps_request_completed(result:int,response_code:int,headers:PackedStringArray,body:PackedByteArray):
 	emit_signal("_netmaps_req",{result=result,response_code=response_code,headers=headers,body=body})
 
 const weekday = [
@@ -130,19 +132,19 @@ const month = [
 ]
 
 func load_db_maps():
-	yield(get_tree(),"idle_frame")
+	await get_tree().idle_frame
 	
 	if !ProjectSettings.get_setting("application/networking/enabled"):
 		pass # 011-865
 	elif mapdb_api == "" || mapdb_api.begins_with("http://localhost") && !OS.has_feature("debug"):
 		show_db_error("Map database is improperly configured.","Map Database Error")
-		yield(self,"error_done")
+		await self.error_done
 	elif !Globals.is_valid_url(mapdb_api):
 		show_db_error("Map database download failed.\nMapDB URL Invalid","Map Database Error")
-		yield(self,"error_done")
+		await self.error_done
 	else:
 		call_deferred("test_connection")
-		if !yield(self,"_connection_test"):
+		if !await self._connection_test:
 			Globals.notify(
 				Globals.NOTIFY_ERROR,
 				"Online maps will not be loaded - failed to connect.\n\nMake sure your system clock is Synchronized!",
@@ -152,7 +154,9 @@ func load_db_maps():
 			return
 		
 		var netmaps:Dictionary = {
-			"id_that_doesnt_exist": parse_json("""{
+			var test_json_conv = JSON.new()
+			test_json_conv.parse("""{
+			"id_that_doesnt_exist": test_json_conv.get_data()
 				"id":"id_that_doesnt_exist",
 				"download":"http://chedski.test/ssp/mapdb/api/download/id_that_doesnt_exist",
 				"audio":"http://chedski.test/ssp/mapdb/api/audio/id_that_doesnt_exist",
@@ -186,35 +190,35 @@ func load_db_maps():
 				dict_date = Time.get_datetime_dict_from_datetime_string(file.get_as_text(), true)
 			file.close()
 
-		netmaps_hr.request(mapdb_api, PoolStringArray([
+		netmaps_hr.request(mapdb_api, PackedStringArray([
 			"If-Modified-Since: %s, %02d %s %04d %02d:%02d:%02d GMT" % [
 				weekday[dict_date.weekday],
 				dict_date.day, month[dict_date.month - 1], dict_date.year,
 				dict_date.hour, dict_date.minute, dict_date.second
 			]
 		]))
-		var netmaps_res = yield(self,"_netmaps_req")
+		var netmaps_res = await self._netmaps_req
 		
 		
 		
 		if netmaps_res.result == HTTPRequest.RESULT_CANT_RESOLVE:
 			show_db_error("Map database download failed.\nError: Can't Resolve","Map Database Error")
-			yield(self,"error_done")
+			await self.error_done
 		elif netmaps_res.result == HTTPRequest.RESULT_CANT_CONNECT:
 			show_db_error("Map database download failed.\nError: Can't Connect","Map Database Error")
-			yield(self,"error_done")
+			await self.error_done
 		elif netmaps_res.result == HTTPRequest.RESULT_CONNECTION_ERROR:
 			show_db_error("Map database download failed.\nError: Connection Error","Map Database Error")
-			yield(self,"error_done")
+			await self.error_done
 		elif netmaps_res.result == HTTPRequest.RESULT_SSL_HANDSHAKE_ERROR:
 			show_db_error("Map database download failed.\nError: SSL Handshake Error","Map Database Error")
-			yield(self,"error_done")
+			await self.error_done
 		elif netmaps_res.result == HTTPRequest.RESULT_TIMEOUT:
 			show_db_error("Map database download failed.\nError: Timeout","Map Database Error")
-			yield(self,"error_done")
+			await self.error_done
 		elif netmaps_res.result == HTTPRequest.RESULT_REDIRECT_LIMIT_REACHED:
 			show_db_error("Map database download failed.\nError: Redirect Limit Reached","Map Database Error")
-			yield(self,"error_done")
+			await self.error_done
 			
 		elif netmaps_res.result == HTTPRequest.RESULT_SUCCESS:
 			if netmaps_res.response_code == 200:
@@ -229,10 +233,12 @@ func load_db_maps():
 						file.store_string(Time.get_datetime_string_from_system(true))
 					file.close()
 				
-				var nmp = parse_json(netmaps_res.body.get_string_from_utf8())
+				var test_json_conv = JSON.new()
+				test_json_conv.parse(netmaps_res.body.get_string_from_utf8())
+				var nmp = test_json_conv.get_data()
 				if !(nmp is Dictionary):
 					show_db_error("Map database download failed.\nError: Malformed JSON","Map Database Error")
-					yield(self,"error_done")
+					await self.error_done
 				else:
 					netmaps = nmp
 					var i = 0
@@ -252,14 +258,16 @@ func load_db_maps():
 								)
 							
 							i += 1
-							if fmod(i,floor(float(netmaps.size())/100)) == 0: yield(get_tree(),"idle_frame")
+							if fmod(i,floor(float(netmaps.size())/100)) == 0: await get_tree().idle_frame
 			elif netmaps_res.response_code == 304:
 				print("Cache hit!")
 				var res = file.open(Globals.p("user://.mapdb_cache.json"),File.READ)
 				if res == OK:
-					var nmp = parse_json(file.get_as_text())
+					var test_json_conv = JSON.new()
+					test_json_conv.parse(file.get_as_text())
+					var nmp = test_json_conv.get_data()
 					if !(nmp is Dictionary):
-						var dir:Directory = Directory.new()
+						var dir:DirAccess = DirAccess.new()
 						dir.remove(Globals.p("user://.mapdb_cache.json"))
 						dir.remove(Globals.p("user://.mapdb_updated.txt"))
 					else:
@@ -281,14 +289,14 @@ func load_db_maps():
 									)
 								
 								i += 1
-								if fmod(i,floor(float(netmaps.size())/100)) == 0: yield(get_tree(),"idle_frame")
+								if fmod(i,floor(float(netmaps.size())/100)) == 0: await get_tree().idle_frame
 				file.close()
 			else:
 				show_db_error("Map database download failed.\nError code: HTTP-%s" % netmaps_res.response_code,"Map Database Error")
-				yield(self,"error_done")
+				await self.error_done
 		else: # Unknown error
 			show_db_error("Map database download failed.\nError code: HTTP-%s" % netmaps_res.response_code,"Map Database Error")
-			yield(self,"error_done")
+			await self.error_done
 			
 	
 	emit_signal("db_maps_done")
@@ -302,12 +310,14 @@ func check_latest_version():
 		return
 	var github_url = "https://api.github.com/repos/%s/releases/latest"
 	version_hr.request(github_url % ProjectSettings.get_setting("application/networking/github_repo"))
-func _on_version_request_completed(result:int,response_code:int,headers:PoolStringArray,body:PoolByteArray):
+func _on_version_request_completed(result:int,response_code:int,headers:PackedStringArray,body:PackedByteArray):
 	if result != HTTPRequest.RESULT_SUCCESS or response_code != 200:
 		emit_signal("latest_version",ProjectSettings.get_setting("application/config/version"))
 		return
 	var string = body.get_string_from_utf8()
-	var json = JSON.parse(string)
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(string)
+	var json = test_json_conv.get_data()
 	var data = json.result
 	latest_version_data = data
 	emit_signal("latest_version",data.tag_name)
@@ -326,10 +336,10 @@ func attempt_update():
 		emit_signal("update_finished")
 		return
 	var exec_dir = OS.get_executable_path().get_base_dir()
-	var file_path = exec_dir.plus_file("update.zip")
+	var file_path = exec_dir.path_join("update.zip")
 	update_hr.download_file = file_path
 	update_hr.request(asset.url,["Accept: application/octet-stream"])
-	var res = yield(self,"_update_req")
+	var res = await self._update_req
 	if res[0] != HTTPRequest.RESULT_SUCCESS or res[1] != 200:
 		emit_signal("update_finished")
 		return
@@ -337,48 +347,48 @@ func attempt_update():
 	ProjectSettings.load_resource_pack(file_path,false)
 	var read_file = File.new()
 	read_file.open("res://SoundSpacePlus.pck",File.READ)
-	var new_file_buffer = read_file.get_buffer(read_file.get_len())
+	var new_file_buffer = read_file.get_buffer(read_file.get_length())
 	read_file.close()
 	var file = File.new()
-	var dir = Directory.new()
-	if dir.file_exists(exec_dir.plus_file("SoundSpacePlus.pck.old")):
-		dir.remove(exec_dir.plus_file("SoundSpacePlus.pck.old"))
-	if dir.file_exists(exec_dir.plus_file("SoundSpacePlus.pck")):
-		dir.rename(exec_dir.plus_file("SoundSpacePlus.pck"),exec_dir.plus_file("SoundSpacePlus.pck.old"))
-	file.open(exec_dir.plus_file("SoundSpacePlus.pck"),File.WRITE)
+	var dir = DirAccess.new()
+	if dir.file_exists(exec_dir.path_join("SoundSpacePlus.pck.old")):
+		dir.remove(exec_dir.path_join("SoundSpacePlus.pck.old"))
+	if dir.file_exists(exec_dir.path_join("SoundSpacePlus.pck")):
+		dir.rename(exec_dir.path_join("SoundSpacePlus.pck"),exec_dir.path_join("SoundSpacePlus.pck.old"))
+	file.open(exec_dir.path_join("SoundSpacePlus.pck"),File.WRITE)
 	file.store_buffer(new_file_buffer)
 	file.close()
 	emit_signal("update_finished")
-func _on_update_request_completed(result:int,response_code:int,headers:PoolStringArray,body:PoolByteArray):
+func _on_update_request_completed(result:int,response_code:int,headers:PackedStringArray,body:PackedByteArray):
 	emit_signal("_update_req",[result,response_code])
 
 func _ready():
 	add_child(netmaps_hr)
 	netmaps_hr.use_threads = true
 	netmaps_hr.timeout = 80
-	netmaps_hr.connect("request_completed",self,"_on_netmaps_request_completed")
+	netmaps_hr.connect("request_completed", Callable(self, "_on_netmaps_request_completed"))
 	
 	add_child(ctest_hr)
 	ctest_hr.use_threads = true
 	ctest_hr.timeout = 5
-	ctest_hr.connect("request_completed",self,"_on_ctest_request_completed")
+	ctest_hr.connect("request_completed", Callable(self, "_on_ctest_request_completed"))
 	
 	add_child(mapdl_hr)
 	mapdl_hr.use_threads = false
 	mapdl_hr.timeout = 0
-	mapdl_hr.connect("request_completed",self,"_on_mapdl_request_completed")
+	mapdl_hr.connect("request_completed", Callable(self, "_on_mapdl_request_completed"))
 	
 	add_child(version_hr)
 	version_hr.use_threads = true
 	version_hr.timeout = 5
-	version_hr.connect("request_completed",self,"_on_version_request_completed")
+	version_hr.connect("request_completed", Callable(self, "_on_version_request_completed"))
 	
 	add_child(update_hr)
 	update_hr.use_threads = true
 	update_hr.timeout = 0
-	update_hr.connect("request_completed",self,"_on_update_request_completed")
+	update_hr.connect("request_completed", Callable(self, "_on_update_request_completed"))
 	
-	pause_mode = PAUSE_MODE_PROCESS
+	process_mode = PROCESS_MODE_ALWAYS
 	
 	mapdb_api = ProjectSettings.get_setting("application/networking/mapdb_api")
 
@@ -387,10 +397,10 @@ func show_db_error(body:String,title:String):
 	# Globals.notify(Globals.NOTIFY_ERROR,title,body)
 	Globals.confirm_prompt.s_alert.play()
 	Globals.confirm_prompt.open(body,title,[{text="OK"}])
-	yield(Globals.confirm_prompt,"option_selected")
+	await Globals.confirm_prompt.option_selected
 	Globals.confirm_prompt.s_back.play()
 	Globals.confirm_prompt.close()
-	yield(Globals.confirm_prompt,"done_closing")
+	await Globals.confirm_prompt.done_closing
 	emit_signal("error_done")
 
 const MODULO_8_BIT = 256

@@ -1,9 +1,9 @@
 extends Panel
 
-var dir:Directory = Directory.new()
+var dir:DirAccess = DirAccess.new()
 var file:File = File.new()
 
-export(Texture) var cover_placeholder
+@export var cover_placeholder: Texture2D
 
 var song:Song
 
@@ -63,7 +63,7 @@ func check_txt(txt:String,is_raw:bool=false):
 	else: song.songType = Globals.MAP_TXT
 	if txt.split(",").size() >= 2 and txt.split(",")[1].split("|").size() == 3:
 		song.loadRawData(txt)
-		$TxtFile/H/data/Info.set("custom_colors/font_color",Color(0.5,1,0.5))
+		$TxtFile/H/data/Info.set("theme_override_colors/font_color",Color(0.5,1,0.5))
 		if txt.length() > 25: $TxtFile/H/data/Info.text = txt.substr(0,25) + "..."
 		else: $Label.text = txt
 		$TxtFile/H/data/text.text = txt
@@ -71,7 +71,7 @@ func check_txt(txt:String,is_raw:bool=false):
 	else:
 		song.rawData = ""
 		$TxtFile/H/data/Info.text = "Invalid map data"
-		$TxtFile/H/data/Info.set("custom_colors/font_color",Color(1,0.5,0.5))
+		$TxtFile/H/data/Info.set("theme_override_colors/font_color",Color(1,0.5,0.5))
 		$TxtFile/H/data/text.text = ""
 		check_txt_requirements()
 
@@ -87,7 +87,7 @@ func txt_song_preview():
 		$TxtFile/H/audio/player.play()
 
 func do_txt_paste():
-	$TxtFile/H/data.rect_min_size.y = 150
+	$TxtFile/H/data.custom_minimum_size.y = 150
 	$TxtFile/H/data/file.visible = false
 	$TxtFile/H/data/paste.visible = false
 	$TxtFile/H/data/text_done.visible = true
@@ -96,7 +96,7 @@ func do_txt_paste():
 	$TxtFile/H/data/text.select_all()
 
 func end_txt_paste():
-	$TxtFile/H/data.rect_min_size.y = 60
+	$TxtFile/H/data.custom_minimum_size.y = 60
 	$TxtFile/H/data/file.visible = true
 	$TxtFile/H/data/paste.visible = true
 	$TxtFile/H/data/text_done.visible = false
@@ -114,7 +114,7 @@ func reset_text_edit_screen():
 	song.songType = Globals.MAP_TXT
 	print(Globals.MAP_TXT)
 	print(song.songType)
-	$TxtFile/H/data.rect_min_size.y = 60
+	$TxtFile/H/data.custom_minimum_size.y = 60
 	$TxtFile/H/data/file.visible = true
 	$TxtFile/H/data/paste.visible = true
 	$TxtFile/H/data/text_done.visible = false
@@ -131,9 +131,9 @@ func reset_text_edit_screen():
 	$TxtFile/H/E/Info/Difficulty/B.selected = (song.difficulty + 1)
 	
 	$TxtFile/H/data/Info.text = "Required"
-	$TxtFile/H/data/Info.set("custom_colors/font_color",Color(1,0.5,0.5))
+	$TxtFile/H/data/Info.set("theme_override_colors/font_color",Color(1,0.5,0.5))
 	$TxtFile/H/audio/Info.text = "Required"
-	$TxtFile/H/audio/Info.set("custom_colors/font_color",Color(1,0.5,0.5))
+	$TxtFile/H/audio/Info.set("theme_override_colors/font_color",Color(1,0.5,0.5))
 	$TxtFile/H/audio/preview.disabled = true
 	$TxtFile/H/audio/preview.modulate = Color(0.5,0.5,0.5)
 	$TxtFile/H/audio/preview/Title.text = "Preview"
@@ -141,7 +141,7 @@ func reset_text_edit_screen():
 	
 	$TxtFile/H/E/Cover/T.texture = load("res://assets/images/ui/placeholder_dark.jpg")
 	$TxtFile/H/E/Cover/C.disabled = true
-	$TxtFile/H/E/Cover/C.pressed = false
+	$TxtFile/H/E/Cover/C.button_pressed = false
 	
 	check_txt_requirements()
 	
@@ -159,7 +159,7 @@ func select_type(type:int):
 		Globals.file_sel.open_file(
 			self,
 			"file_selected",
-			PoolStringArray(["*.sspm ; Sound Space Plus map"]),
+			PackedStringArray(["*.sspm ; Sound Space Plus map"]),
 			false,
 			#"~/Downloads"
 			OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS)
@@ -181,7 +181,7 @@ func sel_filetype(type:int):
 			Globals.file_sel.open_file(
 				self,
 				"file_selected",
-				PoolStringArray(["*.zip, *.rar, *.7z, *.gz, *.vmap ; archive files"]),
+				PackedStringArray(["*.zip, *.rar, *.7z, *.gz, *.vmap ; archive files"]),
 				false,
 				#"~/Downloads"
 				OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS)
@@ -202,7 +202,7 @@ func sel_filetype(type:int):
 			Globals.file_sel.open_file(
 				self,
 				"file_selected",
-				PoolStringArray(["*.txt ; Text files"]),
+				PackedStringArray(["*.txt ; Text files"]),
 				false,
 				#"~/Downloads"
 				OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS)
@@ -212,7 +212,7 @@ func sel_filetype(type:int):
 			Globals.file_sel.open_file(
 				self,
 				"file_selected",
-				PoolStringArray(["*.mp3, *.ogg ; Audio files"]),
+				PackedStringArray(["*.mp3, *.ogg ; Audio files"]),
 				false,
 				#"~/Downloads"
 				OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS)
@@ -270,11 +270,11 @@ func populate_edit_screen():
 	if song.has_cover:
 		$Edit/Cover/T.texture = song.cover
 		$Edit/Cover/C.disabled = false
-		$Edit/Cover/C.pressed = true
+		$Edit/Cover/C.button_pressed = true
 	else:
 		$Edit/Cover/T.texture = load("res://assets/images/ui/placeholder_dark.jpg")
 		$Edit/Cover/C.disabled = true
-		$Edit/Cover/C.pressed = false
+		$Edit/Cover/C.button_pressed = false
 	
 	if Rhythia.registry_song.idx_id.has(song.id):
 		$Edit/done.disabled = true
@@ -289,22 +289,22 @@ func populate_edit_screen():
 
 func import_vulnus_folder():
 	print("Locating meta.json...")
-	yield(get_tree(),"idle_frame")
+	await get_tree().idle_frame
 	
 	dir.open(path)
 	if !dir.file_exists("meta.json"):
 		print("Possible nested folder - searching for meta.json AAAAAAAAAAAAAAAAAAAA")
-		yield(get_tree(),"idle_frame")
+		await get_tree().idle_frame
 		print('list_dir_begin before')
-		dir.list_dir_begin()
+		dir.list_dir_begin() # TODOConverter3To4 fill missing arguments https://github.com/godotengine/godot/pull/40547
 		var n = dir.get_next()
 		while n:
 			n = dir.get_next()
 			print(n)
-			if dir.file_exists(n.plus_file("meta.json")):
+			if dir.file_exists(n.path_join("meta.json")):
 				print("Found meta.json in '%s'" % n)
-				yield(get_tree(),"idle_frame")
-				path = path.plus_file(n)
+				await get_tree().idle_frame
+				path = path.path_join(n)
 				break
 		dir.list_dir_end()
 		if path == Globals.p("user://temp"): # Meta.json wasn't found anywhere
@@ -316,8 +316,8 @@ func import_vulnus_folder():
 			print("found meta.json at %s" % path)
 	
 	print("Located! Loading meta.json...")
-	yield(get_tree(),"idle_frame")
-	var res = file.open(path.plus_file("meta.json"),File.READ)
+	await get_tree().idle_frame
+	var res = file.open(path.path_join("meta.json"),File.READ)
 	if res != OK:
 		print("meta.json: file open error %s" % res)
 		$VulnusFile/Error.text = "meta.json: error opening file (file error %s)" % res
@@ -327,10 +327,12 @@ func import_vulnus_folder():
 	var metatxt:String = file.get_as_text()
 	file.close()
 	print("Loaded! Reading metadata now...")
-	yield(get_tree(),"idle_frame")
-	var meta:Dictionary = parse_json(metatxt)
+	await get_tree().idle_frame
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(metatxt)
+	var meta:Dictionary = test_json_conv.get_data()
 	print("Parsed!")
-	yield(get_tree(),"idle_frame")
+	await get_tree().idle_frame
 	var artist:String = meta.get("_artist","Unknown Artist")
 	var difficulties:Array = meta.get("_difficulties",[])
 	var mappers:Array = meta.get("_mappers",[])
@@ -338,7 +340,7 @@ func import_vulnus_folder():
 	var title:String = meta.get("_title","Unknown Song")
 	
 	print("Data loaded! Making sure we have everything we need...")
-	yield(get_tree(),"idle_frame")
+	await get_tree().idle_frame
 	
 	if difficulties.size() == 0:
 		print("no difficulties")
@@ -347,11 +349,11 @@ func import_vulnus_folder():
 		return
 	if music_path == "**missing**" or !music_path.is_valid_filename():
 		print("invalid music path")
-		$VulnusFile/Error.text = "Path to music is missing or invalid"
+		$VulnusFile/Error.text = "Path3D to music is missing or invalid"
 		$VulnusFile/Error.visible = true
 		return
 	
-	if !file.file_exists(path.plus_file(music_path)):
+	if !file.file_exists(path.path_join(music_path)):
 		print("music file doesn't exist")
 		$VulnusFile/Error.text = "Music file does not exist (%s)" % [music_path]
 		$VulnusFile/Error.visible = true
@@ -359,7 +361,7 @@ func import_vulnus_folder():
 	
 	print("Everything seems to be present!")
 	print("Building metadata...")
-	yield(get_tree(),"idle_frame")
+	await get_tree().idle_frame
 	
 	var conc:String = ""
 	for i in range(mappers.size()):
@@ -369,19 +371,19 @@ func import_vulnus_folder():
 	var songname = "%s - %s" % [artist,title]
 	var id = generate_id(songname,conc)
 	print("Everything is ready! Loading map...")
-	yield(get_tree(),"idle_frame")
+	await get_tree().idle_frame
 	
 	song = Song.new(id,songname,conc)
 	
 	if difficulties.size() == 1:
-		if !file.file_exists(path.plus_file(difficulties[0])):
+		if !file.file_exists(path.path_join(difficulties[0])):
 			print("map data file doesn't exist")
 			$VulnusFile/Error.text = "Map data file does not exist (%s)" % [difficulties[0]]
 			$VulnusFile/Error.visible = true
 			return
 		song.setup_from_vulnus_json("%s/%s" % [path,difficulties[0]], "%s/%s" % [path,music_path])
 		
-		var cover = Globals.imageLoader.load_if_exists(path.plus_file("cover"))
+		var cover = Globals.imageLoader.load_if_exists(path.path_join("cover"))
 		if cover:
 			song.cover = cover
 			song.has_cover = true
@@ -389,7 +391,7 @@ func import_vulnus_folder():
 		print("IMPORTED SUCCESS!!! PARTY TIME!")
 		$VulnusFile/Success.text = "map imported as %s!" % [id]
 		$VulnusFile/Success.visible = true
-		yield(get_tree(),"idle_frame")
+		await get_tree().idle_frame
 		
 		$VulnusFile.visible = false
 		populate_edit_screen()
@@ -409,7 +411,7 @@ func populate_vmap_difficulty_sel():
 		$SelectDifficulty/S/V/L.add_child(btn)
 		btn.get_node("L").text = dlist[i]
 		btn.visible = true
-		btn.connect("pressed",self,"vmap_difficulty_sel",[i])
+		btn.connect("pressed", Callable(self, "vmap_difficulty_sel").bind(i))
 
 func import_vmap_with_difficulty(difficulty_id:int,is_loop:bool=true):
 	var result = song.load_from_vulnus_map(path,difficulty_id)
@@ -443,7 +445,7 @@ func import_vmap_with_difficulty(difficulty_id:int,is_loop:bool=true):
 		return 0
 
 func vmap_difficulty_sel(i:int):
-	var res = file.open(path.plus_file("meta.json"),File.READ)
+	var res = file.open(path.path_join("meta.json"),File.READ)
 	if res != OK:
 		print("meta.json: file open error %s" % res)
 		$Finish/Error.text = "meta.json: error opening file (file error %s)" % res
@@ -458,16 +460,18 @@ func vmap_difficulty_sel(i:int):
 	var metatxt:String = file.get_as_text()
 	file.close()
 	print("Loaded! Reading metadata now...")
-	yield(get_tree(),"idle_frame")
-	var meta:Dictionary = parse_json(metatxt)
+	await get_tree().idle_frame
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(metatxt)
+	var meta:Dictionary = test_json_conv.get_data()
 	print("Parsed!")
-	yield(get_tree(),"idle_frame")
+	await get_tree().idle_frame
 	var difficulties:Array = meta.get("_difficulties",[])
 	
 	if i == -1:
 		for i in range(difficulties.size()):
 			if i != 0: song = Song.new()
-			if !file.file_exists(path.plus_file(difficulties[i])):
+			if !file.file_exists(path.path_join(difficulties[i])):
 				print("map data file doesn't exist")
 				$Finish/Error.text = "Map data file does not exist (%s)" % [difficulties[i]]
 				$Finish/Error.visible = true
@@ -498,7 +502,7 @@ func vmap_difficulty_sel(i:int):
 		$SelectDifficulty.visible = false
 		$Finish.visible = true
 	else:
-		if !file.file_exists(path.plus_file(difficulties[i])):
+		if !file.file_exists(path.path_join(difficulties[i])):
 			print("map data file doesn't exist")
 			$Finish/Error.text = "Map data file does not exist (%s)" % [difficulties[i]]
 			$Finish/Error.visible = true
@@ -522,7 +526,7 @@ func vmap_difficulty_sel(i:int):
 		elif result == -1:
 			return
 
-func file_selected(files:PoolStringArray):
+func file_selected(files:PackedStringArray):
 	if files.size() == 0: return
 	match opening:
 		FO_COVER:
@@ -533,10 +537,10 @@ func file_selected(files:PoolStringArray):
 				song.has_cover = true
 				$Edit/Cover/T.texture = cover
 				$Edit/Cover/C.disabled = false
-				$Edit/Cover/C.pressed = true
+				$Edit/Cover/C.button_pressed = true
 				$TxtFile/H/E/Cover/T.texture = cover
 				$TxtFile/H/E/Cover/C.disabled = false
-				$TxtFile/H/E/Cover/C.pressed = true
+				$TxtFile/H/E/Cover/C.button_pressed = true
 		FO_SSPM:
 			song = Song.new()
 			song.load_from_sspm(files[0])
@@ -548,11 +552,11 @@ func file_selected(files:PoolStringArray):
 			$VulnusFile/Error.visible = false
 			
 			print("Making temp dir")
-			yield(get_tree(),"idle_frame")
+			await get_tree().idle_frame
 			dir.open(Globals.p("user://"))
 			if dir.dir_exists(Globals.p("user://temp")):
 				print("Removing old temp dir")
-				yield(get_tree(),"idle_frame")
+				await get_tree().idle_frame
 				var found = Globals.get_files_recursive(
 					[Globals.p("user://temp")]
 				)
@@ -580,13 +584,13 @@ func file_selected(files:PoolStringArray):
 			dir.make_dir(Globals.p("user://temp"))
 			
 			print("Extracting zip file...")
-			yield(get_tree(),"idle_frame")
+			await get_tree().idle_frame
 			
 			var output = []
 			var binarypath:String = ProjectSettings.get_setting("application/config/7zip_binary_path")
 			if binarypath != "":
 				if binarypath.begins_with("install_dir/"):
-					binarypath = OS.get_executable_path().get_base_dir().plus_file(binarypath.trim_prefix("install_dir/"))
+					binarypath = OS.get_executable_path().get_base_dir().path_join(binarypath.trim_prefix("install_dir/"))
 				
 				var outpath:String = ProjectSettings.globalize_path(Globals.p("user://temp"))
 				var inpath:String = ProjectSettings.globalize_path(files[0])
@@ -655,19 +659,19 @@ func file_selected(files:PoolStringArray):
 				$TxtFile/H/audio/preview.disabled = true
 				$TxtFile/H/audio/preview.modulate = Color(0.5,0.5,0.5)
 				$TxtFile/H/audio/Info.text = "Audio invalid or unsupported"
-				$TxtFile/H/audio/Info.set("custom_colors/font_color",Color(1,0.5,0.5))
+				$TxtFile/H/audio/Info.set("theme_override_colors/font_color",Color(1,0.5,0.5))
 			else:
 				song.musicFile = files[0]
 				$TxtFile/H/audio/Info.text = files[0].get_file()
-				$TxtFile/H/audio/Info.set("custom_colors/font_color",Color(0,1,0.5))
+				$TxtFile/H/audio/Info.set("theme_override_colors/font_color",Color(0,1,0.5))
 				$TxtFile/H/audio/preview.disabled = false
 				$TxtFile/H/audio/preview.modulate = Color(1,1,1)
-				if !(stream is AudioStreamSample): stream.loop = true
+				if !(stream is AudioStreamWAV): stream.loop = true
 				$TxtFile/H/audio/player.stream = stream
 			check_txt_requirements()
 
 func folder_selected(path:String):
-	if path != "": file_selected(PoolStringArray([path]))
+	if path != "": file_selected(PackedStringArray([path]))
 
 func edit_field(field:String,done:bool=false):
 	if done:
@@ -784,7 +788,7 @@ func onopen():
 	$VulnusFile/Error.visible = false
 	$TxtFile/H/audio/preview/Title.text = "Preview"
 	$TxtFile/H/audio/player.stop()
-	$TxtFile/H/Temp.pressed = false
+	$TxtFile/H/Temp.button_pressed = false
 	
 	visible = true
 
@@ -804,7 +808,7 @@ func do_coversel():
 	Globals.file_sel.open_file(
 		self,
 		"file_selected",
-		PoolStringArray(["*.png, *.jpg, *.jpeg, *.webp, *.bmp ; Image files"]),
+		PackedStringArray(["*.png, *.jpg, *.jpeg, *.webp, *.bmp ; Image files"]),
 		false,
 		"~/Downloads"
 	)
@@ -818,7 +822,7 @@ func finish_map():
 	$Finish/Error.visible = false
 	$Finish/Success.visible = false
 	$Finish/Wait.visible = true
-	yield(get_tree(),"idle_frame") # Make sure the screen updates
+	await get_tree().idle_frame # Make sure the screen updates
 	
 	if (maptype == T_TXT and $TxtFile/H/Temp.pressed):
 		song.discard_notes()
@@ -846,70 +850,70 @@ func finish_map():
 
 func back_to_menu():
 	get_parent().black_fade_target = true
-	yield(get_tree().create_timer(0.35),"timeout")
+	await get_tree().create_timer(0.35).timeout
 	Rhythia.conmgr_transit = null
-	get_tree().change_scene("res://scenes/loaders/menuload.tscn")
+	get_tree().change_scene_to_file("res://scenes/loaders/menuload.tscn")
 
 func _ready():
 	
-	$SelectType/txt.connect("pressed",self,"select_type",[T_TXT])
-	$SelectType/sspm.connect("pressed",self,"select_type",[T_SSPM])
-	$SelectType/vulnus.connect("pressed",self,"select_type",[T_VULNUS])
-	$SelectType/sspmr.connect("pressed",self,"select_type",[T_SSPMR])
-	$SelectType/cancel.connect("pressed",self,"back_to_menu")
+	$SelectType/txt.connect("pressed", Callable(self, "select_type").bind(T_TXT))
+	$SelectType/sspm.connect("pressed", Callable(self, "select_type").bind(T_SSPM))
+	$SelectType/vulnus.connect("pressed", Callable(self, "select_type").bind(T_VULNUS))
+	$SelectType/sspmr.connect("pressed", Callable(self, "select_type").bind(T_SSPMR))
+	$SelectType/cancel.connect("pressed", Callable(self, "back_to_menu"))
 	
-	$VulnusFile/zip.connect("pressed",self,"sel_filetype",[F_ZIP])
-	$VulnusFile/folder.connect("pressed",self,"sel_filetype",[F_DIR])
+	$VulnusFile/zip.connect("pressed", Callable(self, "sel_filetype").bind(F_ZIP))
+	$VulnusFile/folder.connect("pressed", Callable(self, "sel_filetype").bind(F_DIR))
 	
-	$SelectDifficulty/S/V/All.connect("pressed",self,"vmap_difficulty_sel",[-1])
+	$SelectDifficulty/S/V/All.connect("pressed", Callable(self, "vmap_difficulty_sel").bind(-1))
 	
-	$TxtFile/H/data/file.connect("pressed",self,"sel_filetype",[FO_TXT])
-	$TxtFile/H/data/paste.connect("pressed",self,"do_txt_paste")
-	$TxtFile/H/data/text_done.connect("pressed",self,"end_txt_paste")
-	$TxtFile/H/audio/file.connect("pressed",self,"sel_filetype",[FO_SONG])
-	$TxtFile/H/audio/preview.connect("pressed",self,"txt_song_preview")
+	$TxtFile/H/data/file.connect("pressed", Callable(self, "sel_filetype").bind(FO_TXT))
+	$TxtFile/H/data/paste.connect("pressed", Callable(self, "do_txt_paste"))
+	$TxtFile/H/data/text_done.connect("pressed", Callable(self, "end_txt_paste"))
+	$TxtFile/H/audio/file.connect("pressed", Callable(self, "sel_filetype").bind(FO_SONG))
+	$TxtFile/H/audio/preview.connect("pressed", Callable(self, "txt_song_preview"))
 	
-	$Edit/Cover/T/B.connect("pressed",self,"do_coversel")
-	$Edit/Cover/C.connect("toggled",self,"set_use_cover")
+	$Edit/Cover/T/B.connect("pressed", Callable(self, "do_coversel"))
+	$Edit/Cover/C.connect("toggled", Callable(self, "set_use_cover"))
 	$Edit/Info/Difficulty/B.add_item("N/A",0)
 	$Edit/Info/Difficulty/B.add_item("Easy",1)
 	$Edit/Info/Difficulty/B.add_item("Medium",2)
 	$Edit/Info/Difficulty/B.add_item("Hard",3)
 	$Edit/Info/Difficulty/B.add_item("Logic?",4)
 	$Edit/Info/Difficulty/B.add_item("助",5)
-	$Edit/Info/Difficulty/B.connect("item_selected",self,"difficulty_sel")
-	$Edit/Info/SongName/B.connect("pressed",self,"edit_field",["name"])
-	$Edit/Info/SongName/T.connect("focus_exited",self,"edit_field",["name",true])
-	$Edit/Info/Mapper/B.connect("pressed",self,"edit_field",["mapper"])
-	$Edit/Info/Mapper/T.connect("focus_exited",self,"edit_field",["mapper",true])
-	$Edit/Info/Id/B.connect("pressed",self,"edit_field",["id"])
-	$Edit/Info/Id/T.connect("focus_exited",self,"edit_field",["id",true])
+	$Edit/Info/Difficulty/B.connect("item_selected", Callable(self, "difficulty_sel"))
+	$Edit/Info/SongName/B.connect("pressed", Callable(self, "edit_field").bind("name"))
+	$Edit/Info/SongName/T.connect("focus_exited", Callable(self, "edit_field").bind("name",true))
+	$Edit/Info/Mapper/B.connect("pressed", Callable(self, "edit_field").bind("mapper"))
+	$Edit/Info/Mapper/T.connect("focus_exited", Callable(self, "edit_field").bind("mapper",true))
+	$Edit/Info/Id/B.connect("pressed", Callable(self, "edit_field").bind("id"))
+	$Edit/Info/Id/T.connect("focus_exited", Callable(self, "edit_field").bind("id",true))
 	
-	$Edit/done.connect("pressed",self,"finish_map")
+	$Edit/done.connect("pressed", Callable(self, "finish_map"))
 	
-	$TxtFile/H/E/Cover/T/B.connect("pressed",self,"do_coversel")
-	$TxtFile/H/E/Cover/C.connect("toggled",self,"set_use_cover")
+	$TxtFile/H/E/Cover/T/B.connect("pressed", Callable(self, "do_coversel"))
+	$TxtFile/H/E/Cover/C.connect("toggled", Callable(self, "set_use_cover"))
 	$TxtFile/H/E/Info/Difficulty/B.add_item("N/A",0)
 	$TxtFile/H/E/Info/Difficulty/B.add_item("Easy",1)
 	$TxtFile/H/E/Info/Difficulty/B.add_item("Medium",2)
 	$TxtFile/H/E/Info/Difficulty/B.add_item("Hard",3)
 	$TxtFile/H/E/Info/Difficulty/B.add_item("Logic?",4)
 	$TxtFile/H/E/Info/Difficulty/B.add_item("助",5)
-	$TxtFile/H/E/Info/Difficulty/B.connect("item_selected",self,"difficulty_sel")
-	$TxtFile/H/E/Info/SongName/B.connect("pressed",self,"edit_field",["name"])
-	$TxtFile/H/E/Info/SongName/T.connect("focus_exited",self,"edit_field",["name",true])
-	$TxtFile/H/E/Info/Mapper/B.connect("pressed",self,"edit_field",["mapper"])
-	$TxtFile/H/E/Info/Mapper/T.connect("focus_exited",self,"edit_field",["mapper",true])
-	$TxtFile/H/E/Info/Id/B.connect("pressed",self,"edit_field",["id"])
-	$TxtFile/H/E/Info/Id/T.connect("focus_exited",self,"edit_field",["id",true])
+	$TxtFile/H/E/Info/Difficulty/B.connect("item_selected", Callable(self, "difficulty_sel"))
+	$TxtFile/H/E/Info/SongName/B.connect("pressed", Callable(self, "edit_field").bind("name"))
+	$TxtFile/H/E/Info/SongName/T.connect("focus_exited", Callable(self, "edit_field").bind("name",true))
+	$TxtFile/H/E/Info/Mapper/B.connect("pressed", Callable(self, "edit_field").bind("mapper"))
+	$TxtFile/H/E/Info/Mapper/T.connect("focus_exited", Callable(self, "edit_field").bind("mapper",true))
+	$TxtFile/H/E/Info/Id/B.connect("pressed", Callable(self, "edit_field").bind("id"))
+	$TxtFile/H/E/Info/Id/T.connect("focus_exited", Callable(self, "edit_field").bind("id",true))
 	
-	$TxtFile/done.connect("pressed",self,"finish_map")
+	$TxtFile/done.connect("pressed", Callable(self, "finish_map"))
 	
-	$Edit/cancel.connect("pressed",self,"onopen")
-	$TxtFile/cancel.connect("pressed",self,"onopen")
-	$VulnusFile/cancel.connect("pressed",self,"onopen")
-	$SelectDifficulty/cancel.connect("pressed",self,"onopen")
-	$Finish/ok.connect("pressed",self,"onopen")
+	$Edit/cancel.connect("pressed", Callable(self, "onopen"))
+	$TxtFile/cancel.connect("pressed", Callable(self, "onopen"))
+	$VulnusFile/cancel.connect("pressed", Callable(self, "onopen"))
+	$SelectDifficulty/cancel.connect("pressed", Callable(self, "onopen"))
+	$Finish/ok.connect("pressed", Callable(self, "onopen"))
 	
 #	call_deferred("add_child",openFile)
 #	call_deferred("add_child",openFolder)

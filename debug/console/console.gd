@@ -13,13 +13,13 @@ var LastLabel# = $Holder/Control/Label
 var debug = ProjectSettings.get_setting("application/config/enable_debug_features")
 var console_open = false
 
-onready var CloseButton = $Close
-onready var RunButton = $Run
-onready var TextHolder = $Holder/Control/Label
-onready var DisplayText = get_node("../Text")
-onready var ScrollHolder = $Holder
-onready var CommandBar = $CommandBar
-onready var Scroller = ScrollHolder.get_v_scrollbar()
+@onready var CloseButton = $Close
+@onready var RunButton = $Run
+@onready var TextHolder = $Holder/Control/Label
+@onready var DisplayText = get_node("../Text")
+@onready var ScrollHolder = $Holder
+@onready var CommandBar = $CommandBar
+@onready var Scroller = ScrollHolder.get_v_scroll_bar()
 #onready var MainViewport = get_node("../Center/Contain/Viewport")
 
 var PrintedHeight = 0
@@ -38,12 +38,12 @@ func consolePrint(text,kind=PRINT_TYPE.INFO):
 		_:
 			text = "[color=#ccc]%s[/color]" % text
 	
-	TextHolder.bbcode_text += "\n" + text
-	DisplayText.bbcode_text += "\n" + text
+	TextHolder.text += "\n" + text
+	DisplayText.text += "\n" + text
 	
 
 func clear():
-	TextHolder.bbcode_text = (
+	TextHolder.text = (
 		"[color=#6f9][ Console Cleared ][/color]\n" +
 		"[color=#77f][url=https://www.youtube.com/watch?v=dQw4w9WgXcQ]Console manual[/url][/color]"
 	)
@@ -64,7 +64,7 @@ func close(_ct=null):
 	visible = false
 #	MainViewport.gui_disable_input = false
 	self.console_open = false
-	rect_position = Vector2(0,0)
+	position = Vector2(0,0)
 	CommandBar.release_focus()
 
 func history_down():
@@ -73,7 +73,7 @@ func history_down():
 	HistoryPosition -= 1
 	if HistoryPosition == -1: CommandBar.text = current
 	else: CommandBar.text = Debug.history[HistoryPosition]
-	CommandBar.caret_position = CommandBar.text.length()
+	CommandBar.caret_column = CommandBar.text.length()
 	searchResults.clear()
 
 func history_up():
@@ -82,7 +82,7 @@ func history_up():
 	if HistoryPosition + 2 > Debug.history.size(): return
 	HistoryPosition += 1
 	CommandBar.text = Debug.history[HistoryPosition]
-	CommandBar.caret_position = CommandBar.text.length()
+	CommandBar.caret_column = CommandBar.text.length()
 	searchResults.clear()
 
 func commandCheck(id:String,_args):
@@ -135,7 +135,7 @@ func show_toast(type:int,text:String,time=4.0):
 	frame.get_node("Label").text = text
 #	frame.time = time
 	frame.visible = true
-	yield(get_tree().create_timer(time),"timeout")
+	await get_tree().create_timer(time).timeout
 	frame.queue_free()
 #	Debug.consolePrint('Displaying toast with text "%s"' % text)
 
@@ -150,7 +150,7 @@ func toastCommand(args:Array):
 		
 	var kind:String = args[0]
 	var text:String = args[1]
-	if !kind.is_valid_integer():
+	if !kind.is_valid_int():
 		Debug.consolePrint("argument 0 must be an integer",Debug.PRINT_TYPE.ERROR)
 		return
 	
@@ -175,12 +175,12 @@ func _process(delta):
 					else:
 						 searchResults.append(searchResults.pop_front())
 					CommandBar.text = searchResults[0]
-					CommandBar.caret_position = CommandBar.text.length()
+					CommandBar.caret_column = CommandBar.text.length()
 					return
 			searchCommands(CommandBar.text)
 			if searchResults.size() == 0: return
 			CommandBar.text = searchResults[0]
-			CommandBar.caret_position = CommandBar.text.length()
+			CommandBar.caret_column = CommandBar.text.length()
 
 func _ready():
 	visible = false
@@ -199,10 +199,10 @@ func _ready():
 		protected = false,
 		persist = true
 	})
-	TextHolder.connect("meta_clicked",OS,"shell_open")
-	Debug.connect("command_executed",self,"commandCheck")
-	RunButton.connect("pressed",self,"runTypedCommand")
-	CloseButton.connect("pressed",self,"close")
-	CommandBar.connect("text_entered",self,"runTypedCommand")
-	Debug.connect("console_print",self,"consolePrint")
-	Debug.connect("toast",self,"show_toast")
+	TextHolder.connect("meta_clicked", Callable(OS, "shell_open"))
+	Debug.connect("command_executed", Callable(self, "commandCheck"))
+	RunButton.connect("pressed", Callable(self, "runTypedCommand"))
+	CloseButton.connect("pressed", Callable(self, "close"))
+	CommandBar.connect("text_submitted", Callable(self, "runTypedCommand"))
+	Debug.connect("console_print", Callable(self, "consolePrint"))
+	Debug.connect("toast", Callable(self, "show_toast"))

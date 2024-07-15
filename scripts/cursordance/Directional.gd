@@ -31,7 +31,7 @@ var EndY:float
 func T(time:float) -> float:
 	return abs(time - StartTime) / max(Duration,0.01)
 
-var notes:PoolVector3Array = PoolVector3Array()
+var notes:PackedVector3Array = PackedVector3Array()
 
 func v2(v:Vector3) -> Vector2:
 	return Vector2(v.x,v.y)
@@ -88,7 +88,7 @@ func dir(p0:Vector2,p1:Vector2) -> Vector2:
 func dirR(p0:Vector2,p1:Vector2) -> Vector2:
 	return p1 + ((p1-p0))
 
-var pts = PoolVector2Array([
+var pts = PackedVector2Array([
 	Vector2.ZERO,
 	Vector2.ZERO,
 	Vector2.ZERO,
@@ -97,7 +97,7 @@ var pts = PoolVector2Array([
 	Vector2.ZERO
 ])
 
-var bez = PoolVector2Array([
+var bez = PackedVector2Array([
 	Vector2.ZERO,
 	Vector2.ZERO,
 	Vector2.ZERO,

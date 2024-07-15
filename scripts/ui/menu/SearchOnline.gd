@@ -1,6 +1,6 @@
 extends CheckBox
 
-export(String) var target
+@export var target: String
 
 func upd():
 #	print('scb "%s"' % name)

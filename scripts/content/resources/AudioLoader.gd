@@ -48,7 +48,7 @@ func report_errors(err, filepath):
 	else:
 		print("Unknown error with file ", filepath, " error code: ", err)
 
-func get_format(bytes:PoolByteArray) -> String:
+func get_format(bytes:PackedByteArray) -> String:
 	if bytes.size() < 10: return "unknown"
 	# Figure out file format from signatures
 	# https://en.wikipedia.org/wiki/List_of_file_signatures
@@ -56,26 +56,26 @@ func get_format(bytes:PoolByteArray) -> String:
 #	print(bytes.subarray(0,3).hex_encode())
 	
 	# .ogg
-	if bytes.subarray(0,3) == PoolByteArray([0x4F,0x67,0x67,0x53]): return "ogg"
+	if bytes.subarray(0,3) == PackedByteArray([0x4F,0x67,0x67,0x53]): return "ogg"
 	# .wav
 	# doesn't load correctly atm
 #	if (bytes.subarray(0,3) == PoolByteArray([0x52,0x49,0x46,0x46])
 #	and bytes.subarray(8,11) == PoolByteArray([0x57,0x41,0x56,0x45])): return "wav"
 	# .mp3
-	if (bytes.subarray(0,1) == PoolByteArray([0xFF,0xFB])
-	or bytes.subarray(0,1) == PoolByteArray([0xFF,0xF3])
-	or bytes.subarray(0,1) == PoolByteArray([0xFF,0xFA])
-	or bytes.subarray(0,1) == PoolByteArray([0xFF,0xF2])
-	or bytes.subarray(0,2) == PoolByteArray([0x49,0x44,0x33])): return "mp3"
+	if (bytes.subarray(0,1) == PackedByteArray([0xFF,0xFB])
+	or bytes.subarray(0,1) == PackedByteArray([0xFF,0xF3])
+	or bytes.subarray(0,1) == PackedByteArray([0xFF,0xFA])
+	or bytes.subarray(0,1) == PackedByteArray([0xFF,0xF2])
+	or bytes.subarray(0,2) == PackedByteArray([0x49,0x44,0x33])): return "mp3"
 	# unsupported
 	return "unknown"
 
-func load_buffer(bytes:PoolByteArray,loop:bool=false):
+func load_buffer(bytes:PackedByteArray,loop:bool=false):
 	var format = get_format(bytes)
 	
 	# if File is wav
 	if format == "wav":
-		var newstream = AudioStreamSample.new()
+		var newstream = AudioStreamWAV.new()
 
 		#---------------------------
 		#parrrrseeeeee!!! :D
@@ -164,7 +164,7 @@ func load_buffer(bytes:PoolByteArray,loop:bool=false):
 
 	#if file is ogg
 	elif format == "ogg":
-		var newstream = AudioStreamOGGVorbis.new()
+		var newstream = AudioStreamOggVorbis.new()
 		newstream.loop = loop #set to false or delete this line if you don't want to loop
 		newstream.data = bytes
 		return newstream
@@ -189,7 +189,7 @@ func load_file(filepath:String,loop:bool=false):
 		file.close()
 		return Globals.error_sound
 	
-	var bytes:PoolByteArray = file.get_buffer(file.get_len())
+	var bytes:PackedByteArray = file.get_buffer(file.get_length())
 	file.close()
 	return load_buffer(bytes,loop)
 
@@ -203,9 +203,9 @@ func load_file(filepath:String,loop:bool=false):
 # And the 32bit case abour 50% slower
 # I don't wanna risk it always being slower on other files
 # And really, the solution would be to handle it in a low-level language
-func convert_to_16bit(data: PoolByteArray, from: int) -> PoolByteArray:
+func convert_to_16bit(data: PackedByteArray, from: int) -> PackedByteArray:
 	print("converting to 16-bit from %d" % from)
-	var time = OS.get_ticks_msec()
+	var time = Time.get_ticks_msec()
 	# 24 bit .wav's are typically stored as integers
 	# so we just grab the 2 most significant bytes and ignore the other
 	if from == 24:
@@ -228,7 +228,7 @@ func convert_to_16bit(data: PoolByteArray, from: int) -> PoolByteArray:
 			data[i/2] = value
 			data[i/2+1] = value >> 8
 		data.resize(data.size() / 2)
-	print("Took %f seconds for slow conversion" % ((OS.get_ticks_msec() - time) / 1000.0))
+	print("Took %f seconds for slow conversion" % ((Time.get_ticks_msec() - time) / 1000.0))
 	return data
 
 

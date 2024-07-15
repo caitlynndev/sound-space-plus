@@ -20,10 +20,10 @@ func _process(delta):
 		$Label.text = "Downloading map...\n%.02f%%" % [(amt/total) * 100]
 
 func _ready():
-	Rhythia.connect("download_start",self,"start_download")
-	Rhythia.connect("download_done",self,"end_download")
-	pause_mode = PAUSE_MODE_PROCESS
-	$Cancel.connect("pressed",Online,"cancel")
+	Rhythia.connect("download_start", Callable(self, "start_download"))
+	Rhythia.connect("download_done", Callable(self, "end_download"))
+	process_mode = PROCESS_MODE_ALWAYS
+	$Cancel.connect("pressed", Callable(Online, "cancel"))
 
 #func _process(delta):
 #	if target && fade != 1:

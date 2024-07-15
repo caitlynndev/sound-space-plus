@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://scenes/errors/missing_critical_files.png" type="Texture" id=1]
+[ext_resource path="res://scenes/errors/missing_critical_files.png" type="Texture2D" id=1]
 [ext_resource path="res://assets/sfx/music/error_loop.ogg" type="AudioStream" id=2]
 
 [sub_resource type="GDScript" id=1]
@@ -10,7 +10,7 @@ func _process(delta):
 	volume_db = -35 * get_parent().get_node(\"BlackFade\").color.a
 
 func _ready():
-	yield(get_tree().create_timer(1),\"timeout\")
+	await get_tree().create_timer(1).timeout
 	play()
 "
 
@@ -25,7 +25,7 @@ func _process(delta):
 
 func _ready():
 	color = Color(0,0,0,1)
-	yield(get_tree().create_timer(1),\"timeout\")
+	await get_tree().create_timer(1).timeout
 	started = true
 "
 
@@ -41,10 +41,10 @@ anchor_right = 2.0
 anchor_bottom = 2.0
 
 [node name="TextureRect" type="TextureRect" parent="CenterContainer"]
-margin_left = 1408.0
-margin_top = 696.0
-margin_right = 2432.0
-margin_bottom = 1464.0
+offset_left = 1408.0
+offset_top = 696.0
+offset_right = 2432.0
+offset_bottom = 1464.0
 texture = ExtResource( 1 )
 stretch_mode = 6
 

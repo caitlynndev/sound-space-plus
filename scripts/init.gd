@@ -12,7 +12,7 @@ func stage(text:String,done:bool=false):
 		var res = RQueue.queue_resource(target)
 		if res != OK:
 			Rhythia.errorstr = "queue_resource returned %s" % res
-			get_tree().change_scene("res://scenes/errors/menuload.tscn")
+			get_tree().change_scene_to_file("res://scenes/errors/menuload.tscn")
 #		leaving = true
 
 var black_fade_target:bool = false
@@ -32,23 +32,23 @@ func _ready():
 	black_fade = 1
 	$BlackFade.color = Color(0,0,0,black_fade)
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-	Rhythia.connect("init_stage_reached",self,"stage")
+	Rhythia.connect("init_stage_reached", Callable(self, "stage"))
 	var s = Globals.error_sound
 #	var st = Rhythia.get_stream_with_default("user://loadingmusic",s)
 #	if st != s:
 #		$Music.stream = st
 #		$Music.play()
 	OS.request_permissions()
-	yield(get_tree().create_timer(0.5),"timeout")
-	if ProjectSettings.get_setting("application/config/auto_maximize") and Rhythia.auto_maximize: OS.window_maximized = true
-	yield(get_tree().create_timer(0.5),"timeout")
+	await get_tree().create_timer(0.5).timeout
+	if ProjectSettings.get_setting("application/config/auto_maximize") and Rhythia.auto_maximize: get_window().mode = Window.MODE_MAXIMIZED if (true) else Window.MODE_WINDOWED
+	await get_tree().create_timer(0.5).timeout
 #	$AudioStreamPlayer.play()
 	
 	if not Rhythia.is_init:
 		stage("",true)
 		return
 	elif Rhythia.first_init_done:
-		thread.start(Rhythia,"do_init")
+		thread.start(Callable(Rhythia, "do_init"))
 	
 	Rhythia.is_init = false
 	
@@ -89,8 +89,8 @@ func _process(delta):
 			black_fade_target = true
 			if !(result is Object):
 				Rhythia.errorstr = "get_resource returned non-object (probably null)"
-				get_tree().change_scene("res://scenes/errors/menuload.tscn")
+				get_tree().change_scene_to_file("res://scenes/errors/menuload.tscn")
 	
 	if leaving and result and black_fade == 1:
-		get_tree().change_scene_to(result)
+		get_tree().change_scene_to_packed(result)
 	

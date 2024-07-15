@@ -1,4 +1,4 @@
-extends Spatial
+extends Node3D
 class_name NoteManager
 
 signal ms_change
@@ -6,9 +6,9 @@ signal timer_update
 signal hit
 signal miss
 
-export(Material) var note_solid_mat
-export(Material) var note_transparent_mat
-export(Material) var asq_mat
+@export var note_solid_mat: Material
+@export var note_transparent_mat: Material
+@export var asq_mat: Material
 
 var approach_rate:float = Rhythia.get("approach_rate")
 var hit_window:float = Rhythia.get("hitwindow_ms")
@@ -23,9 +23,9 @@ var noteNodes:Array = []
 var noteCache:Array = []
 var noteQueue:Array = []
 var colors:Array = Rhythia.selected_colorset.colors
-var hitEffect:Spatial = load(Rhythia.selected_hit_effect.path).instance()
-var missEffect:Spatial = load(Rhythia.selected_miss_effect.path).instance()
-var scoreEffect:Spatial = load("res://assets/notefx/score/score.tscn").instance()
+var hitEffect:Node3D = load(Rhythia.selected_hit_effect.path).instantiate()
+var missEffect:Node3D = load(Rhythia.selected_miss_effect.path).instantiate()
+var scoreEffect:Node3D = load("res://assets/notefx/score/score.tscn").instantiate()
 var hit_id:String = Rhythia.selected_hit_effect.id
 var miss_id:String = Rhythia.selected_miss_effect.id
 var chaos_rng:RandomNumberGenerator = RandomNumberGenerator.new()
@@ -75,7 +75,7 @@ func note_reposition(i:int):
 	var state:int = notes[i][2]
 	var col:Color = notes[i][3]
 	var chaos_offset:Vector2 = notes[i][4]
-	var nt:Transform = notes[i][5]
+	var nt:Transform3D = notes[i][5]
 	
 	var approachSpeed:float = approach_rate / speed_multi
 	
@@ -101,13 +101,13 @@ func note_reposition(i:int):
 		if Rhythia.note_spawn_effect:
 			$SpawnEffect.multimesh.set_instance_color(i - current_note, Color(col.r, col.g, col.b, col.a))
 			if spawn_effect_t != 0:
-				var effect_transform = Transform.IDENTITY
+				var effect_transform = Transform3D.IDENTITY
 				effect_transform.origin = nt.origin
 				effect_transform.basis = effect_transform.basis.scaled(Vector3.ONE * 1 * Rhythia.note_size)
 				effect_transform.basis = effect_transform.basis.scaled(Vector3(1*spawn_effect_t, 0.9 + (0.1*spawn_effect_t), 1))
-				effect_transform.basis = effect_transform.basis.rotated(Vector3(1,0,0), deg2rad(90))
+				effect_transform.basis = effect_transform.basis.rotated(Vector3(1,0,0), deg_to_rad(90))
 				$SpawnEffect.multimesh.set_instance_transform(i - current_note, effect_transform)
-			else: $SpawnEffect.multimesh.set_instance_transform(i - current_note, Transform.IDENTITY.scaled(Vector3.ZERO))
+			else: $SpawnEffect.multimesh.set_instance_transform(i - current_note, Transform3D.IDENTITY.scaled(Vector3.ZERO))
 		
 		if Rhythia.mod_chaos:
 			var v = ease(max((current_offset_ms-250)/400,0),1.5)
@@ -151,7 +151,7 @@ func note_reposition(i:int):
 		if asq:
 			var sc = (linstep(0,Rhythia.get("spawn_distance"),current_dist) + 0.6) * 0.4
 			
-			var at = Transform()
+			var at = Transform3D()
 			at = at.scaled(Vector3(sc,sc,sc))
 			at.origin = nt.origin#Vector3(nt.origin.x, nt.origin.y, 0)
 			if !Rhythia.visual_approach_follow:
@@ -167,13 +167,13 @@ func note_reposition(i:int):
 		
 		return true
 	else:
-		$Notes.multimesh.set_instance_transform(i - current_note, Transform(Basis(), Vector3(0, 0, 10)))
+		$Notes.multimesh.set_instance_transform(i - current_note, Transform3D(Basis(), Vector3(0, 0, 10)))
 		$Notes.multimesh.set_instance_color(i - current_note, Color(0,0,0,0))
 		if asq:
-			$ASq.multimesh.set_instance_transform(i - current_note, Transform(Basis(), Vector3(0, 0, 10)))
+			$ASq.multimesh.set_instance_transform(i - current_note, Transform3D(Basis(), Vector3(0, 0, 10)))
 			$ASq.multimesh.set_instance_color(i - current_note, Color(0,0,0,0))
 		if Rhythia.note_spawn_effect:
-			$SpawnEffect.multimesh.set_instance_transform(i - current_note, Transform(Basis(), Vector3(0, 0, 10)))
+			$SpawnEffect.multimesh.set_instance_transform(i - current_note, Transform3D(Basis(), Vector3(0, 0, 10)))
 			$SpawnEffect.multimesh.set_instance_color(i - current_note, Color(0,0,0,0))
 #		if Rhythia.play_hit_snd and Rhythia.ensure_hitsync: 
 #			if Rhythia.sfx_2d:
@@ -340,7 +340,7 @@ func sort_note_queue(a,b):
 	return a[2] < b[2]
 
 func spawn_notes(note_array:Array):
-	note_array.sort_custom(self,"sort_note_queue")
+	note_array.sort_custom(Callable(self, "sort_note_queue"))
 	
 	var nscale = 0.45 * Rhythia.note_size * (Rhythia.note_hitbox_size / 1.14)
 	note_transform_scale = Vector3(nscale, nscale, nscale)
@@ -364,7 +364,7 @@ func spawn_notes(note_array:Array):
 					chaos_rng.randf_range(-1,1)
 				).normalized() * 2,
 				
-				Transform() # note transform
+				Transform3D() # note transform
 			]
 			
 			if Rhythia.mod_hardrock: note[0] = ((note[0] - Vector2(1,-1)) * 1.35) + Vector2(1,-1)
@@ -473,10 +473,10 @@ func _ready():
 	
 	var img = Globals.imageLoader.load_if_exists("user://note")
 	if img:
-		note_solid_mat.set_shader_param("image",img)
-		note_transparent_mat.set_shader_param("image",img)
-		note_solid_mat.set_shader_param("use_image",true)
-		note_transparent_mat.set_shader_param("use_image",true)
+		note_solid_mat.set_shader_parameter("image",img)
+		note_transparent_mat.set_shader_parameter("image",img)
+		note_solid_mat.set_shader_parameter("use_image",true)
+		note_transparent_mat.set_shader_parameter("use_image",true)
 	
 	mesh.surface_set_material(0,note_solid_mat)
 	if mesh.get_surface_count() > 1:
@@ -496,20 +496,20 @@ func _ready():
 	add_child(missEffect)
 	
 	# force everything to be loaded now
-	yield(get_tree(),"idle_frame")
+	await get_tree().idle_frame
 	hitEffect.duplicate().spawn(get_parent(),Vector3(0,0,-400),Color(1,1,1),hit_id,false)
 	missEffect.duplicate().spawn(self,Vector3(0,0,-400),Color(1,1,1),miss_id,true)
 	$Notes.multimesh.set_instance_color(0,Color(0,0,0,0))
-	$Notes.multimesh.set_instance_transform(0,Transform())
+	$Notes.multimesh.set_instance_transform(0,Transform3D())
 	if asq:
 		$ASq.multimesh.set_instance_color(0,Color(0,0,0,0))
-		$ASq.multimesh.set_instance_transform(0,Transform())
+		$ASq.multimesh.set_instance_transform(0,Transform3D())
 	if Rhythia.note_spawn_effect:
-		$SpawnEffect.multimesh.set_instance_transform(0, Transform(Basis(), Vector3(0, 0, 10)))
+		$SpawnEffect.multimesh.set_instance_transform(0, Transform3D(Basis(), Vector3(0, 0, 10)))
 		$SpawnEffect.multimesh.set_instance_color(0, Color(0,0,0,0))
 	$Note.visible = true
 	$Note.transform.origin = Vector3(0,0,-400)
-	yield(get_tree(),"idle_frame")
+	await get_tree().idle_frame
 	$Note.visible = false
 	
 	# Precache notes
@@ -525,9 +525,9 @@ func _ready():
 
 var music_started:bool = false
 const cursor_offset = Vector3(1,-1,0)
-onready var cam:Camera = get_node("../..").get_node("Camera")
+@onready var cam:Camera3D = get_node("../..").get_node("Camera3D")
 var hlpower = (0.1 * Rhythia.get("parallax"))
-onready var Grid = get_node("../HUD")
+@onready var Grid = get_node("../HUD")
 
 func do_half_lock():
 	var cursorpos = $Cursor.transform.origin
@@ -631,7 +631,7 @@ var can_skip:bool = ((next_ms-prev_ms) > 5000) and (next_ms >= max(ms+(3000*spee
 var ms_offset:float = 0
 
 var replay_sig:Array = []
-var last_usec = OS.get_ticks_usec()
+var last_usec = Time.get_ticks_usec()
 
 func _set_rec_interval(delta:float):
 	var newpos = $Cursor.transform.origin
@@ -663,7 +663,7 @@ func _set_rec_interval(delta:float):
 	last_cursor_position = newpos
 
 func _process(delta:float):
-	var u = OS.get_ticks_usec()
+	var u = Time.get_ticks_usec()
 	delta = float(u - last_usec) / 1_000_000.0
 	last_usec = u
 	

@@ -72,8 +72,8 @@ func play_song():
 	emit_signal("lock_type") # prevent input to line edits (MapSearch and AuthorSearch)
 	has_been_pressed = true
 	get_viewport().get_node("Menu").black_fade_target = true
-	yield(get_tree().create_timer(0.35),"timeout")
-	get_tree().change_scene("res://scenes/loaders/songload.tscn")
+	await get_tree().create_timer(0.35).timeout
+	get_tree().change_scene_to_file("res://scenes/loaders/songload.tscn")
 
 var pt = 1
 func on_pressed(i):
@@ -108,8 +108,8 @@ func switch_to_play_screen():
 	cur_map = disp.find(Rhythia.registry_song.get_item(Rhythia.selected_song.id))
 	load_pg(true)
 
-var was_maximized = OS.window_maximized
-var was_fullscreen = OS.window_fullscreen
+var was_maximized = (get_window().mode == Window.MODE_MAXIMIZED)
+var was_fullscreen = ((get_window().mode == Window.MODE_EXCLUSIVE_FULLSCREEN) or (get_window().mode == Window.MODE_FULLSCREEN))
 func _process(delta):
 	if check_drag or dragged:
 		drag_offset = get_global_mouse_position()
@@ -123,9 +123,9 @@ func _process(delta):
 				call_deferred("pg_up")
 
 	pt += delta
-	if OS.window_maximized != was_maximized or OS.window_fullscreen != was_fullscreen:
-		was_maximized = OS.window_maximized
-		was_fullscreen = OS.window_fullscreen
+	if (get_window().mode == Window.MODE_MAXIMIZED) != was_maximized or ((get_window().mode == Window.MODE_EXCLUSIVE_FULLSCREEN) or (get_window().mode == Window.MODE_FULLSCREEN)) != was_fullscreen:
+		was_maximized = (get_window().mode == Window.MODE_MAXIMIZED)
+		was_fullscreen = ((get_window().mode == Window.MODE_EXCLUSIVE_FULLSCREEN) or (get_window().mode == Window.MODE_FULLSCREEN))
 		handle_window_resize()
 
 func _physics_process(delta):
@@ -180,21 +180,21 @@ func load_pg(select_cur:bool=false):
 	btns.clear()
 
 	if disp.size() == 0: return
-	page_size = ((get_parent().rect_size.y)/90) * 1.5
+	page_size = ((get_parent().size.y)/90) * 1.5
 	if page_size % 2 != 0:
 		page_size += 1
 	#page size isnt accurate, its a ballpark
 	cur_map = clamp(cur_map, 0, disp.size() - 1)
 	for i in range(prev_index(), next_index() + 1):
 		var btn:Panel = make_song_button(i)
-		btn.rect_min_size = Vector2(350, 90)
+		btn.custom_minimum_size = Vector2(350, 90)
 		btns.append(btn)
 		add_child(btn)
 		btn.visible = true
 		if i == cur_map and select_cur:
 			if btn.song != Rhythia.selected_song:
 				Rhythia.select_song(btn.song)
-				btn.get_node("Select").pressed = true
+				btn.get_node("Select").button_pressed = true
 
 func append_filtering_favorites(to:Array,from:Array):
 	for s in from:
@@ -209,7 +209,7 @@ func build_list():
 		var s = Rhythia.registry_song.get_item(id)
 		if s and Rhythia.is_favorite(id) and search_matches(s):
 			favorite.append(s)
-	favorite.sort_custom(self,"sortsong")
+	favorite.sort_custom(Callable(self, "sortsong"))
 	disp.append_array(favorite)
 	if flip_display:
 		append_filtering_favorites(disp,amogus)
@@ -261,11 +261,11 @@ func update_search_flipped(flip:bool):
 
 func update_search_flip_name(flip:bool):
 	flip_name = flip
-	easy.sort_custom(self,"sortsongsimple")
-	medium.sort_custom(self,"sortsongsimple")
-	hard.sort_custom(self,"sortsongsimple")
-	logic.sort_custom(self,"sortsongsimple")
-	amogus.sort_custom(self,"sortsongsimple")
+	easy.sort_custom(Callable(self, "sortsongsimple"))
+	medium.sort_custom(Callable(self, "sortsongsimple"))
+	hard.sort_custom(Callable(self, "sortsongsimple"))
+	logic.sort_custom(Callable(self, "sortsongsimple"))
+	amogus.sort_custom(Callable(self, "sortsongsimple"))
 	if ready: reload_to_current_page()
 
 func sortab(a, b): return a < b
@@ -311,16 +311,16 @@ func prepare_songs():
 		#if map not in add_to
 		if add_to.find(map) == -1:
 			add_to.append(map)
-	easy.sort_custom(self,"sortsongsimple")
-	medium.sort_custom(self,"sortsongsimple")
-	hard.sort_custom(self,"sortsongsimple")
-	logic.sort_custom(self,"sortsongsimple")
-	amogus.sort_custom(self,"sortsongsimple")
+	easy.sort_custom(Callable(self, "sortsongsimple"))
+	medium.sort_custom(Callable(self, "sortsongsimple"))
+	hard.sort_custom(Callable(self, "sortsongsimple"))
+	logic.sort_custom(Callable(self, "sortsongsimple"))
+	amogus.sort_custom(Callable(self, "sortsongsimple"))
 
 func make_song_button(id:int=-1):
 	if id < 0 or id >= disp.size():
 		var btn:Panel = $EMPTY.duplicate()
-		btn.rect_min_size = Vector2(int(size_x - (page_size/2) * 10), 0)
+		btn.custom_minimum_size = Vector2(int(size_x - (page_size/2) * 10), 0)
 		return btn
 	var map:Song = disp[id]
 	if map == null: return
@@ -332,7 +332,7 @@ func make_song_button(id:int=-1):
 		Globals.DIFF_LOGIC: btn = $LOGIC.duplicate()
 		Globals.DIFF_AMOGUS: btn = $AMOGUS.duplicate()
 		_: btn = $NODIF.duplicate()
-	btn.rect_min_size = Vector2(size_x - 50, 0)
+	btn.custom_minimum_size = Vector2(size_x - 50, 0)
 	btn.get_node("Label").visible = false
 	if map.has_cover:
 		btn.get_node("Cover").visible = true
@@ -350,14 +350,14 @@ func make_song_button(id:int=-1):
 	if is_fav(map): btn.get_node("F").visible = true
 	btn.get_node("Cloud").visible = map.is_online
 	rbtn.disabled = false
-	rbtn.connect("pressed",self,"on_pressed",[id])
+	rbtn.connect("pressed", Callable(self, "on_pressed").bind(id))
 	#set the pressed action mode to release so it doesn't trigger on mouse down
 	rbtn.action_mode = 1
-	rbtn.connect("button_down", self, "check_drag_on")
-	rbtn.connect("button_up", self, "check_drag_off")
+	rbtn.connect("button_down", Callable(self, "check_drag_on"))
+	rbtn.connect("button_up", Callable(self, "check_drag_off"))
 	rbtn.keep_pressed_outside = true
 	if map == Rhythia.selected_song:
-		btn.get_node("Select").pressed = true
+		btn.get_node("Select").button_pressed = true
 	return btn
 
 func pg_up():
@@ -390,30 +390,30 @@ func pg_down():
 
 func tween_out(p:Panel):
 	var tween = get_tree().create_tween()
-	tween.tween_property(p, "rect_min_size", Vector2(size_x - (page_size/2) * 10, 0), 0.2)
-	tween.tween_callback(p, "queue_free")
+	tween.tween_property(p, "custom_minimum_size", Vector2(size_x - (page_size/2) * 10, 0), 0.2)
+	tween.tween_callback(Callable(p, "queue_free"))
 
 func tween_in(p:Panel):
 	var tween = get_tree().create_tween()
-	tween.tween_property(p, "rect_min_size", Vector2(size_x - (next_index() - prev_index())/2 * 10, 90), 0.2)
+	tween.tween_property(p, "custom_minimum_size", Vector2(size_x - (next_index() - prev_index())/2 * 10, 90), 0.2)
 
 func tween_length():
 	for i in btns.size():
 		var tween = get_tree().create_tween()
-		tween.tween_property(btns[i], "rect_min_size", Vector2(size_x-(15*(abs((next_index() - prev_index())/2-i))), 90), 0.15)
+		tween.tween_property(btns[i], "custom_minimum_size", Vector2(size_x-(15*(abs((next_index() - prev_index())/2-i))), 90), 0.15)
 	
 
 func _input(ev:InputEvent):
 	if is_visible_in_tree() and ev is InputEventMouseButton and ev.is_pressed():
-		if ev.button_index == BUTTON_WHEEL_UP:
+		if ev.button_index == MOUSE_BUTTON_WHEEL_UP:
 			scrolling_to = false
 			call_deferred("pg_up")
-		elif ev.button_index == BUTTON_WHEEL_DOWN:
+		elif ev.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			scrolling_to = false
 			call_deferred("pg_down")
 	if ev is InputEventKey and ev.is_pressed():
 		#if f2 is pressed, it will select a random map
-		if ev.scancode == KEY_F2:
+		if ev.keycode == KEY_F2:
 			print("F2")
 			select_random()
 		
@@ -424,18 +424,18 @@ func handle_window_resize():
 
 func firstload():
 #	if the button is held down, it will keep scrolling
-	get_parent().get_parent().get_parent().get_node("ScrollControl/P").connect("button_down",self,"pg_down_cont")
-	get_parent().get_parent().get_parent().get_node("ScrollControl/M").connect("button_down",self,"pg_up_cont")
-	get_parent().get_parent().get_parent().get_node("ScrollControl/P").connect("button_up",self,"pg_down_stop")
-	get_parent().get_parent().get_parent().get_node("ScrollControl/M").connect("button_up",self,"pg_up_stop")
+	get_parent().get_parent().get_parent().get_node("ScrollControl/P").connect("button_down", Callable(self, "pg_down_cont"))
+	get_parent().get_parent().get_parent().get_node("ScrollControl/M").connect("button_down", Callable(self, "pg_up_cont"))
+	get_parent().get_parent().get_parent().get_node("ScrollControl/P").connect("button_up", Callable(self, "pg_down_stop"))
+	get_parent().get_parent().get_parent().get_node("ScrollControl/M").connect("button_up", Callable(self, "pg_up_stop"))
 	
-	get_parent().get_parent().get_node("T/Random").connect("pressed",self,"select_random")
+	get_parent().get_parent().get_node("T/Random").connect("pressed", Callable(self, "select_random"))
 	prepare_songs()
 	reload_to_current_page()
 	ready = true
-	Rhythia.connect("favorite_songs_changed",self,"reload_to_current_page")
-	Rhythia.connect("download_done",self,"update_clouds")
-	get_viewport().connect("size_changed",self,"handle_window_resize")
+	Rhythia.connect("favorite_songs_changed", Callable(self, "reload_to_current_page"))
+	Rhythia.connect("download_done", Callable(self, "update_clouds"))
+	get_viewport().connect("size_changed", Callable(self, "handle_window_resize"))
 	Rhythia.emit_signal("map_list_ready")
 
 func update_clouds():
@@ -464,7 +464,7 @@ func scroll_to(i:int):
 
 func _ready():
 	thread = Thread.new() # Load Covers
-	thread.start(self, "_load_covers")
+	thread.start(Callable(self, "_load_covers"))
 
 	randomize()
 	if !visible: return
@@ -478,7 +478,7 @@ func _ready():
 
 	difficulty_filter = Rhythia.last_difficulty_filter
 
-	Engine.iterations_per_second = 60
+	Engine.physics_ticks_per_second = 60
 	call_deferred("firstload")
 	#tryna get the screen size but uh it no change
 	size_list()
@@ -490,7 +490,7 @@ func _exit_tree():
 
 func size_list():
 	size_x = get_viewport_rect().size.x/2.8
-	$"..".rect_min_size.x = size_x
+	$"..".custom_minimum_size.x = size_x
 
 func _load_covers():
 	var allmaps:Array = Rhythia.registry_song.get_items()
@@ -506,7 +506,7 @@ func strip_diacritics(s:String): # we hardcoding tonight   -  edit nvm im litera
 #	this removes all COMBINING UTF8 values to prevent spammed diactritics also known as zalgo text since it lags the maplist
 #	i found those values at https://www.utf8-chartable.de/unicode-utf8-table.pl?number=1024&utf8=0x -  starts at U+0300 ends at U+036F
 #	print(s)
-	var pool:PoolByteArray = s.to_utf8()
+	var pool:PackedByteArray = s.to_utf8_buffer()
 #	print(pool)
 	var output_bytes: Array = []
 	
@@ -546,5 +546,5 @@ func strip_diacritics(s:String): # we hardcoding tonight   -  edit nvm im litera
 				continue
 		output_bytes.insert(0, byte_value)
 	
-	return PoolByteArray(output_bytes).get_string_from_utf8()
+	return PackedByteArray(output_bytes).get_string_from_utf8()
 	

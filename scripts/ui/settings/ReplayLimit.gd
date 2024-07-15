@@ -8,4 +8,4 @@ func _process(_d):
 	
 func _ready():
 	selected = get_item_index(Rhythia.record_limit)
-	connect("item_selected",self,"upd")
+	connect("item_selected", Callable(self, "upd"))

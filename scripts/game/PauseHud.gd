@@ -1,10 +1,10 @@
 extends Control
 
-onready var pbar = $ProgressBar
-export(float) var percent = 0 setget _set_percent
+@onready var pbar = $ProgressBar
+@export var percent: float = 0: set = _set_percent
 
 func _update_progress(value:float=percent):
-	pbar.rect_size.x = 280*value
+	pbar.size.x = 280*value
 
 func _set_percent(value:float):
 	percent = value

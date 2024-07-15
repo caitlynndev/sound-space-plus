@@ -84,7 +84,7 @@ func check_warnings():
 		return "none"
 
 func _process(delta):
-	var width:float = rect_size.x
+	var width:float = size.x
 	var percent_len:float = 0
 	
 	if switch != -1:
@@ -106,37 +106,37 @@ func _process(delta):
 	
 	
 	scroll = scroll + (delta * (20.0/1200.0)) * (
-		1.5 + (3.0 * float(Input.is_key_pressed(KEY_CONTROL))))
+		1.5 + (3.0 * float(Input.is_key_pressed(KEY_CTRL))))
 	if scroll >= 1.0: scroll -= 1.0
 	
-	$L.rect_position = Vector2(
-		(width * scroll),# - $L.rect_size.x,
+	$L.position = Vector2(
+		(width * scroll),# - $L.size.x,
 		0
 	)
-	$L2.rect_position = Vector2(
-		(width * scroll) - width,# - $L.rect_size.x,
+	$L2.position = Vector2(
+		(width * scroll) - width,# - $L.size.x,
 		0
 	)
 	
 	if state && entry != 1:
 		entry = min(entry + (delta/0.8), 1.0)
 		modulate = Color(1.0, 1.0, 1.0, entry)
-		margin_top = Dance.InOutSine(entry) * -30
-		margin_bottom = (1.0 - Dance.InOutSine(entry)) * 30
-		get_parent().get_node("VersionNumber").margin_top = -45 - (Dance.InOutSine(entry)*30)
-		get_parent().get_node("VersionNumber").margin_bottom = -15 - (Dance.InOutSine(entry)*30)
-		get_parent().get_node("VersionNumberB").margin_top = -45 - (Dance.InOutSine(entry)*30)
-		get_parent().get_node("VersionNumberB").margin_bottom = -15 - (Dance.InOutSine(entry)*30)
+		offset_top = Dance.InOutSine(entry) * -30
+		offset_bottom = (1.0 - Dance.InOutSine(entry)) * 30
+		get_parent().get_node("VersionNumber").offset_top = -45 - (Dance.InOutSine(entry)*30)
+		get_parent().get_node("VersionNumber").offset_bottom = -15 - (Dance.InOutSine(entry)*30)
+		get_parent().get_node("VersionNumberB").offset_top = -45 - (Dance.InOutSine(entry)*30)
+		get_parent().get_node("VersionNumberB").offset_bottom = -15 - (Dance.InOutSine(entry)*30)
 		
 	elif !state && entry != 0:
 		entry = max(entry - (delta/0.8), 0.0)
 		modulate = Color(1.0, 1.0, 1.0, entry)
-		margin_top = Dance.InOutSine(entry) * -30
-		margin_bottom = (1.0 - Dance.InOutSine(entry)) * 30
-		get_parent().get_node("VersionNumber").margin_top = -45 - (Dance.InOutSine(entry)*30)
-		get_parent().get_node("VersionNumber").margin_bottom = -15 - (Dance.InOutSine(entry)*30)
-		get_parent().get_node("VersionNumberB").margin_top = -45 - (Dance.InOutSine(entry)*30)
-		get_parent().get_node("VersionNumberB").margin_bottom = -15 - (Dance.InOutSine(entry)*30)
+		offset_top = Dance.InOutSine(entry) * -30
+		offset_bottom = (1.0 - Dance.InOutSine(entry)) * 30
+		get_parent().get_node("VersionNumber").offset_top = -45 - (Dance.InOutSine(entry)*30)
+		get_parent().get_node("VersionNumber").offset_bottom = -15 - (Dance.InOutSine(entry)*30)
+		get_parent().get_node("VersionNumberB").offset_top = -45 - (Dance.InOutSine(entry)*30)
+		get_parent().get_node("VersionNumberB").offset_bottom = -15 - (Dance.InOutSine(entry)*30)
 		
 	visible = (entry != 0)
 

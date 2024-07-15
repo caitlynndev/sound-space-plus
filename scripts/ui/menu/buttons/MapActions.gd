@@ -24,7 +24,7 @@ var difficulty_submenu = PopupMenu.new()
 #			get_popup().set_item_checked(i,true)
 #			text = options[i]
 #	get_popup().connect("id_pressed",self,"on_pressed")
-var audio_data:PoolByteArray
+var audio_data:PackedByteArray
 
 func save_song_txt(path:String):
 	if path:
@@ -82,7 +82,7 @@ func item_selected(idx:int):
 					]
 				)
 				Globals.confirm_prompt.s_alert.play()
-				var response:int = yield(Globals.confirm_prompt,"option_selected")
+				var response:int = await Globals.confirm_prompt.option_selected
 				Globals.confirm_prompt.close()
 				if response == 1:
 					Globals.confirm_prompt.s_next.play()
@@ -190,19 +190,19 @@ func _ready():
 	visible = false
 	get_popup().call_deferred("add_child",copy_submenu)
 	get_popup().call_deferred("add_child",difficulty_submenu)
-	get_popup().connect("id_pressed",self,"item_selected")
-	copy_submenu.connect("id_pressed",self,"copy_item_selected")
-	difficulty_submenu.connect("id_pressed",self,"diff_item_selected")
+	get_popup().connect("id_pressed", Callable(self, "item_selected"))
+	copy_submenu.connect("id_pressed", Callable(self, "copy_item_selected"))
+	difficulty_submenu.connect("id_pressed", Callable(self, "diff_item_selected"))
 	
 	get_popup().add_item("Delete map",0)
 	get_popup().add_item("Convert to sspm v2",1)
 	get_popup().add_submenu_item("Copy...","Copy",2)
 	get_popup().add_submenu_item("Set difficulty","Difficulty",3)
-	get_popup().add_item("Export .txt map data",4)
+	get_popup().add_item("Export super.txt map data",4)
 	get_popup().add_item("Export audio data",5)
 	
 	copy_submenu.add_item("ID",0)
-	copy_submenu.add_item("Path",1)
+	copy_submenu.add_item("Path3D",1)
 	copy_submenu.add_item("Name",2)
 	
 	difficulty_submenu.add_radio_check_item("N/A",0)
@@ -213,8 +213,8 @@ func _ready():
 	difficulty_submenu.add_radio_check_item("助 (Tasukete)",5)
 	
 	if Rhythia.selected_song: upd()
-	Rhythia.connect("selected_song_changed",self,"upd")
-	yield(get_tree(),"idle_frame")
+	Rhythia.connect("selected_song_changed", Callable(self, "upd"))
+	await get_tree().idle_frame
 	copy_submenu.name = "Copy"
 	difficulty_submenu.name = "Difficulty"
 

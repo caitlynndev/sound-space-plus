@@ -25,6 +25,6 @@ func _ready():
 		if effect == Rhythia.selected_hit_effect:
 			current_sel = i
 			get_popup().set_item_checked(i,true)
-	Rhythia.connect("selected_hit_effect_changed",self,"on_effect_selected")
-	get_popup().connect("id_pressed",self,"on_pressed")
+	Rhythia.connect("selected_hit_effect_changed", Callable(self, "on_effect_selected"))
+	get_popup().connect("id_pressed", Callable(self, "on_pressed"))
 	on_effect_selected(Rhythia.selected_hit_effect)

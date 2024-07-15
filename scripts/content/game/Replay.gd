@@ -1,7 +1,7 @@
 extends Resource
 class_name Replay
 
-const file_sig:PoolByteArray = PoolByteArray([0x53,0x73,0x2A,0x52])
+const file_sig:PackedByteArray = PackedByteArray([0x53,0x73,0x2A,0x52])
 const current_sv:int = 4
 var debug:bool = OS.has_feature("debug")
 
@@ -29,12 +29,12 @@ func replay_error(txt:String):
 	Rhythia.get_tree().paused = true
 	Globals.confirm_prompt.s_alert.play()
 	Globals.confirm_prompt.open(txt,"Error",[{text="OK"}])
-	yield(Globals.confirm_prompt,"option_selected")
+	await Globals.confirm_prompt.option_selected
 	Globals.confirm_prompt.s_back.play()
 	Globals.confirm_prompt.close()
-	yield(Globals.confirm_prompt,"done_closing")
+	await Globals.confirm_prompt.done_closing
 	Rhythia.just_ended_song = false # Prevent PB handling
-	Rhythia.get_tree().change_scene("res://scenes/loaders/menuload.tscn")
+	Rhythia.get_tree().change_scene_to_file("res://scenes/loaders/menuload.tscn")
 
 var debug_label:Label
 
@@ -60,10 +60,10 @@ func read_data(from_path:String=""):
 			else:
 				debug_label = Label.new()
 				Globals.get_tree().root.add_child(debug_label)
-				debug_label.set("custom_fonts/font",load("res://assets/font/debug.tres"))
+				debug_label.set("theme_override_fonts/font",load("res://assets/font/debug.tres"))
 				debug_label.name = "ReplayDebug"
-				debug_label.rect_position = Vector2(10,10)
-				debug_label.rect_scale = Vector2(0.5,0.5)
+				debug_label.position = Vector2(10,10)
+				debug_label.scale = Vector2(0.5,0.5)
 				debug_label.text = "-- replay debug --"
 			debug_label.raise()
 			
@@ -96,7 +96,7 @@ func read_data(from_path:String=""):
 			debug_txt.reserved_1 = file.get_64()
 			if sv >= 4: debug_txt.replay_hwid = file.get_line()
 			id = file.get_line()
-			var song_id = id.substr(0, id.find_last(".")).substr(0, id.find_last("."))
+			var song_id = id.substr(0, id.rfind(".")).substr(0, id.rfind("."))
 			var fsong = Rhythia.registry_song.get_item(song_id)
 			
 			debug_txt.replay_id = id
@@ -157,7 +157,7 @@ func read_data(from_path:String=""):
 				update_debug_text()
 				if fmod(i,70) == 0:
 					emit_signal("progress",(float(i)/float(sigcount)) * 0.6)
-					yield(Rhythia.get_tree(),"idle_frame")
+					await Rhythia.get_tree().idle_frame
 				
 				if kind == Globals.RS_CURSOR:
 					var ms = file.get_32()
@@ -214,7 +214,7 @@ func read_data(from_path:String=""):
 				update_debug_text()
 				if fmod(num,250) == 0:
 					emit_signal("progress",0.6 + ((float(num)/float(curcount)) * 0.4))
-					yield(Rhythia.get_tree(),"idle_frame")
+					await Rhythia.get_tree().idle_frame
 				cursor_positions.append(cursor_unrev.pop_back())
 			
 			debug_txt.noteres_amt = note_results.size()
@@ -268,7 +268,7 @@ func read_data(from_path:String=""):
 #				cursor_positions.append(r)
 #
 			end_ms = Rhythia.selected_song.last_ms
-			yield(Rhythia.get_tree(),"idle_frame")
+			await Rhythia.get_tree().idle_frame
 			emit_signal("done_loading")
 			loaded = true
 
@@ -276,7 +276,7 @@ func read_data(from_path:String=""):
 var last_ms:float = -100000000000
 var last_pos_offset:int = 0
 
-func get_cursor_position(ms:float):
+func get_caret_column(ms:float):
 	if autoplayer:
 		return Vector2(1,-1)*dance.update(ms)
 	else:
@@ -362,7 +362,7 @@ var sig_count:int = 0
 var max_usec = 0
 func store_cursor_pos(ms:float,x:float,y:float):
 	if !recording: return
-	var a = OS.get_ticks_usec()
+	var a = Time.get_ticks_usec()
 	sig_count += 1
 	file.store_8(Globals.RS_CURSOR)
 	file.store_32(floor(ms))
@@ -370,56 +370,56 @@ func store_cursor_pos(ms:float,x:float,y:float):
 	file.store_float(x)
 	file.store_float(y)
 	if debug:
-		max_usec = max(max_usec,OS.get_ticks_usec() - a)
+		max_usec = max(max_usec,Time.get_ticks_usec() - a)
 
 func note_miss(nid:int):
 	if !recording: return
-	var a = OS.get_ticks_usec()
+	var a = Time.get_ticks_usec()
 	sig_count += 1
 	file.store_8(Globals.RS_MISS)
 	file.store_32(nid)
 	if debug:
-		print("note %s miss saved @ #%s, took %s usec" % [nid,sig_count,Globals.comma_sep(OS.get_ticks_usec() - a)])
+		print("note %s miss saved @ #%s, took %s usec" % [nid,sig_count,Globals.comma_sep(Time.get_ticks_usec() - a)])
 
 func note_hit(nid:int):
 	if !recording: return
-	var a = OS.get_ticks_usec()
+	var a = Time.get_ticks_usec()
 	sig_count += 1
 	file.store_8(Globals.RS_HIT)
 	file.store_32(nid)
 	if debug:
-		print("note %s hit saved @ #%s, took %s usec" % [nid,sig_count,Globals.comma_sep(OS.get_ticks_usec() - a)])
+		print("note %s hit saved @ #%s, took %s usec" % [nid,sig_count,Globals.comma_sep(Time.get_ticks_usec() - a)])
 
 func store_sig(ms:float,sig:int):
 	if !recording: return
-	var a = OS.get_ticks_usec()
+	var a = Time.get_ticks_usec()
 	sig_count += 1
 	file.store_8(sig)
 	file.store_32(floor(ms))
 	if debug:
-		print("signal %s saved @ #%s, ms %s, took %s usec" % [sig,sig_count,ms,Globals.comma_sep(OS.get_ticks_usec() - a)])
+		print("signal %s saved @ #%s, ms %s, took %s usec" % [sig,sig_count,ms,Globals.comma_sep(Time.get_ticks_usec() - a)])
 
 func store_pause(ms:float):
 	if !recording: return
-	var a = OS.get_ticks_usec()
+	var a = Time.get_ticks_usec()
 	sig_count += 1
 	file.store_8(Globals.RS_PAUSE)
 	file.store_32(floor(ms))
 	if debug:
-		print("pause saved @ #%s, ms %s, took %s usec" % [sig_count,ms,Globals.comma_sep(OS.get_ticks_usec() - a)])
+		print("pause saved @ #%s, ms %s, took %s usec" % [sig_count,ms,Globals.comma_sep(Time.get_ticks_usec() - a)])
 
 func store_giveup(ms:float):
 	if !recording: return
-	var a = OS.get_ticks_usec()
+	var a = Time.get_ticks_usec()
 	sig_count += 1
 	file.store_8(Globals.RS_GIVEUP)
 	file.store_32(floor(ms))
 	if debug:
-		print("giveup saved @ #%s, ms %s, took %s usec" % [sig_count,ms,Globals.comma_sep(OS.get_ticks_usec() - a)]) 
+		print("giveup saved @ #%s, ms %s, took %s usec" % [sig_count,ms,Globals.comma_sep(Time.get_ticks_usec() - a)]) 
 
 func start_recording(with_song:Song):
-	var a = OS.get_ticks_usec()
-	var dt = OS.get_datetime()
+	var a = Time.get_ticks_usec()
+	var dt = Time.get_datetime_dict_from_system()
 	song = with_song
 	id = "%s.%s-%s-%s_%s-%s-%s" % [song.id,dt.year,dt.month,dt.day,dt.hour,dt.minute,dt.second]
 	var err:int = file.open(Globals.p("user://replays/%s.sspre" % id),File.WRITE)
@@ -447,10 +447,10 @@ func start_recording(with_song:Song):
 	file.store_32(0)
 	recording = true
 	if debug:
-		print("Recording startup took %s usec" % [Globals.comma_sep(OS.get_ticks_usec() - a)])
+		print("Recording startup took %s usec" % [Globals.comma_sep(Time.get_ticks_usec() - a)])
 
 func end_recording():
-	var a = OS.get_ticks_usec()
+	var a = Time.get_ticks_usec()
 	recording = false
 	sig_count += 1
 	file.store_8(Globals.RS_END)
@@ -459,4 +459,4 @@ func end_recording():
 	file.store_32(sig_count)
 	file.close()
 	if debug:
-		print("Recording end took %s usec. Highest cursor save time was %s usec." % [Globals.comma_sep(OS.get_ticks_usec() - a),max_usec])
+		print("Recording end took %s usec. Highest cursor save time was %s usec." % [Globals.comma_sep(Time.get_ticks_usec() - a),max_usec])

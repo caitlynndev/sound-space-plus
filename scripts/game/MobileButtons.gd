@@ -20,8 +20,8 @@ func _ready():
 	$GiveUp/Button.visible = OS.has_feature("Android")
 	
 	if Rhythia.mirror_buttons:
-		$Pause/Button.position.x = OS.get_window_safe_area().size.x - 150
-		$GiveUp/Button.position.x = OS.get_window_safe_area().size.x - 150
+		$Pause/Button.position.x = DisplayServer.get_display_safe_area().size.x - 150
+		$GiveUp/Button.position.x = DisplayServer.get_display_safe_area().size.x - 150
 	
 	tween.interpolate_property($Pause, "modulate", Color(1,1,1,0.5), Color(1,1,1,0), 1, Tween.TRANS_QUAD, Tween.EASE_IN_OUT, 1)
 	tween.start()

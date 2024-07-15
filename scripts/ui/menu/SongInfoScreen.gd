@@ -18,7 +18,7 @@ func get_time_ms(ms:float):
 	var rs = fmod(s,60)
 	return "%d:%02d" % [m,rs]
 
-onready var difficulty_btns:Array = [
+@onready var difficulty_btns:Array = [
 	$RS/H1/ButtonDisp/NODIF,
 	$RS/H1/ButtonDisp/EASY,
 	$RS/H1/ButtonDisp/MEDIUM,
@@ -84,12 +84,12 @@ func update(_s=null):
 		$RS/H1/Info/Warning.visible = true
 		$RS/H1/Info/Warning.text = map.warning
 		if map.is_broken:
-			$RS/H1/Info/Warning.set("custom_colors/font_color",Color(1,0,0))
+			$RS/H1/Info/Warning.set("theme_override_colors/font_color",Color(1,0,0))
 #			$Info/Run/Run.disabled = true
 #			$Info/Buttons/Control/Favorite.disabled = true
 #			$Info/Control/PreviewMusic.disabled = true
 		else:
-			$RS/H1/Info/Warning/Warning.set("custom_colors/font_color",Color(1,1,0))
+			$RS/H1/Info/Warning/Warning.set("theme_override_colors/font_color",Color(1,1,0))
 #			$Info/Run/Run.disabled = false
 #			$Info/Control/Favorite.disabled = false
 #			$Info/Control/PreviewMusic.disabled = false
@@ -128,8 +128,8 @@ func update(_s=null):
 	
 	# give the containers time to update
 	if is_inside_tree():
-		yield(get_tree(),"idle_frame")
-		yield(get_tree(),"idle_frame")
+		await get_tree().idle_frame
+		await get_tree().idle_frame
 #		if $RS/H1/Info.rect_size.y > 245:
 #			$Actions.rect_position.y = $RS/H1/Info.rect_size.y + 35
 #			$RS/H2/EndInfo.rect_position.y = $RS/H1/Info.rect_size.y + 35
@@ -141,9 +141,9 @@ func return_to_song_select():
 	get_viewport().get_node("Menu/Sidebar").press(0,false)
 
 func _ready():
-	Rhythia.connect("selected_song_changed",self,"update")
-	Rhythia.connect("mods_changed",self,"update")
-	Rhythia.connect("favorite_songs_changed",self,"update")
+	Rhythia.connect("selected_song_changed", Callable(self, "update"))
+	Rhythia.connect("mods_changed", Callable(self, "update"))
+	Rhythia.connect("favorite_songs_changed", Callable(self, "update"))
 #	$ButtonDisp/Select.connect("pressed",self,"return_to_song_select")
 	if Rhythia.selected_song: update()
 	else:

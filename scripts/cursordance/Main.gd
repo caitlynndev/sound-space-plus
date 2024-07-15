@@ -1,6 +1,6 @@
 extends Panel
 
-var notes:PoolVector3Array = PoolVector3Array()
+var notes:PackedVector3Array = PackedVector3Array()
 var noten:int = 0
 
 var colors = Rhythia.selected_colorset.colors
@@ -25,7 +25,7 @@ func _draw():
 	draw_line(Vector2(200,0),Vector2(200,300),gray,1)
 	draw_line(Vector2(0,100),Vector2(300,100),gray,1)
 	draw_line(Vector2(0,200),Vector2(300,200),gray,1)
-	draw_rect(Rect2(0,0,300,300),Color(0.15 + (flash_time * 0.4),0.15,0.15),false,2,false)
+	draw_rect(Rect2(0,0,300,300), Color(0.15 + (flash_time * 0.4),0.15,0.15), false, 2)# false) TODOConverter3To4 Antialiasing argument is missing
 	
 #	var dance = get_parent().dance
 #	var col1:Color = Color(0.8,0.1,0.1)

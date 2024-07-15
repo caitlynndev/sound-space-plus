@@ -26,7 +26,7 @@ func on_pressed(i):
 func _ready():
 	for i in range(presets.size()):
 		get_popup().add_item(presets[i].name,i)
-	get_popup().connect("id_pressed",self,"on_pressed")
+	get_popup().connect("id_pressed", Callable(self, "on_pressed"))
 	
 	if not Rhythia.hit_fov_additive and not Rhythia.hit_fov_exponential:
 		$Desc.text = "Mode: Normal"

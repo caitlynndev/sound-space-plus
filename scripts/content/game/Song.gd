@@ -24,7 +24,7 @@ var last_ms:float = 0
 var source_registry:String = "[unknown]"
 var warning:String = ""
 
-var marker_hash:PoolByteArray
+var marker_hash:PackedByteArray
 
 var should_reload_on_play:bool = false
 var songType:int = -1
@@ -32,7 +32,7 @@ var initFile:String = ""
 
 var filePath:String
 
-var cover:Texture setget , _get_cover
+var cover:Texture2D: get = _get_cover
 var has_cover:bool = false
 var cover_offset:int = -1
 var cover_length:int = -1
@@ -88,17 +88,17 @@ func _get_cover():
 				var mip:bool = bool(file.get_8())
 				var format:int = file.get_8()
 				var clen:int = file.get_64()
-				var cbuf:PoolByteArray = file.get_buffer(clen)
+				var cbuf:PackedByteArray = file.get_buffer(clen)
 				img.create_from_data(w,h,mip,format,cbuf)
 				var imgtex:ImageTexture = ImageTexture.new()
 				imgtex.create_from_image(img)
 				cover = imgtex
 			elif ct == 2:
 				var clen:int = file.get_64()
-				var cbuf:PoolByteArray = file.get_buffer(clen)
+				var cbuf:PackedByteArray = file.get_buffer(clen)
 				cover = Globals.imageLoader.load_buffer(cbuf) as ImageTexture
 	elif songType == Globals.MAP_SSPM2:
-		var cbuf:PoolByteArray = file.get_buffer(cover_length)
+		var cbuf:PackedByteArray = file.get_buffer(cover_length)
 		cover = Globals.imageLoader.load_buffer(cbuf) as ImageTexture
 	file.close()
 #	cover.call_deferred("unreference")
@@ -162,8 +162,8 @@ func load_from_db_data(data:Dictionary={
 	if typeof(data.id) != TYPE_STRING: return {success=false,error="Invalid id"}
 	if typeof(data.name) != TYPE_STRING: return {success=false,error="Invalid name"}
 	if typeof(data.author) != TYPE_ARRAY: return {success=false,error="Invalid author"}
-	if typeof(data.difficulty) != TYPE_INT and typeof(data.difficulty) != TYPE_REAL: return {success=false,error="Invalid difficulty"}
-	if typeof(data.version) != TYPE_INT and typeof(data.version) != TYPE_REAL: return {success=false,error="Invalid version"}
+	if typeof(data.difficulty) != TYPE_INT and typeof(data.difficulty) != TYPE_FLOAT: return {success=false,error="Invalid difficulty"}
+	if typeof(data.version) != TYPE_INT and typeof(data.version) != TYPE_FLOAT: return {success=false,error="Invalid version"}
 #	if typeof(data.length_ms) != TYPE_INT and typeof(data.length_ms) != TYPE_REAL: return {success=false,error="Invalid length_ms"}
 #	if typeof(data.note_count) != TYPE_INT and typeof(data.note_count) != TYPE_REAL: return {success=false,error="Invalid note_count"}
 	if typeof(data.download) != TYPE_STRING or !Globals.is_valid_url(data.download): return {success=false,error="Invalid download"}
@@ -200,7 +200,7 @@ func load_pbs():
 		if err != OK:
 			return
 		
-		if file.get_buffer(5) != PoolByteArray([0x53,0x53,0x2B,0x70,0x42]):
+		if file.get_buffer(5) != PackedByteArray([0x53,0x53,0x2B,0x70,0x42]):
 			print("invalid signature for pb file (%s)" % id)
 			file.close()
 			return
@@ -244,7 +244,7 @@ func save_pbs():
 	if err != OK:
 		print("error writing pb file for %s:  %s" % [id, String(err)])
 		return
-	file.store_buffer(PoolByteArray([0x53,0x53,0x2B,0x70,0x42]))
+	file.store_buffer(PackedByteArray([0x53,0x53,0x2B,0x70,0x42]))
 	file.store_16(3) # version
 	file.store_64(pb_data.size()) # number of PBs
 	for k in pb_data.keys():
@@ -331,7 +331,7 @@ func get_music_buffer():
 				return null
 			else:
 				var blen:int = file2.get_64()
-				var buf:PoolByteArray = file2.get_buffer(blen) # Actual song data
+				var buf:PackedByteArray = file2.get_buffer(blen) # Actual song data
 				file2.close()
 				print("[sspm] %s: music ok" % id)
 				return buf
@@ -353,7 +353,7 @@ func get_music_buffer():
 				var bpos:int = file2.get_64()
 				var blen:int = file2.get_64()
 				file2.seek(bpos)
-				var buf:PoolByteArray = file2.get_buffer(blen) # Actual song data
+				var buf:PackedByteArray = file2.get_buffer(blen) # Actual song data
 				file2.close()
 				print("[sspm2] %s: music ok" % id)
 				return buf
@@ -366,7 +366,7 @@ func get_music_buffer():
 			print("[file] %s: Failed to open music file!" % id)
 			return null
 		else:
-			var mdata:PoolByteArray = file2.get_buffer(file2.get_len())
+			var mdata:PackedByteArray = file2.get_buffer(file2.get_length())
 			file2.close()
 			print("[file] %s: music ok" % id)
 			return mdata
@@ -376,7 +376,7 @@ func stream() -> AudioStream:
 		var buf = get_music_buffer()
 		if buf:
 			var s = Globals.audioLoader.load_buffer(buf)
-			if s is AudioStreamOGGVorbis or s is AudioStreamMP3: s.loop = false
+			if s is AudioStreamOggVorbis or s is AudioStreamMP3: s.loop = false
 			if s: return s
 			else: return Globals.error_sound
 		else:
@@ -387,8 +387,8 @@ func stream() -> AudioStream:
 #		else: return Globals.error_sound
 	else: 
 		var mf:AudioStream = load(musicFile) as AudioStream
-		if mf is AudioStreamOGGVorbis or mf is AudioStreamMP3: mf.loop = false
-		elif mf is AudioStreamSample: mf.loop_mode = AudioStreamSample.LOOP_DISABLED
+		if mf is AudioStreamOggVorbis or mf is AudioStreamMP3: mf.loop = false
+		elif mf is AudioStreamWAV: mf.loop_mode = AudioStreamWAV.LOOP_DISABLED
 		return mf
 
 func loadFromFile(path:String):
@@ -411,7 +411,7 @@ func loadRawData(data:String):
 	for s in split:
 		if s != "":
 			var dat = s.split("|")
-			if (dat is Array or dat is PoolStringArray) and dat.size() == 3:
+			if (dat is Array or dat is PackedStringArray) and dat.size() == 3:
 				var x = 2 - float(dat[0])
 				var y = 2 - float(dat[1])
 				var ms = float(dat[2])
@@ -487,7 +487,7 @@ func setup_from_vulnus_json(jsonPath:String,songFile:String,useDifficultyName:bo
 	
 	note_count = json.count('"_time"')
 	if note_count != 0:
-		var last = json.find_last('"_time":')
+		var last = json.rfind('"_time":')
 		var comma = json.find(",",last)
 		var time_str:String = json.substr(last+8,comma-last-8).trim_prefix(" ")
 		if !time_str.is_valid_float():
@@ -526,7 +526,9 @@ func load_from_vulnus_map(folder_path:String,difficulty_id:int=0):
 	if err != OK: return
 	var meta_json:String = file.get_as_text()
 	file.close()
-	var meta:Dictionary = parse_json(meta_json)
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(meta_json)
+	var meta:Dictionary = test_json_conv.get_data()
 	
 	var artist:String = meta.get("_artist","Unknown Artist")
 	var difficulties:Array = meta.get("_difficulties",[])
@@ -579,7 +581,9 @@ func get_vulnus_map_difficulty_list(folder_path:String):
 	if err != OK: return []
 	var meta_json:String = file.get_as_text()
 	file.close()
-	var meta:Dictionary = parse_json(meta_json)
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(meta_json)
+	var meta:Dictionary = test_json_conv.get_data()
 	
 	var difficulties:Array = meta.get("_difficulties",[])
 	if difficulties.size() == 0: return []
@@ -624,7 +628,7 @@ func read_notes() -> Array:
 			else: print("Reading: RAW")
 			loadRawData(rawData)
 			print(notes.size())
-			notes.sort_custom(self,"notesort")
+			notes.sort_custom(Callable(self, "notesort"))
 			markers.ssp_note = notes
 			return notes
 		elif songType == Globals.MAP_VULNUS:
@@ -634,12 +638,14 @@ func read_notes() -> Array:
 #			print(filePath)
 			var json = file.get_as_text()
 			file.close()
-			var data:Dictionary = parse_json(json)
+			var test_json_conv = JSON.new()
+			test_json_conv.parse(json)
+			var data:Dictionary = test_json_conv.get_data()
 #			print(data.has("_notes"))
 			var n:Array = data.get("_notes",[])
 #			print(n.size())
 			loadVulnusNoteArray(n)
-			notes.sort_custom(self,"notesort")
+			notes.sort_custom(Callable(self, "notesort"))
 			markers.ssp_note = notes
 			return notes
 		elif songType == Globals.MAP_SSPM:
@@ -687,7 +693,7 @@ func read_notes() -> Array:
 					n[0] = float(file.get_8())
 					n[1] = float(file.get_8())
 				notes.append(n)
-			notes.sort_custom(self,"notesort")
+			notes.sort_custom(Callable(self, "notesort"))
 				
 			file.close()
 		elif songType == Globals.MAP_SSPM2:
@@ -770,7 +776,7 @@ func read_markers() -> Dictionary:
 			markers[name].append(m)
 		
 		for arr in markers.values():
-			arr.sort_custom(self,"markersort")
+			arr.sort_custom(Callable(self, "markersort"))
 #			print(String(arr.slice(0,35)).replace("], ","],\n "))
 		
 		return markers
@@ -801,7 +807,7 @@ func change_difficulty(to:int):
 			print("file open failed: ",err)
 			return err
 		
-		if file.get_buffer(4) != PoolByteArray([0x53,0x53,0x2b,0x6d]): # signature
+		if file.get_buffer(4) != PackedByteArray([0x53,0x53,0x2b,0x6d]): # signature
 			print("invalid sspm file")
 			return ERR_INVALID_DATA
 		
@@ -830,7 +836,7 @@ func change_difficulty(to:int):
 			print("file open failed: ",err)
 			return err
 		
-		if file.get_buffer(4) != PoolByteArray([0x53,0x53,0x2b,0x6d]): # signature
+		if file.get_buffer(4) != PackedByteArray([0x53,0x53,0x2b,0x6d]): # signature
 			print("invalid sspm file")
 			return ERR_INVALID_DATA
 		
@@ -845,12 +851,12 @@ func change_difficulty(to:int):
 		return OK
 	
 	else: 
-		print("tried to change difficulty of a non .sspm map")
+		print("tried to change difficulty of a non super.sspm map")
 		return ERR_UNAVAILABLE
 
 func convert_to_sspm_v1():
 	var file:File = File.new()
-	var dir:Directory = Directory.new()
+	var dir:DirAccess = DirAccess.new()
 	# Figure out the path and make sure it's usable
 	var path:String = Globals.p("user://maps/%s.sspm") % id
 	if !dir.dir_exists(Globals.p("user://maps")): dir.make_dir(Globals.p("user://maps"))
@@ -860,7 +866,7 @@ func convert_to_sspm_v1():
 	if err != OK: return "file.open errored - code " + String(err)
 	
 	# Header
-	file.store_buffer(PoolByteArray([0x53,0x53,0x2b,0x6d])) # File signature
+	file.store_buffer(PackedByteArray([0x53,0x53,0x2b,0x6d])) # File signature
 	file.store_16(1) # File type version
 	file.store_16(0) # Reserved for future things
 	
@@ -884,7 +890,7 @@ func convert_to_sspm_v1():
 	if has_cover and cover and (cover.get_height() + cover.get_width()) >= 9:
 		file.store_8(2)
 		var img:Image = cover.get_data()
-		var data:PoolByteArray = img.save_png_to_buffer()
+		var data:PackedByteArray = img.save_png_to_buffer()
 		file.store_64(data.size()) # Buffer length in bytes
 		file.store_buffer(data) # Actual cover data
 	else: file.store_8(0)
@@ -927,14 +933,14 @@ func auto_data_type(value) -> int:
 		elif value < 2^32: return DT_INT_32
 		else: return DT_INT_64
 		
-	elif typeof(value) == TYPE_REAL:
+	elif typeof(value) == TYPE_FLOAT:
 		return DT_FLOAT_64
 		
 	elif typeof(value) == TYPE_STRING:
-		if value.to_utf8().size() < 2^16: return DT_STRING
+		if value.to_utf8_buffer().size() < 2^16: return DT_STRING
 		else: return DT_STRING_LONG
 		
-	elif typeof(value) == TYPE_RAW_ARRAY:
+	elif typeof(value) == TYPE_PACKED_BYTE_ARRAY:
 		if value.size() < 2^16: return DT_BUFFER
 		else: return DT_BUFFER_LONG
 		
@@ -989,7 +995,7 @@ func store_data_type(file:File, type:int, value, skip_type:bool = false, array_t
 			file.store_buffer(value)
 		DT_STRING:
 			if !skip_type: file.store_8(type)
-			var buf:PoolByteArray = value.to_utf8()
+			var buf:PackedByteArray = value.to_utf8_buffer()
 			file.store_16(buf.size())
 			file.store_buffer(buf)
 		DT_BUFFER_LONG:
@@ -1000,7 +1006,7 @@ func store_data_type(file:File, type:int, value, skip_type:bool = false, array_t
 		DT_STRING_LONG:
 			if !skip_type:
 				file.store_8(type)
-			var buf:PoolByteArray = value.to_utf8()
+			var buf:PackedByteArray = value.to_utf8_buffer()
 			file.store_32(buf.size())
 			file.store_buffer(buf)
 		DT_ARRAY:
@@ -1092,7 +1098,7 @@ func read_data_type(
 func convert_to_sspm(upgrade:bool=false):
 	var file:File = File.new()
 	var file2:File = File.new()
-	var dir:Directory = Directory.new()
+	var dir:DirAccess = DirAccess.new()
 	# Figure out the path and make sure it's usable
 	var path:String = Globals.p("user://maps/%s.sspm") % id
 	if !dir.dir_exists(Globals.p("user://maps")): dir.make_dir(Globals.p("user://maps"))
@@ -1115,7 +1121,7 @@ func convert_to_sspm(upgrade:bool=false):
 	var map_has_cover = (has_cover and self.cover and (cover.get_height() + cover.get_width()) >= 9)
 	
 	var map_has_music:bool = false
-	var music_buffer:PoolByteArray = get_music_buffer()
+	var music_buffer:PackedByteArray = get_music_buffer()
 	var music_buffer_length:int = 0
 	
 	# Get music buffer
@@ -1146,13 +1152,13 @@ func convert_to_sspm(upgrade:bool=false):
 	# https://github.com/basils-garden/types/blob/sspm-v2-draft/sspm/v2.md
 	
 	# Header
-	file.store_buffer(PoolByteArray([0x53,0x53,0x2b,0x6d])) # File signature
+	file.store_buffer(PackedByteArray([0x53,0x53,0x2b,0x6d])) # File signature
 	file.store_16(2) # File type version
-	file.store_buffer(PoolByteArray([0x00,0x00,0x00,0x00])) # Reserved space
+	file.store_buffer(PackedByteArray([0x00,0x00,0x00,0x00])) # Reserved space
 	
 	# Static metadata
 	# Position: 0x0a
-	file.store_buffer(PoolByteArray([
+	file.store_buffer(PackedByteArray([
 		0x00, 0x00, 0x00, 0x00, 0x00,
 		0x00, 0x00, 0x00, 0x00, 0x00,
 		0x00, 0x00, 0x00, 0x00, 0x00,
@@ -1243,24 +1249,24 @@ func convert_to_sspm(upgrade:bool=false):
 	var start:int = file.get_position()
 	
 	# Map ID
-	var buf:PoolByteArray = id.to_utf8()
+	var buf:PackedByteArray = id.to_utf8_buffer()
 	file.store_16(buf.size())
 	file.store_buffer(buf)
 	
 	# Map name
-	buf = name.to_utf8()
+	buf = name.to_utf8_buffer()
 	file.store_16(buf.size())
 	file.store_buffer(buf)
 	
 	# Song name
-	buf = song.to_utf8()
+	buf = song.to_utf8_buffer()
 	file.store_16(buf.size())
 	file.store_buffer(buf)
 	
 	# Mapper list
 	file.store_16(authors.size())
 	for n in authors:
-		buf = n.to_utf8()
+		buf = n.to_utf8_buffer()
 		file.store_16(buf.size())
 		file.store_buffer(buf)
 	
@@ -1271,7 +1277,7 @@ func convert_to_sspm(upgrade:bool=false):
 	file.store_16(custom_data.size()) # Number of fields
 	
 	for n in custom_data.keys():
-		buf = n.to_utf8()
+		buf = n.to_utf8_buffer()
 		file.store_16(buf.size())
 		file.store_buffer(buf)
 		var v = custom_data[n]
@@ -1324,7 +1330,7 @@ func convert_to_sspm(upgrade:bool=false):
 	file.store_8(marker_types.size())
 	for i in range(marker_types.size()):
 		var t = marker_types[i]
-		buf = t[0].to_utf8()
+		buf = t[0].to_utf8_buffer()
 		file.store_16(buf.size())
 		file.store_buffer(buf)
 		file.store_8(t.size() - 1)
@@ -1356,7 +1362,7 @@ func convert_to_sspm(upgrade:bool=false):
 			
 			allmarkers.append(v)
 	
-	allmarkers.sort_custom(self,"marker_sort")
+	allmarkers.sort_custom(Callable(self, "marker_sort"))
 	
 	start = file.get_position()
 	for m in allmarkers:
@@ -1423,7 +1429,7 @@ func load_from_sspm(path:String):
 	if err != OK: return "file.open errored - code " + String(err)
 	
 	# Header
-	if file.get_buffer(4) != PoolByteArray([0x53,0x53,0x2b,0x6d]): return "File is not a valid .sspm (or header is borked)"
+	if file.get_buffer(4) != PackedByteArray([0x53,0x53,0x2b,0x6d]): return "File is not a valid super.sspm (or header is borked)"
 	
 	var version:int = file.get_16()
 	if version == 1:
@@ -1450,11 +1456,11 @@ func load_from_sspm(path:String):
 				var mip:bool = bool(file.get_8())
 				var format:int = file.get_8()
 				var clen:int = file.get_64()
-				var cbuf:PoolByteArray = file.get_buffer(clen)
+				var cbuf:PackedByteArray = file.get_buffer(clen)
 #				img.create_from_data(w,h,mip,format,cbuf)
 			elif ct == 2:
 				var clen:int = file.get_64()
-				var cbuf:PoolByteArray = file.get_buffer(clen)
+				var cbuf:PackedByteArray = file.get_buffer(clen)
 #				img.load_png_from_buffer(cbuf)
 			
 #			var imgtex:ImageTexture = ImageTexture.new()
@@ -1469,7 +1475,7 @@ func load_from_sspm(path:String):
 			return
 		else:
 			file.get_64()
-			var buf:PoolByteArray = file.get_buffer(12)
+			var buf:PackedByteArray = file.get_buffer(12)
 			if Globals.audioLoader.get_format(buf) == "unknown":
 				warning = "[sspm] Invalid music data!"
 				is_broken = true
@@ -1483,7 +1489,7 @@ func load_from_sspm(path:String):
 	
 	elif version == 2:
 		songType = Globals.MAP_SSPM2
-		if file.get_buffer(4) != PoolByteArray([0x00,0x00,0x00,0x00]):
+		if file.get_buffer(4) != PackedByteArray([0x00,0x00,0x00,0x00]):
 			return "Header reserved space is invalid"
 		
 		# Static metadata
@@ -1620,7 +1626,7 @@ func load_from_sspm(path:String):
 		return self
 	
 	else:
-		return "Unknown .sspm version (update your game?)"
+		return "Unknown super.sspm version (update your game?)"
 
 func export_text(path:String):
 	var txt = id + ","
@@ -1640,7 +1646,7 @@ func export_text(path:String):
 
 func delete():
 	if songType == Globals.MAP_SSPM or songType == Globals.MAP_SSPM2:
-		var dir:Directory = Directory.new()
+		var dir:DirAccess = DirAccess.new()
 		var err = dir.remove(Globals.p(filePath))
 		if err == OK:
 			songType = -1

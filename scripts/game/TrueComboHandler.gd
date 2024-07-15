@@ -7,4 +7,4 @@ func _ready():
 		visible = true
 		
 func _physics_process(delta):
-	rect_position.y += (150 - rect_position.y) * 0.25
+	position.y += (150 - position.y) * 0.25
