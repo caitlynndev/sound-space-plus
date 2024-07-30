@@ -1,0 +1,12 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://cujkwt71is2vg"]
+
+[ext_resource type="Shader" path="res://assets/shaders/asq.gdshader" id="1_0wo6w"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_uw74m"]
+load_path = "res://.godot/imported/approach.svg-315f169122271c0dd3d0c4b0bcaf20ab.s3tc.ctex"
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_0wo6w")
+shader_parameter/use_image = true
+shader_parameter/image = SubResource("CompressedTexture2D_uw74m")

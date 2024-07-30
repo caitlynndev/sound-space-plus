@@ -1,17 +1,22 @@
-[gd_scene load_steps=50 format=3 uid="uid://bxjfj7fcj5ma1"]
+[gd_scene load_steps=56 format=3 uid="uid://bxjfj7fcj5ma1"]
 
 [ext_resource type="Script" path="res://scripts/game/Camera.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/game/NoteManager.gd" id="2"]
 [ext_resource type="Script" path="res://scripts/game/Game.gd" id="3"]
 [ext_resource type="Script" path="res://scripts/content/game/Note.gd" id="4"]
-[ext_resource type="PackedScene" path="res://prefabs/game/HUD.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://b0fqg3xaxaox4" path="res://prefabs/game/HUD.tscn" id="5"]
 [ext_resource type="Texture2D" uid="uid://67ahxp47ysos" path="res://assets/images/cursors/circle.png" id="6"]
 [ext_resource type="Texture2D" uid="uid://dvlpcf2wa6py" path="res://assets/images/spawn_effect.png" id="8"]
+[ext_resource type="Material" uid="uid://bm6wewxdkewx" path="res://assets/materials/solid_note.tres" id="9_yy5n7"]
 [ext_resource type="Texture2D" uid="uid://cjcwlwtnywmji" path="res://assets/images/ui/flashlight.svg" id="10"]
+[ext_resource type="Material" uid="uid://6750kencvm3b" path="res://assets/materials/transparent_note.tres" id="10_batqq"]
 [ext_resource type="PackedScene" path="res://prefabs/Avatar.tscn" id="11"]
+[ext_resource type="Material" uid="uid://cujkwt71is2vg" path="res://assets/materials/asq.tres" id="11_g7lcw"]
 [ext_resource type="ArrayMesh" uid="uid://bjw5rebhxe73i" path="res://assets/blocks/cube.obj" id="12"]
 [ext_resource type="Script" path="res://scripts/game/MaskedModifier.gd" id="13"]
 [ext_resource type="Script" path="res://scripts/game/Cursor.gd" id="14"]
+[ext_resource type="Texture2D" uid="uid://c0kavhwpweckr" path="res://assets/images/grid_outer.png" id="14_matq0"]
+[ext_resource type="Texture2D" uid="uid://y3ki743tc5pn" path="res://assets/images/grid_inner.png" id="14_wq4um"]
 [ext_resource type="FontFile" path="res://assets/font/debug2.tres" id="16"]
 [ext_resource type="Animation" path="res://assets/animations/Blink.tres" id="20_lw7sj"]
 [ext_resource type="Animation" path="res://assets/animations/Idle.tres" id="21_6rtll"]
@@ -33,104 +38,12 @@ size = Vector3(80, 80, 2)
 [sub_resource type="PlaneMesh" id="34"]
 size = Vector2(0.263, 0.263)
 
-[sub_resource type="Shader" id="78"]
-code = "shader_type spatial;
-render_mode blend_mix,cull_back,depth_prepass_alpha,diffuse_burley,specular_disabled,unshaded;
-uniform vec4 notecolor : source_color = vec4(1,1,1,1);
-
-uniform float alpha_multi = 1;
-uniform float fade = 1;
-
-uniform bool use_image = false;
-uniform sampler2D image;
-
-float cc(float x) {
-	return pow(x, 2.2);
-}
-
-vec4 colconv(vec4 a) {
-	return vec4(
-		cc(a.r),
-		cc(a.g),
-		cc(a.b),
-		a.a
-	);
-}
-
-void fragment() {
-	vec2 base_uv = UV;
-	vec4 img = vec4(1.0);
-	if (use_image) {
-		img = texture(image,UV);
-	}
-	
-	vec4 col = colconv(COLOR);
-//	if (col.a >= 0.5) {
-//		ALBEDO = vec3(0.0, 1.0 - (2.0 * (col.a - 0.5)), (2.0 * (col.a - 0.5)))
-//	} else {
-//		ALBEDO = vec3(1.0 - (2.0 * col.a), (2.0 * col.a), 0.0)
-//	}
-	ALBEDO = col.rgb * img.rgb;
-//	ALBEDO = vec3(col.r, col.a, float(col.a >= 1.0 || col.a == 0.0));
-	//ALBEDO = vec3(1.0 - col.a, col.a, 0.0);
-	ALPHA = col.a*img.a*alpha_multi;/*COLOR.a * */
-}
-"
-
-[sub_resource type="ShaderMaterial" id="79"]
-render_priority = 0
-shader = SubResource("78")
-shader_parameter/notecolor = Color(1, 1, 1, 1)
-shader_parameter/alpha_multi = 1.0
-shader_parameter/fade = 1.0
-shader_parameter/use_image = false
-
-[sub_resource type="ShaderMaterial" id="80"]
-render_priority = 0
-shader = SubResource("78")
-shader_parameter/notecolor = Color(1, 1, 1, 1)
-shader_parameter/alpha_multi = 0.15
-shader_parameter/fade = 1.0
-shader_parameter/use_image = false
-
-[sub_resource type="Shader" id="81"]
-code = "shader_type spatial;
-render_mode blend_mix,cull_back,depth_prepass_alpha,diffuse_burley,specular_disabled,unshaded;
-
-uniform bool use_image = true;
-uniform sampler2D image;
-
-float cc(float x) {
-	return pow(x, 2.2);
-}
-
-vec4 colconv(vec4 a) {
-	return vec4(
-		cc(a.r),
-		cc(a.g),
-		cc(a.b),
-		a.a
-	);
-}
-
-void fragment() {
-	vec2 base_uv = UV;
-	vec4 img = vec4(1.0);
-	if (use_image) {
-		img = texture(image,UV);
-	}
-	
-	vec4 col = colconv(COLOR);
-	ALBEDO = col.rgb * img.rgb;
-	ALPHA = col.a*img.a;
-}
-"
-
-[sub_resource type="ShaderMaterial" id="82"]
-render_priority = 0
-shader = SubResource("81")
-shader_parameter/use_image = true
-shader_parameter/image = ExtResource("44")
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jak2r"]
+transparency = 1
+no_depth_test = true
+shading_mode = 0
+disable_ambient_light = true
+albedo_texture = ExtResource("6")
 
 [sub_resource type="StandardMaterial3D" id="38"]
 render_priority = -1
@@ -155,8 +68,36 @@ mesh = SubResource("37")
 [sub_resource type="PlaneMesh" id="30"]
 size = Vector2(3.04, 3.04)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bx18d"]
+transparency = 1
+no_depth_test = true
+shading_mode = 0
+disable_ambient_light = true
+albedo_texture = ExtResource("14_matq0")
+
 [sub_resource type="PlaneMesh" id="32"]
 size = Vector2(3, 3)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_akrw8"]
+transparency = 1
+no_depth_test = true
+shading_mode = 0
+disable_ambient_light = true
+albedo_texture = ExtResource("14_wq4um")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mdls8"]
+transparency = 1
+no_depth_test = true
+shading_mode = 0
+disable_ambient_light = true
+albedo_texture = ExtResource("6")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qf100"]
+transparency = 1
+no_depth_test = true
+shading_mode = 0
+disable_ambient_light = true
+albedo_texture = ExtResource("6")
 
 [sub_resource type="CanvasItemMaterial" id="76"]
 light_mode = 1
@@ -214,6 +155,13 @@ shader_parameter/use_image = false
 
 [sub_resource type="PlaneMesh" id="44"]
 size = Vector2(0.5, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_etkmk"]
+transparency = 1
+no_depth_test = true
+shading_mode = 0
+disable_ambient_light = true
+albedo_texture = ExtResource("6")
 
 [sub_resource type="Animation" id="55"]
 length = 0.001
@@ -477,6 +425,7 @@ script = ExtResource("24")
 transform = Transform3D(1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, -3.59989e-21, 4.37114e-08, 1, -4.37114e-08, 0, 0, 0)
 cast_shadow = 0
 mesh = SubResource("34")
+surface_material_override/0 = SubResource("StandardMaterial3D_jak2r")
 
 [node name="HUD" parent="Game" instance=ExtResource("5")]
 
@@ -485,9 +434,9 @@ process_mode = 1
 process_priority = 2
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1, 0)
 script = ExtResource("2")
-note_solid_mat = SubResource("79")
-note_transparent_mat = SubResource("80")
-asq_mat = SubResource("82")
+note_solid_mat = ExtResource("9_yy5n7")
+note_transparent_mat = ExtResource("10_batqq")
+asq_mat = ExtResource("11_g7lcw")
 
 [node name="HitSounds" type="Node3D" parent="Game/Spawn"]
 
@@ -506,8 +455,8 @@ cast_shadow = 0
 [node name="Label" type="Label" parent="Game/Spawn"]
 offset_left = 10.0
 offset_top = 45.0
-offset_right = 50.0
-offset_bottom = 59.0
+offset_right = 82.0
+offset_bottom = 62.0
 theme_override_fonts/font = ExtResource("16")
 text = "mmi debug"
 
@@ -543,10 +492,14 @@ bus = &"HitSound"
 [node name="Outer" type="MeshInstance3D" parent="Game/Spawn"]
 transform = Transform3D(-4.37114e-08, -4.37114e-08, -1, -1, 1.91069e-15, 4.37114e-08, 0, 1, -4.37114e-08, 1, -1, 0)
 mesh = SubResource("30")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("StandardMaterial3D_bx18d")
 
 [node name="Inner" type="MeshInstance3D" parent="Game/Spawn"]
 transform = Transform3D(-4.37114e-08, -4.37114e-08, -1, -1, 1.91069e-15, 4.37114e-08, 0, 1, -4.37114e-08, 1.001, -1, -0.006)
 mesh = SubResource("32")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("StandardMaterial3D_akrw8")
 
 [node name="Cursor" type="Node3D" parent="Game/Spawn"]
 process_priority = 1
@@ -556,11 +509,13 @@ script = ExtResource("14")
 [node name="Mesh" type="MeshInstance3D" parent="Game/Spawn/Cursor"]
 transform = Transform3D(1, 4.37114e-08, -1.91069e-15, 0, -4.37114e-08, -1, -4.37114e-08, 1, -4.37114e-08, 0, 0, 0)
 mesh = SubResource("34")
+surface_material_override/0 = SubResource("StandardMaterial3D_mdls8")
 
 [node name="Mesh2" type="MeshInstance3D" parent="Game/Spawn/Cursor"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -0.01)
 visible = false
 mesh = SubResource("34")
+surface_material_override/0 = SubResource("StandardMaterial3D_qf100")
 
 [node name="VisualPos" type="Control" parent="Game/Spawn/Cursor"]
 visible = false
@@ -637,6 +592,7 @@ transform = Transform3D(1, 4.37114e-08, -1.91069e-15, 0, -4.37114e-08, -1, -4.37
 cast_shadow = 0
 mesh = SubResource("44")
 skeleton = NodePath("../Cursor")
+surface_material_override/0 = SubResource("StandardMaterial3D_etkmk")
 script = ExtResource("26")
 
 [node name="Avatar" parent="Game" instance=ExtResource("11")]
@@ -702,13 +658,16 @@ transform = Transform3D(1, 0, 2.38419e-07, 0, 1, 0, -2.38419e-07, 0, 1, 0, 0, -1
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Game/ForceMatLoad"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("83")
+surface_material_override/0 = ExtResource("9_yy5n7")
 
 [node name="MeshInstance2" type="MeshInstance3D" parent="Game/ForceMatLoad"]
 mesh = SubResource("83")
+surface_material_override/0 = ExtResource("10_batqq")
 
 [node name="MeshInstance3" type="MeshInstance3D" parent="Game/ForceMatLoad"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 mesh = SubResource("83")
+surface_material_override/0 = ExtResource("11_g7lcw")
 
 [editable path="Game/Avatar"]
 [editable path="Game/Avatar/Head/Accessories"]

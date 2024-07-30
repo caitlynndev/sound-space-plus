@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://ccbrduvbctnou"]
+[gd_scene load_steps=14 format=3 uid="uid://ccbrduvbctnou"]
 
 [ext_resource type="FontFile" uid="uid://csgvjjiridy5g" path="res://assets/font/Lato/Lato-Regular.ttf" id="1"]
 [ext_resource type="Script" path="res://scripts/ui/menu/VersionNumber.gd" id="2"]
@@ -20,15 +20,6 @@ cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
 
 [sub_resource type="FontFile" id="2"]
 fallbacks = Array[Font]([ExtResource("1"), ExtResource("6")])
-cache/0/16/0/ascent = 0.0
-cache/0/16/0/descent = 0.0
-cache/0/16/0/underline_position = 0.0
-cache/0/16/0/underline_thickness = 0.0
-cache/0/16/0/scale = 1.0
-cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
-
-[sub_resource type="FontFile" id="3"]
-fallbacks = Array[Font]([ExtResource("1")])
 cache/0/16/0/ascent = 0.0
 cache/0/16/0/descent = 0.0
 cache/0/16/0/underline_position = 0.0
@@ -119,8 +110,9 @@ grow_vertical = 2
 scale = Vector2(1.00568, 1.00712)
 theme = ExtResource("4")
 theme_override_colors/font_color = Color(1, 0.705882, 0.945098, 1)
-theme_override_fonts/font = SubResource("3")
+theme_override_font_sizes/font_size = 18
 text = "Rhythia  vA-B-C-branch"
+vertical_alignment = 1
 script = ExtResource("2")
 
 [node name="TextureRect" type="TextureRect" parent="VersionNumber"]

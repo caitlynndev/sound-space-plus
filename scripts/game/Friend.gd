@@ -41,7 +41,7 @@ func upd():
 		if does_state_apply(states[i]):
 			if i == last_state: return
 			last_state = i
-			get("material/0").albedo_texture = textures[i]
+			get("surface_material_override/0").albedo_texture = textures[i]
 			return
 
 func _process(delta):
@@ -67,9 +67,9 @@ func _ready():
 			transform = get_node("../FriendUR").transform
 		Globals.FRIEND_FILL_GRID:
 			transform = get_node("../FriendC").transform
-			get("material/0").albedo_color.a = 0.1
+			get("surface_material_override/0").albedo_color.a = 0.1
 			mesh.size = Vector2(3,3)
 		Globals.FRIEND_BEHIND_GRID:
 			transform = get_node("../FriendBG").transform
-			get("material/0").albedo_color.a = 0.1
+			get("surface_material_override/0").albedo_color.a = 0.1
 			mesh.size = Vector2(1,1)

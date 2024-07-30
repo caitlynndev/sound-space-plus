@@ -55,7 +55,7 @@ func open(body:String, title:String="Confirm", input:String="Profile Name",
 	twn.tween_property($C,"position",Vector2(0,0),transition_time)
 	twn.tween_property(self,"modulate",Color(1,1,1,1),transition_time)
 	twn.play()
-	await twn.tween_all_completed
+	await twn.finished
 	for i in range(buttons.size()):
 		var button:Button = buttons[i]
 		if i < options.size():
@@ -74,7 +74,7 @@ func close():
 	is_open = false
 	current_options = []
 	for button in buttons: button.disabled = true
-	await twn.tween_all_completed
+	await twn.finished
 	visible = false
 	emit_signal("done_closing")
 

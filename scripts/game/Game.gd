@@ -275,7 +275,7 @@ func _ready():
 	Rhythia.song_end_pause_count = 0
 	Rhythia.song_end_misses = 0
 	get_tree().paused = true
-	get_node("Spawn/Music").volume_db = Rhythia.music_volume_db
+	$Spawn/Music.volume_db = Rhythia.music_volume_db
 	if Rhythia.mod_sudden_death:
 		max_energy = 1
 	elif Rhythia.health_model == Globals.HP_OLD:
@@ -298,7 +298,7 @@ func _ready():
 	get_tree().paused = false
 	$Spawn.connect("timer_update", Callable(self, "update_timer"))
 #	$Spawn.connect("hit",self,"hit")
-	$Spawn.connect("miss", Callable(self, "miss"))
+	$Spawn.connect("miss", Callable(self, "_miss"))
 	loadMapFile()
 	
 	
@@ -311,4 +311,3 @@ func _ready():
 	black_fade_target = false
 	$ForceMatLoad.visible = false
 	$Spawn.active = true
-

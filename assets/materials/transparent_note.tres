@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://6750kencvm3b"]
+
+[ext_resource type="Shader" path="res://assets/shaders/note.gdshader" id="1_8fhrt"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_8fhrt")
+shader_parameter/notecolor = Color(1, 1, 1, 1)
+shader_parameter/alpha_multi = 0.15
+shader_parameter/fade = 1.0
+shader_parameter/use_image = false

@@ -5,7 +5,7 @@ signal lock_type
 var has_been_pressed:bool = false
 var detected_controllers = Input.get_connected_joypads().size()
 
-func files_dropped(files:PackedStringArray,_screen:int):
+func files_dropped(files:PackedStringArray):
 	if has_been_pressed: return
 	if files.size() == 1 and files[0].get_extension() == "sspre":
 		has_been_pressed = true
@@ -82,4 +82,4 @@ func _pressed():
 #	print("\n\n\n\n")
 
 func _ready():
-	get_tree().connect("files_dropped", Callable(self, "files_dropped"))
+	get_window().files_dropped.connect(files_dropped)

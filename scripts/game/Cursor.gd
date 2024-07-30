@@ -141,7 +141,7 @@ func cache_trail(part:Node3D):
 	trail_cache.append(part)
 
 func recolor(col:Color):
-	$Mesh.get("material/0").albedo_color = Color(col.r,col.g,col.b,col.a)
+	$Mesh.get("surface_material_override/0").albedo_color = Color(col.r,col.g,col.b,col.a)
 
 var mt = 0
 func _process(delta):
@@ -166,7 +166,7 @@ func _process(delta):
 	if Rhythia.cursor_face_velocity:
 		$Mesh.rotation_degrees.x += ((rad_to_deg(face.angle()) + 180) - $Mesh.rotation_degrees.x) * 0.025
 	if Rhythia.cursor_color_type == Globals.CURSOR_RAINBOW:
-		$Mesh.get("material/0").albedo_color = Color.from_hsv(Rhythia.rainbow_t*0.1,0.65,1)
+		$Mesh.get("surface_material_override/0").albedo_color = Color.from_hsv(Rhythia.rainbow_t*0.1,0.65,1)
 	if Input.is_key_pressed(KEY_C):
 		ct = fmod(ct+delta,3)
 		global_transform.origin = Vector3(ct-1.5,sin(ct*4),global_transform.origin.z)
@@ -233,7 +233,7 @@ func _ready():
 	else:
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	
-	var mat:StandardMaterial3D = $Mesh.get("material/0")
+	var mat:StandardMaterial3D = $Mesh.get("surface_material_override/0")
 	$Mesh.scale = Vector3(Rhythia.cursor_scale,Rhythia.cursor_scale,Rhythia.cursor_scale)
 	$Mesh2.scale = Vector3(Rhythia.cursor_scale,Rhythia.cursor_scale,Rhythia.cursor_scale)
 	var img = Globals.imageLoader.load_if_exists("user://cursor")
@@ -241,7 +241,7 @@ func _ready():
 		mat.albedo_color = Color(1,1,1)
 		mat.albedo_texture = img
 	
-	mat = get_node("../../CursorTrail/Mesh").get("material/0")
+	mat = get_node("../../CursorTrail/Mesh").get("surface_material_override/0")
 	var img2 = Globals.imageLoader.load_if_exists("user://trail")
 	if img2: mat.albedo_texture = img2
 	elif img: mat.albedo_texture = img

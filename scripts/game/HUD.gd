@@ -199,20 +199,20 @@ func update_timer(ms:float,canSkip:bool=false):
 	
 	if !Rhythia.rainbow_hud:
 		if canSkip:
-			timebar.get("theme_override_styles/fg").bg_color = timer_fg_canskip
-			timebar.get("theme_override_styles/bg").bg_color = timer_bg_canskip
+			timebar.get("theme_override_styles/fill").bg_color = timer_fg_canskip
+			timebar.get("theme_override_styles/background").bg_color = timer_bg_canskip
 			for n in get_tree().get_nodes_in_group("timer_text"):
 				paint(n,timer_text_canskip)
 			
 		elif !Rhythia.queue_active and Spawn.ms > Game.last_ms:
-			timebar.get("theme_override_styles/fg").bg_color = timer_fg_done
-			timebar.get("theme_override_styles/bg").bg_color = timer_bg_done
+			timebar.get("theme_override_styles/fill").bg_color = timer_fg_done
+			timebar.get("theme_override_styles/background").bg_color = timer_bg_done
 			for n in get_tree().get_nodes_in_group("timer_text"):
 				paint(n,timer_text_done)
 			
 		else:
-			timebar.get("theme_override_styles/fg").bg_color = timer_fg
-			timebar.get("theme_override_styles/bg").bg_color = timer_bg
+			timebar.get("theme_override_styles/fill").bg_color = timer_fg
+			timebar.get("theme_override_styles/background").bg_color = timer_bg
 			for n in get_tree().get_nodes_in_group("timer_text"):
 				paint(n,timer_text)
 	
@@ -254,7 +254,7 @@ func _process(delta:float):
 	if Rhythia.show_config:
 		config_time = max(config_time-delta,0)
 		if config_time <= 0: $ConfigHud.visible = false
-		else: $ConfigHud.opacity = min(1,config_time)
+		else: $ConfigHud.transparency = 1 - min(1,config_time)
 	
 	if combo_ring_value > combo_ring_target:
 		combo_ring_value = max(combo_ring_value + (
@@ -276,10 +276,10 @@ func _process(delta:float):
 			get_node("GiveUpVP/Control").fill_color = giveup_fill_color_end_skip
 			
 		get_node("GiveUpVP/Control").percent = Game.giving_up
-		get_node("GiveUpHud").opacity = min(Game.giving_up*2,1)
+		get_node("GiveUpHud").transparency = 1 - min(Game.giving_up*2,1)
 	else:
 		get_node("GiveUpHud").visible = false
-		get_node("GiveUpHud").opacity = 0
+		get_node("GiveUpHud").transparency = 1
 	
 	if rainbow_letter_grade and !Rhythia.rainbow_hud:
 		lettergrade.set("theme_override_colors/font_color",Color.from_hsv(Rhythia.rainbow_t*0.1, grade_ss_saturation, grade_ss_value))
@@ -291,8 +291,8 @@ func _process(delta:float):
 		miss_flash = max(0, miss_flash - (delta * 3))
 	
 	if Rhythia.rainbow_hud:
-		energybar.get("theme_override_styles/fg").bg_color = Color.from_hsv(Rhythia.rainbow_t*0.1,0.4,1)
-		energybar.get("theme_override_styles/bg").bg_color = Color.from_hsv(Rhythia.rainbow_t*0.1,0.4,0.2,0.65)
+		energybar.get("theme_override_styles/fill").bg_color = Color.from_hsv(Rhythia.rainbow_t*0.1,0.4,1)
+		energybar.get("theme_override_styles/background").bg_color = Color.from_hsv(Rhythia.rainbow_t*0.1,0.4,0.2,0.65)
 		$TimerHud.modulate = Color.from_hsv(Rhythia.rainbow_t*0.1,0.4,1)
 		$ComboHud.modulate = Color.from_hsv(Rhythia.rainbow_t*0.1,0.4,1)
 		$LeftHud.modulate = Color.from_hsv(Rhythia.rainbow_t*0.1,0.4,1)
@@ -377,13 +377,13 @@ func _ready():
 		
 		comboring.fill_color = Color(cf,cf,cf,combo_fill_color.a)
 		comboring.empty_color = Color(ce,ce,ce,combo_empty_color.a)
-		accbar.get("theme_override_styles/fg").bg_color = Color(af,af,af,acc_fill_color.a)
-		accbar.get("theme_override_styles/bg").bg_color = Color(ae,ae,ae,acc_empty_color.a)
+		accbar.get("theme_override_styles/fill").bg_color = Color(af,af,af,acc_fill_color.a)
+		accbar.get("theme_override_styles/background").bg_color = Color(ae,ae,ae,acc_empty_color.a)
 	else:
 		comboring.fill_color = combo_fill_color
 		comboring.empty_color = combo_empty_color
-		accbar.get("theme_override_styles/fg").bg_color = acc_fill_color
-		accbar.get("theme_override_styles/bg").bg_color = acc_empty_color
+		accbar.get("theme_override_styles/fill").bg_color = acc_fill_color
+		accbar.get("theme_override_styles/background").bg_color = acc_empty_color
 	
 	
 	

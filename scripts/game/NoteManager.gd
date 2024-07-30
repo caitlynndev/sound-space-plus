@@ -313,7 +313,7 @@ func reposition_notes(force:bool=false,rerun_start:int=-1):
 
 					hitEffect.duplicate().spawn(get_parent(),pos,notes[i][3],hit_id,false)
 				emit_signal("hit",notes[i][3])
-				var score:int = get_parent().hit(notes[i][3])
+				var score:int = get_parent()._hit(notes[i][3])
 				if Rhythia.score_popup:
 					scoreEffect.duplicate().spawn(get_parent(),pos,notes[i][3],score)
 
@@ -839,8 +839,8 @@ func _process(delta:float):
 				Rhythia.replay.store_cursor_pos(rms,$Cursor.rpos.x,$Cursor.rpos.y)
 		
 		if Rhythia.rainbow_grid:
-			$Inner.get("material/0").albedo_color = Color.from_hsv(Rhythia.rainbow_t*0.1,0.65,1)
-			$Outer.get("material/0").albedo_color = Color.from_hsv(Rhythia.rainbow_t*0.1,0.65,1)
+			$Inner.get("surface_material_override/0").albedo_color = Color.from_hsv(Rhythia.rainbow_t*0.1,0.65,1)
+			$Outer.get("surface_material_override/0").albedo_color = Color.from_hsv(Rhythia.rainbow_t*0.1,0.65,1)
 
 
 func _exit_tree():

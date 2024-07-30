@@ -38,5 +38,5 @@ func _process(delta):
 	# application onto nodes
 	global_position = lerp(global_position,target,lspd*40) # lspd multiplied by 40 to increase speed
 	$Sprite2D.pixel_size = lerp($Sprite2D.pixel_size,tps,lspd/2) # lspd divided by 2 to increase time
-	$Sprite2D.opacity = lerp($Sprite2D.opacity,top,lspd/2) # lspd divided by 2 to increase time
+	$Sprite2D.transparency = lerp($Sprite2D.transparency,1 - top,lspd/2) # lspd divided by 2 to increase time
 	

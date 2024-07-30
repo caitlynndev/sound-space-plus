@@ -25,4 +25,4 @@ func _ready():
 	tween.tween_interval(1)
 	tween.parallel().tween_property($Pause, "modulate", Color(1,1,1,0), 1)
 	tween.parallel().tween_property($GiveUp, "modulate", Color(1,1,1,0), 1)
-	tween.start()
+	tween.play()
