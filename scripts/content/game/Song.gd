@@ -74,7 +74,7 @@ func _get_cover():
 	if is_instance_valid(cover):
 		return cover
 	var file = FileAccess.open(filePath, FileAccess.READ)
-	var err = FileAccess.get_open_error()
+	var err = file.get_error()
 	if err != OK:
 		print(err)
 	file.seek(cover_offset)

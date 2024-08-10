@@ -81,7 +81,7 @@ func load_buffer(bytes:PackedByteArray) -> Texture2D:
 
 func load_file(filepath:String) -> Texture2D:
 	var file = FileAccess.open(Globals.p(filepath), FileAccess.READ)
-	var err = FileAccess.get_open_error()
+	var err = file.get_error()
 	if err != OK:
 		report_errors(err, Globals.p(filepath))
 		file.close()
@@ -99,4 +99,6 @@ func load_if_exists(path:String):
 	elif FileAccess.file_exists(path + ".webp"): path += ".webp"
 	elif FileAccess.file_exists(path + ".bmp"): path += ".bmp"
 	if FileAccess.file_exists(path): return load_file(path)
-	else: return null
+	else:
+		print("%s doesn't exist" % path)
+		return null

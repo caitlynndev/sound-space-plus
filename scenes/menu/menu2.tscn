@@ -1,4 +1,4 @@
-[gd_scene load_steps=202 format=3 uid="uid://digda54nefdie"]
+[gd_scene load_steps=203 format=3 uid="uid://digda54nefdie"]
 
 [ext_resource type="Theme" uid="uid://bnnoshtkff5jn" path="res://uitheme.tres" id="1"]
 [ext_resource type="FontFile" uid="uid://csgvjjiridy5g" path="res://assets/font/Lato/Lato-Regular.ttf" id="2"]
@@ -71,6 +71,7 @@
 [ext_resource type="Texture2D" uid="uid://dcgtnqkdkcd7s" path="res://assets/images/modifiers/128/speed_p_dark.png" id="71"]
 [ext_resource type="Texture2D" uid="uid://bja1tppk5es2d" path="res://assets/images/modifiers/128/speed_pppp_dark.png" id="72"]
 [ext_resource type="Texture2D" uid="uid://c34v10p3j0ylt" path="res://assets/images/modifiers/128/speed_ppp_colored.png" id="73"]
+[ext_resource type="Texture2D" uid="uid://27wp0a4uxmvh" path="res://assets/images/error.jpg" id="73_ljgu7"]
 [ext_resource type="Texture2D" uid="uid://bfjrgtgu0arki" path="res://assets/images/modifiers/128/speed_ppp_dark.png" id="74"]
 [ext_resource type="Texture2D" uid="uid://cqnk0jpokjupd" path="res://assets/images/modifiers/128/speed_m_dark.png" id="75"]
 [ext_resource type="Texture2D" uid="uid://q07gt86okcru" path="res://assets/images/modifiers/128/speed_pp_colored.png" id="76"]
@@ -144,7 +145,7 @@ border_width_right = 6
 border_width_bottom = 6
 border_color = Color(1, 1, 1, 1)
 
-[sub_resource type="Shader" id="128"]
+[sub_resource type="Shader" id="Shader_6fulf"]
 code = "shader_type canvas_item;
 
 void fragment() {
@@ -154,7 +155,7 @@ void fragment() {
 }"
 
 [sub_resource type="ShaderMaterial" id="60"]
-shader = SubResource("128")
+shader = SubResource("Shader_6fulf")
 
 [sub_resource type="Shader" id="130"]
 code = "shader_type canvas_item;
@@ -188,7 +189,9 @@ void fragment() {
 [sub_resource type="ShaderMaterial" id="62"]
 shader = SubResource("129")
 
-[sub_resource type="StyleBoxEmpty" id="66"]
+[sub_resource type="StyleBoxEmpty" id="64"]
+
+[sub_resource type="StyleBoxEmpty" id="65"]
 
 [sub_resource type="StyleBoxFlat" id="63"]
 bg_color = Color(0.6, 0.6, 0.6, 0.0941176)
@@ -206,9 +209,7 @@ expand_margin_top = 2.0
 expand_margin_right = 2.0
 expand_margin_bottom = 2.0
 
-[sub_resource type="StyleBoxEmpty" id="65"]
-
-[sub_resource type="StyleBoxEmpty" id="64"]
+[sub_resource type="StyleBoxEmpty" id="66"]
 
 [sub_resource type="FontFile" id="98"]
 fallbacks = Array[Font]([ExtResource("27"), ExtResource("15")])
@@ -273,15 +274,16 @@ cache/0/16/0/underline_thickness = 0.0
 cache/0/16/0/scale = 1.0
 cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
 
-[sub_resource type="StyleBoxFlat" id="124"]
-bg_color = Color(0.105882, 0.0784314, 0.235294, 1)
+[sub_resource type="StyleBoxEmpty" id="122"]
+
+[sub_resource type="StyleBoxFlat" id="123"]
+bg_color = Color(0.0627451, 0.0470588, 0.141176, 1)
 corner_radius_top_left = 24
 corner_radius_top_right = 24
 corner_radius_bottom_right = 24
 corner_radius_bottom_left = 24
 corner_detail = 10
-shadow_color = Color(0.368627, 0.466667, 1, 0.6)
-shadow_size = 5
+shadow_color = Color(0.1961, 0.246185, 0.53, 0.6)
 anti_aliasing_size = 1.761
 
 [sub_resource type="StyleBoxFlat" id="120"]
@@ -306,17 +308,16 @@ shadow_color = Color(0.403922, 0.494118, 1, 0.721569)
 shadow_size = 12
 anti_aliasing_size = 1.761
 
-[sub_resource type="StyleBoxFlat" id="123"]
-bg_color = Color(0.0627451, 0.0470588, 0.141176, 1)
+[sub_resource type="StyleBoxFlat" id="124"]
+bg_color = Color(0.105882, 0.0784314, 0.235294, 1)
 corner_radius_top_left = 24
 corner_radius_top_right = 24
 corner_radius_bottom_right = 24
 corner_radius_bottom_left = 24
 corner_detail = 10
-shadow_color = Color(0.1961, 0.246185, 0.53, 0.6)
+shadow_color = Color(0.368627, 0.466667, 1, 0.6)
+shadow_size = 5
 anti_aliasing_size = 1.761
-
-[sub_resource type="StyleBoxEmpty" id="122"]
 
 [sub_resource type="StyleBoxFlat" id="88"]
 bg_color = Color(0.498039, 0.894118, 1, 1)
@@ -432,9 +433,7 @@ cache/0/16/0/underline_thickness = 0.0
 cache/0/16/0/scale = 1.0
 cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
 
-[sub_resource type="StyleBoxTexture" id="135"]
-texture = ExtResource("68")
-region_rect = Rect2(0, 0, 128, 128)
+[sub_resource type="StyleBoxEmpty" id="155"]
 
 [sub_resource type="StyleBoxTexture" id="148"]
 texture = ExtResource("84")
@@ -444,7 +443,9 @@ region_rect = Rect2(0, 0, 128, 128)
 texture = ExtResource("70")
 region_rect = Rect2(0, 0, 128, 128)
 
-[sub_resource type="StyleBoxEmpty" id="155"]
+[sub_resource type="StyleBoxTexture" id="135"]
+texture = ExtResource("68")
+region_rect = Rect2(0, 0, 128, 128)
 
 [sub_resource type="FontFile" id="94"]
 fallbacks = Array[Font]([ExtResource("2")])
@@ -455,10 +456,6 @@ cache/0/16/0/underline_thickness = 0.0
 cache/0/16/0/scale = 1.0
 cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
 
-[sub_resource type="StyleBoxTexture" id="137"]
-texture = ExtResource("80")
-region_rect = Rect2(0, 0, 128, 128)
-
 [sub_resource type="StyleBoxTexture" id="149"]
 texture = ExtResource("82")
 region_rect = Rect2(0, 0, 128, 128)
@@ -467,8 +464,8 @@ region_rect = Rect2(0, 0, 128, 128)
 texture = ExtResource("69")
 region_rect = Rect2(0, 0, 128, 128)
 
-[sub_resource type="StyleBoxTexture" id="139"]
-texture = ExtResource("75")
+[sub_resource type="StyleBoxTexture" id="137"]
+texture = ExtResource("80")
 region_rect = Rect2(0, 0, 128, 128)
 
 [sub_resource type="StyleBoxTexture" id="150"]
@@ -479,8 +476,8 @@ region_rect = Rect2(0, 0, 128, 128)
 texture = ExtResource("78")
 region_rect = Rect2(0, 0, 128, 128)
 
-[sub_resource type="StyleBoxTexture" id="141"]
-texture = ExtResource("71")
+[sub_resource type="StyleBoxTexture" id="139"]
+texture = ExtResource("75")
 region_rect = Rect2(0, 0, 128, 128)
 
 [sub_resource type="StyleBoxTexture" id="151"]
@@ -491,8 +488,8 @@ region_rect = Rect2(0, 0, 128, 128)
 texture = ExtResource("77")
 region_rect = Rect2(0, 0, 128, 128)
 
-[sub_resource type="StyleBoxTexture" id="143"]
-texture = ExtResource("81")
+[sub_resource type="StyleBoxTexture" id="141"]
+texture = ExtResource("71")
 region_rect = Rect2(0, 0, 128, 128)
 
 [sub_resource type="StyleBoxTexture" id="152"]
@@ -503,8 +500,8 @@ region_rect = Rect2(0, 0, 128, 128)
 texture = ExtResource("76")
 region_rect = Rect2(0, 0, 128, 128)
 
-[sub_resource type="StyleBoxTexture" id="145"]
-texture = ExtResource("74")
+[sub_resource type="StyleBoxTexture" id="143"]
+texture = ExtResource("81")
 region_rect = Rect2(0, 0, 128, 128)
 
 [sub_resource type="StyleBoxTexture" id="153"]
@@ -515,8 +512,8 @@ region_rect = Rect2(0, 0, 128, 128)
 texture = ExtResource("73")
 region_rect = Rect2(0, 0, 128, 128)
 
-[sub_resource type="StyleBoxTexture" id="147"]
-texture = ExtResource("72")
+[sub_resource type="StyleBoxTexture" id="145"]
+texture = ExtResource("74")
 region_rect = Rect2(0, 0, 128, 128)
 
 [sub_resource type="StyleBoxTexture" id="154"]
@@ -525,6 +522,10 @@ region_rect = Rect2(0, 0, 128, 128)
 
 [sub_resource type="StyleBoxTexture" id="146"]
 texture = ExtResource("79")
+region_rect = Rect2(0, 0, 128, 128)
+
+[sub_resource type="StyleBoxTexture" id="147"]
+texture = ExtResource("72")
 region_rect = Rect2(0, 0, 128, 128)
 
 [sub_resource type="FontFile" id="96"]
@@ -590,8 +591,10 @@ cache/0/16/0/underline_thickness = 0.0
 cache/0/16/0/scale = 1.0
 cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
 
-[sub_resource type="StyleBoxFlat" id="84"]
-bg_color = Color(0.503906, 0.503906, 0.503906, 0.509804)
+[sub_resource type="StyleBoxEmpty" id="82"]
+
+[sub_resource type="StyleBoxFlat" id="83"]
+bg_color = Color(0.211765, 0.211765, 0.211765, 0.443137)
 
 [sub_resource type="StyleBoxFlat" id="80"]
 bg_color = Color(0.654902, 0.654902, 0.654902, 0.588235)
@@ -599,10 +602,8 @@ bg_color = Color(0.654902, 0.654902, 0.654902, 0.588235)
 [sub_resource type="StyleBoxFlat" id="81"]
 bg_color = Color(0.623529, 0.623529, 0.623529, 0.509804)
 
-[sub_resource type="StyleBoxFlat" id="83"]
-bg_color = Color(0.211765, 0.211765, 0.211765, 0.443137)
-
-[sub_resource type="StyleBoxEmpty" id="82"]
+[sub_resource type="StyleBoxFlat" id="84"]
+bg_color = Color(0.503906, 0.503906, 0.503906, 0.509804)
 
 [sub_resource type="FontFile" id="69"]
 fallbacks = Array[Font]([ExtResource("2"), ExtResource("15")])
@@ -644,13 +645,13 @@ bg_color = Color(0, 0, 0, 1)
 border_width_right = 2
 border_color = Color(0.0784314, 0.0784314, 0.0784314, 1)
 
+[sub_resource type="StyleBoxEmpty" id="3"]
+
 [sub_resource type="StyleBoxFlat" id="4"]
 bg_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="2"]
 bg_color = Color(0.0588235, 0.0588235, 0.0588235, 1)
-
-[sub_resource type="StyleBoxEmpty" id="3"]
 
 [sub_resource type="FontFile" id="6"]
 fallbacks = Array[Font]([ExtResource("2"), ExtResource("15")])
@@ -915,6 +916,7 @@ offset_top = 6.0
 offset_right = -6.0
 offset_bottom = -6.0
 expand_mode = 1
+stretch_mode = 6
 
 [node name="F" type="TextureRect" parent="Main/Maps/Results/Results/RS/H1/ButtonDisp/NODIF"]
 visible = false
@@ -976,6 +978,7 @@ offset_top = 6.0
 offset_right = -6.0
 offset_bottom = -6.0
 expand_mode = 1
+stretch_mode = 6
 
 [node name="F" type="TextureRect" parent="Main/Maps/Results/Results/RS/H1/ButtonDisp/EASY"]
 visible = false
@@ -1038,6 +1041,7 @@ offset_top = 6.0
 offset_right = -6.0
 offset_bottom = -6.0
 expand_mode = 1
+stretch_mode = 6
 
 [node name="F" type="TextureRect" parent="Main/Maps/Results/Results/RS/H1/ButtonDisp/MEDIUM"]
 visible = false
@@ -1100,6 +1104,7 @@ offset_top = 6.0
 offset_right = -6.0
 offset_bottom = -6.0
 expand_mode = 1
+stretch_mode = 6
 
 [node name="F" type="TextureRect" parent="Main/Maps/Results/Results/RS/H1/ButtonDisp/HARD"]
 visible = false
@@ -1162,6 +1167,7 @@ offset_top = 6.0
 offset_right = -6.0
 offset_bottom = -6.0
 expand_mode = 1
+stretch_mode = 6
 
 [node name="F" type="TextureRect" parent="Main/Maps/Results/Results/RS/H1/ButtonDisp/LOGIC"]
 visible = false
@@ -1223,6 +1229,7 @@ offset_top = 6.0
 offset_right = -6.0
 offset_bottom = -6.0
 expand_mode = 1
+stretch_mode = 6
 
 [node name="F" type="TextureRect" parent="Main/Maps/Results/Results/RS/H1/ButtonDisp/TASUKETE"]
 visible = false
@@ -1254,11 +1261,11 @@ clip_text = true
 visible = false
 material = SubResource("62")
 layout_mode = 2
-theme_override_styles/normal = SubResource("66")
+theme_override_styles/focus = SubResource("64")
+theme_override_styles/disabled = SubResource("65")
 theme_override_styles/hover = SubResource("63")
 theme_override_styles/pressed = SubResource("73")
-theme_override_styles/disabled = SubResource("65")
-theme_override_styles/focus = SubResource("64")
+theme_override_styles/normal = SubResource("66")
 action_mode = 0
 
 [node name="VSeparator" type="VSeparator" parent="Main/Maps/Results/Results/RS/H1"]
@@ -1465,17 +1472,17 @@ size_flags_vertical = 7
 size_flags_stretch_ratio = 3.0
 tooltip_text = "(Spacebar, Xbox A)"
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.541176, 1, 0.580392, 1)
-theme_override_colors/font_pressed_color = Color(0, 1, 0.976471, 1)
-theme_override_colors/font_hover_color = Color(0.631373, 1, 0.913725, 1)
-theme_override_colors/font_focus_color = Color(0.541176, 1, 0.580392, 1)
 theme_override_colors/font_disabled_color = Color(0.576471, 0.576471, 0.576471, 1)
+theme_override_colors/font_hover_color = Color(0.631373, 1, 0.913725, 1)
+theme_override_colors/font_pressed_color = Color(0, 1, 0.976471, 1)
+theme_override_colors/font_focus_color = Color(0.541176, 1, 0.580392, 1)
+theme_override_colors/font_color = Color(0.541176, 1, 0.580392, 1)
 theme_override_fonts/font = SubResource("119")
-theme_override_styles/normal = SubResource("124")
+theme_override_styles/focus = SubResource("122")
+theme_override_styles/disabled = SubResource("123")
 theme_override_styles/hover = SubResource("120")
 theme_override_styles/pressed = SubResource("121")
-theme_override_styles/disabled = SubResource("123")
-theme_override_styles/focus = SubResource("122")
+theme_override_styles/normal = SubResource("124")
 toggle_mode = true
 action_mode = 0
 text = "Start!"
@@ -1498,11 +1505,11 @@ custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 size_flags_vertical = 2
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_disabled_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 icon = ExtResource("90")
 flat = false
 icon_alignment = 1
@@ -1925,14 +1932,14 @@ custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 focus_mode = 1
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("92")
-theme_override_styles/normal = SubResource("135")
+theme_override_styles/focus = SubResource("155")
 theme_override_styles/hover = SubResource("148")
 theme_override_styles/pressed = SubResource("134")
-theme_override_styles/focus = SubResource("155")
+theme_override_styles/normal = SubResource("135")
 toggle_mode = true
 action_mode = 0
 shortcut_in_tooltip = false
@@ -1962,14 +1969,14 @@ custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 focus_mode = 1
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("92")
-theme_override_styles/normal = SubResource("137")
+theme_override_styles/focus = SubResource("155")
 theme_override_styles/hover = SubResource("149")
 theme_override_styles/pressed = SubResource("136")
-theme_override_styles/focus = SubResource("155")
+theme_override_styles/normal = SubResource("137")
 toggle_mode = true
 action_mode = 0
 shortcut_in_tooltip = false
@@ -1999,14 +2006,14 @@ custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 focus_mode = 1
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("92")
-theme_override_styles/normal = SubResource("139")
+theme_override_styles/focus = SubResource("155")
 theme_override_styles/hover = SubResource("150")
 theme_override_styles/pressed = SubResource("138")
-theme_override_styles/focus = SubResource("155")
+theme_override_styles/normal = SubResource("139")
 toggle_mode = true
 action_mode = 0
 shortcut_in_tooltip = false
@@ -2035,10 +2042,10 @@ clip_text = true
 custom_minimum_size = Vector2(16, 0)
 layout_mode = 2
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("92")
 action_mode = 0
 flat = true
@@ -2067,14 +2074,14 @@ custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 focus_mode = 1
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("92")
-theme_override_styles/normal = SubResource("141")
+theme_override_styles/focus = SubResource("155")
 theme_override_styles/hover = SubResource("151")
 theme_override_styles/pressed = SubResource("140")
-theme_override_styles/focus = SubResource("155")
+theme_override_styles/normal = SubResource("141")
 toggle_mode = true
 action_mode = 0
 shortcut_in_tooltip = false
@@ -2104,14 +2111,14 @@ custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 focus_mode = 1
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("92")
-theme_override_styles/normal = SubResource("143")
+theme_override_styles/focus = SubResource("155")
 theme_override_styles/hover = SubResource("152")
 theme_override_styles/pressed = SubResource("142")
-theme_override_styles/focus = SubResource("155")
+theme_override_styles/normal = SubResource("143")
 toggle_mode = true
 action_mode = 0
 shortcut_in_tooltip = false
@@ -2141,14 +2148,14 @@ custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 focus_mode = 1
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("92")
-theme_override_styles/normal = SubResource("145")
+theme_override_styles/focus = SubResource("155")
 theme_override_styles/hover = SubResource("153")
 theme_override_styles/pressed = SubResource("144")
-theme_override_styles/focus = SubResource("155")
+theme_override_styles/normal = SubResource("145")
 toggle_mode = true
 action_mode = 0
 shortcut_in_tooltip = false
@@ -2178,14 +2185,14 @@ custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 focus_mode = 1
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("92")
-theme_override_styles/normal = SubResource("147")
+theme_override_styles/focus = SubResource("155")
 theme_override_styles/hover = SubResource("154")
 theme_override_styles/pressed = SubResource("146")
-theme_override_styles/focus = SubResource("155")
+theme_override_styles/normal = SubResource("147")
 toggle_mode = true
 action_mode = 0
 shortcut_in_tooltip = false
@@ -2214,10 +2221,10 @@ clip_text = true
 custom_minimum_size = Vector2(24, 0)
 layout_mode = 2
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("92")
 action_mode = 0
 flat = true
@@ -2275,9 +2282,9 @@ offset_right = 291.0
 offset_bottom = 345.0
 focus_mode = 2
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "hp model here"
 flat = false
 script = ExtResource("41")
@@ -2303,9 +2310,9 @@ offset_right = 314.0
 offset_bottom = 264.0
 focus_mode = 2
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "grade system here"
 flat = false
 script = ExtResource("62")
@@ -2329,10 +2336,10 @@ offset_top = 100.0
 offset_right = 156.0
 offset_bottom = 132.0
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("92")
 action_mode = 0
 flat = true
@@ -2357,10 +2364,10 @@ offset_top = 100.0
 offset_right = 336.0
 offset_bottom = 132.0
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("92")
 action_mode = 0
 flat = true
@@ -2385,10 +2392,10 @@ offset_top = 130.0
 offset_right = 173.0
 offset_bottom = 162.0
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("96")
 action_mode = 0
 flat = true
@@ -2413,10 +2420,10 @@ offset_top = 129.0
 offset_right = 356.0
 offset_bottom = 161.0
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("96")
 action_mode = 0
 flat = true
@@ -2441,10 +2448,10 @@ offset_top = 160.0
 offset_right = 156.0
 offset_bottom = 192.0
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("92")
 action_mode = 0
 flat = true
@@ -2469,10 +2476,10 @@ offset_top = 160.0
 offset_right = 336.0
 offset_bottom = 192.0
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("92")
 action_mode = 0
 flat = true
@@ -2498,10 +2505,10 @@ offset_top = 135.0
 offset_right = 190.0
 offset_bottom = 167.0
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("92")
 action_mode = 0
 flat = true
@@ -2526,10 +2533,10 @@ offset_top = 190.0
 offset_right = 156.0
 offset_bottom = 222.0
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("92")
 action_mode = 0
 flat = true
@@ -2554,10 +2561,10 @@ offset_top = 220.0
 offset_right = 156.0
 offset_bottom = 252.0
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("92")
 action_mode = 0
 flat = true
@@ -2582,10 +2589,10 @@ offset_top = 250.0
 offset_right = 156.0
 offset_bottom = 282.0
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("92")
 action_mode = 0
 flat = true
@@ -2610,10 +2617,10 @@ offset_top = 190.0
 offset_right = 336.0
 offset_bottom = 222.0
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("92")
 action_mode = 0
 flat = true
@@ -2638,10 +2645,10 @@ offset_top = 220.0
 offset_right = 336.0
 offset_bottom = 252.0
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("92")
 action_mode = 0
 flat = true
@@ -2666,10 +2673,10 @@ offset_top = 250.0
 offset_right = 336.0
 offset_bottom = 282.0
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("92")
 action_mode = 0
 flat = true
@@ -2695,10 +2702,10 @@ offset_top = 280.0
 offset_right = 156.0
 offset_bottom = 312.0
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("92")
 action_mode = 0
 flat = true
@@ -2850,11 +2857,11 @@ material = SubResource("62")
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme_override_styles/normal = SubResource("66")
+theme_override_styles/focus = SubResource("64")
+theme_override_styles/disabled = SubResource("65")
 theme_override_styles/hover = SubResource("63")
 theme_override_styles/pressed = SubResource("73")
-theme_override_styles/disabled = SubResource("65")
-theme_override_styles/focus = SubResource("64")
+theme_override_styles/normal = SubResource("66")
 disabled = true
 toggle_mode = true
 action_mode = 0
@@ -2867,7 +2874,7 @@ theme_override_styles/panel = SubResource("70")
 script = ExtResource("18")
 
 [node name="TextureRect" type="TextureRect" parent="Main/Maps/MapRegistry/S/VBoxContainer/NODIF"]
-modulate = Color(0.501961, 0.501961, 0.501961, 1)
+modulate = Color(0.5, 0.5, 0.5, 1)
 show_behind_parent = true
 material = SubResource("60")
 layout_mode = 0
@@ -2879,7 +2886,7 @@ offset_right = -6.0
 offset_bottom = -6.0
 texture = ExtResource("16")
 expand_mode = 1
-stretch_mode = 7
+stretch_mode = 6
 
 [node name="Label" type="Label" parent="Main/Maps/MapRegistry/S/VBoxContainer/NODIF"]
 layout_mode = 0
@@ -2892,6 +2899,8 @@ offset_bottom = -6.0
 pivot_offset = Vector2(42, 42)
 theme_override_fonts/font = SubResource("71")
 text = "N/A"
+horizontal_alignment = 2
+vertical_alignment = 1
 clip_text = true
 
 [node name="Cover" type="TextureRect" parent="Main/Maps/MapRegistry/S/VBoxContainer/NODIF"]
@@ -2906,8 +2915,9 @@ offset_left = 6.0
 offset_top = 6.0
 offset_right = -6.0
 offset_bottom = -6.0
+texture = ExtResource("73_ljgu7")
 expand_mode = 1
-stretch_mode = 7
+stretch_mode = 6
 
 [node name="F" type="TextureRect" parent="Main/Maps/MapRegistry/S/VBoxContainer/NODIF"]
 visible = false
@@ -2943,11 +2953,11 @@ material = SubResource("62")
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme_override_styles/normal = SubResource("66")
+theme_override_styles/focus = SubResource("64")
+theme_override_styles/disabled = SubResource("65")
 theme_override_styles/hover = SubResource("63")
 theme_override_styles/pressed = SubResource("73")
-theme_override_styles/disabled = SubResource("65")
-theme_override_styles/focus = SubResource("64")
+theme_override_styles/normal = SubResource("66")
 disabled = true
 toggle_mode = true
 action_mode = 0
@@ -2965,6 +2975,7 @@ theme_override_constants/line_spacing = 0
 theme_override_fonts/font = SubResource("74")
 text = "OR3O
 [bongo cat & friends] meow"
+vertical_alignment = 1
 clip_text = true
 
 [node name="EASY" type="Panel" parent="Main/Maps/MapRegistry/S/VBoxContainer"]
@@ -2989,7 +3000,7 @@ offset_right = -6.0
 offset_bottom = -6.0
 texture = ExtResource("16")
 expand_mode = 1
-stretch_mode = 7
+stretch_mode = 6
 
 [node name="Label" type="Label" parent="Main/Maps/MapRegistry/S/VBoxContainer/EASY"]
 layout_mode = 0
@@ -3001,6 +3012,8 @@ offset_right = -6.0
 offset_bottom = -6.0
 theme_override_fonts/font = SubResource("75")
 text = "EASY"
+horizontal_alignment = 2
+vertical_alignment = 1
 clip_text = true
 
 [node name="Cover" type="TextureRect" parent="Main/Maps/MapRegistry/S/VBoxContainer/EASY"]
@@ -3015,8 +3028,9 @@ offset_left = 6.0
 offset_top = 6.0
 offset_right = -6.0
 offset_bottom = -6.0
+texture = ExtResource("73_ljgu7")
 expand_mode = 1
-stretch_mode = 7
+stretch_mode = 6
 
 [node name="F" type="TextureRect" parent="Main/Maps/MapRegistry/S/VBoxContainer/EASY"]
 visible = false
@@ -3052,11 +3066,11 @@ material = SubResource("62")
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme_override_styles/normal = SubResource("66")
+theme_override_styles/focus = SubResource("64")
+theme_override_styles/disabled = SubResource("65")
 theme_override_styles/hover = SubResource("63")
 theme_override_styles/pressed = SubResource("73")
-theme_override_styles/disabled = SubResource("65")
-theme_override_styles/focus = SubResource("64")
+theme_override_styles/normal = SubResource("66")
 disabled = true
 toggle_mode = true
 action_mode = 0
@@ -3074,6 +3088,7 @@ theme_override_constants/line_spacing = 0
 theme_override_fonts/font = SubResource("74")
 text = "OR3O
 [bongo cat & friends] meow"
+vertical_alignment = 1
 clip_text = true
 
 [node name="MEDIUM" type="Panel" parent="Main/Maps/MapRegistry/S/VBoxContainer"]
@@ -3098,7 +3113,7 @@ offset_right = -6.0
 offset_bottom = -6.0
 texture = ExtResource("16")
 expand_mode = 1
-stretch_mode = 7
+stretch_mode = 6
 
 [node name="Label" type="Label" parent="Main/Maps/MapRegistry/S/VBoxContainer/MEDIUM"]
 layout_mode = 0
@@ -3110,6 +3125,8 @@ offset_right = -6.0
 offset_bottom = -6.0
 theme_override_fonts/font = SubResource("76")
 text = "MEDIUM"
+horizontal_alignment = 2
+vertical_alignment = 1
 clip_text = true
 
 [node name="Cover" type="TextureRect" parent="Main/Maps/MapRegistry/S/VBoxContainer/MEDIUM"]
@@ -3124,8 +3141,9 @@ offset_left = 6.0
 offset_top = 6.0
 offset_right = -6.0
 offset_bottom = -6.0
+texture = ExtResource("73_ljgu7")
 expand_mode = 1
-stretch_mode = 7
+stretch_mode = 6
 
 [node name="F" type="TextureRect" parent="Main/Maps/MapRegistry/S/VBoxContainer/MEDIUM"]
 visible = false
@@ -3161,11 +3179,11 @@ material = SubResource("62")
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme_override_styles/normal = SubResource("66")
+theme_override_styles/focus = SubResource("64")
+theme_override_styles/disabled = SubResource("65")
 theme_override_styles/hover = SubResource("63")
 theme_override_styles/pressed = SubResource("73")
-theme_override_styles/disabled = SubResource("65")
-theme_override_styles/focus = SubResource("64")
+theme_override_styles/normal = SubResource("66")
 disabled = true
 toggle_mode = true
 action_mode = 0
@@ -3183,6 +3201,7 @@ theme_override_constants/line_spacing = 0
 theme_override_fonts/font = SubResource("74")
 text = "OR3O
 [bongo cat & friends] meow"
+vertical_alignment = 1
 clip_text = true
 
 [node name="HARD" type="Panel" parent="Main/Maps/MapRegistry/S/VBoxContainer"]
@@ -3207,7 +3226,7 @@ offset_right = -6.0
 offset_bottom = -6.0
 texture = ExtResource("16")
 expand_mode = 1
-stretch_mode = 7
+stretch_mode = 6
 
 [node name="Label" type="Label" parent="Main/Maps/MapRegistry/S/VBoxContainer/HARD"]
 layout_mode = 0
@@ -3219,6 +3238,8 @@ offset_right = -6.0
 offset_bottom = -6.0
 theme_override_fonts/font = SubResource("77")
 text = "HARD"
+horizontal_alignment = 2
+vertical_alignment = 1
 clip_text = true
 
 [node name="Cover" type="TextureRect" parent="Main/Maps/MapRegistry/S/VBoxContainer/HARD"]
@@ -3233,8 +3254,9 @@ offset_left = 6.0
 offset_top = 6.0
 offset_right = -6.0
 offset_bottom = -6.0
+texture = ExtResource("73_ljgu7")
 expand_mode = 1
-stretch_mode = 7
+stretch_mode = 6
 
 [node name="F" type="TextureRect" parent="Main/Maps/MapRegistry/S/VBoxContainer/HARD"]
 visible = false
@@ -3270,11 +3292,11 @@ material = SubResource("62")
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme_override_styles/normal = SubResource("66")
+theme_override_styles/focus = SubResource("64")
+theme_override_styles/disabled = SubResource("65")
 theme_override_styles/hover = SubResource("63")
 theme_override_styles/pressed = SubResource("73")
-theme_override_styles/disabled = SubResource("65")
-theme_override_styles/focus = SubResource("64")
+theme_override_styles/normal = SubResource("66")
 disabled = true
 toggle_mode = true
 action_mode = 0
@@ -3292,6 +3314,7 @@ theme_override_constants/line_spacing = 0
 theme_override_fonts/font = SubResource("74")
 text = "OR3O
 [bongo cat & friends] meow"
+vertical_alignment = 1
 clip_text = true
 
 [node name="LOGIC" type="Panel" parent="Main/Maps/MapRegistry/S/VBoxContainer"]
@@ -3316,7 +3339,7 @@ offset_right = -6.0
 offset_bottom = -6.0
 texture = ExtResource("16")
 expand_mode = 1
-stretch_mode = 7
+stretch_mode = 6
 
 [node name="Label" type="Label" parent="Main/Maps/MapRegistry/S/VBoxContainer/LOGIC"]
 layout_mode = 0
@@ -3328,6 +3351,8 @@ offset_right = -6.0
 offset_bottom = -6.0
 theme_override_fonts/font = SubResource("78")
 text = "LOGIC?"
+horizontal_alignment = 2
+vertical_alignment = 1
 clip_text = true
 
 [node name="Cover" type="TextureRect" parent="Main/Maps/MapRegistry/S/VBoxContainer/LOGIC"]
@@ -3342,8 +3367,9 @@ offset_left = 6.0
 offset_top = 6.0
 offset_right = -6.0
 offset_bottom = -6.0
+texture = ExtResource("73_ljgu7")
 expand_mode = 1
-stretch_mode = 7
+stretch_mode = 6
 
 [node name="F" type="TextureRect" parent="Main/Maps/MapRegistry/S/VBoxContainer/LOGIC"]
 visible = false
@@ -3379,11 +3405,11 @@ material = SubResource("62")
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme_override_styles/normal = SubResource("66")
+theme_override_styles/focus = SubResource("64")
+theme_override_styles/disabled = SubResource("65")
 theme_override_styles/hover = SubResource("63")
 theme_override_styles/pressed = SubResource("73")
-theme_override_styles/disabled = SubResource("65")
-theme_override_styles/focus = SubResource("64")
+theme_override_styles/normal = SubResource("66")
 disabled = true
 toggle_mode = true
 action_mode = 0
@@ -3401,6 +3427,7 @@ theme_override_constants/line_spacing = 0
 theme_override_fonts/font = SubResource("74")
 text = "OR3O
 [bongo cat & friends] meow"
+vertical_alignment = 1
 clip_text = true
 
 [node name="AMOGUS" type="Panel" parent="Main/Maps/MapRegistry/S/VBoxContainer"]
@@ -3425,7 +3452,7 @@ offset_right = -6.0
 offset_bottom = -6.0
 texture = ExtResource("16")
 expand_mode = 1
-stretch_mode = 7
+stretch_mode = 6
 
 [node name="Label" type="Label" parent="Main/Maps/MapRegistry/S/VBoxContainer/AMOGUS"]
 layout_mode = 0
@@ -3437,6 +3464,8 @@ offset_right = -6.0
 offset_bottom = -6.0
 theme_override_fonts/font = SubResource("79")
 text = "助"
+horizontal_alignment = 2
+vertical_alignment = 1
 clip_text = true
 
 [node name="Cover" type="TextureRect" parent="Main/Maps/MapRegistry/S/VBoxContainer/AMOGUS"]
@@ -3451,8 +3480,9 @@ offset_left = 6.0
 offset_top = 6.0
 offset_right = -6.0
 offset_bottom = -6.0
+texture = ExtResource("73_ljgu7")
 expand_mode = 1
-stretch_mode = 7
+stretch_mode = 6
 
 [node name="F" type="TextureRect" parent="Main/Maps/MapRegistry/S/VBoxContainer/AMOGUS"]
 visible = false
@@ -3488,11 +3518,11 @@ material = SubResource("62")
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme_override_styles/normal = SubResource("66")
+theme_override_styles/focus = SubResource("64")
+theme_override_styles/disabled = SubResource("65")
 theme_override_styles/hover = SubResource("63")
 theme_override_styles/pressed = SubResource("73")
-theme_override_styles/disabled = SubResource("65")
-theme_override_styles/focus = SubResource("64")
+theme_override_styles/normal = SubResource("66")
 disabled = true
 toggle_mode = true
 action_mode = 0
@@ -3510,6 +3540,7 @@ theme_override_constants/line_spacing = 0
 theme_override_fonts/font = SubResource("74")
 text = "OR3O
 [bongo cat & friends] meow"
+vertical_alignment = 1
 clip_text = true
 
 [node name="Press" type="AudioStreamPlayer" parent="Main/Maps/MapRegistry/S/VBoxContainer"]
@@ -3532,11 +3563,11 @@ custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("1")
-theme_override_styles/normal = SubResource("84")
+theme_override_styles/focus = SubResource("82")
+theme_override_styles/disabled = SubResource("83")
 theme_override_styles/hover = SubResource("80")
 theme_override_styles/pressed = SubResource("81")
-theme_override_styles/disabled = SubResource("83")
-theme_override_styles/focus = SubResource("82")
+theme_override_styles/normal = SubResource("84")
 action_mode = 0
 shortcut_in_tooltip = false
 
@@ -3550,6 +3581,8 @@ offset_bottom = -6.0
 theme_override_fonts/font = SubResource("77")
 text = "U
 P"
+horizontal_alignment = 1
+vertical_alignment = 1
 clip_text = true
 
 [node name="P" type="Button" parent="Main/Maps/ScrollControl"]
@@ -3557,11 +3590,11 @@ custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("1")
-theme_override_styles/normal = SubResource("84")
+theme_override_styles/focus = SubResource("82")
+theme_override_styles/disabled = SubResource("83")
 theme_override_styles/hover = SubResource("80")
 theme_override_styles/pressed = SubResource("81")
-theme_override_styles/disabled = SubResource("83")
-theme_override_styles/focus = SubResource("82")
+theme_override_styles/normal = SubResource("84")
 action_mode = 0
 shortcut_in_tooltip = false
 
@@ -3577,6 +3610,8 @@ text = "D
 O
 W
 N"
+horizontal_alignment = 1
+vertical_alignment = 1
 clip_text = true
 
 [node name="VSeparator2" type="VSeparator" parent="Main/Maps"]
@@ -3606,12 +3641,12 @@ text = "Filters"
 custom_minimum_size = Vector2(0, 25)
 layout_mode = 2
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_focus_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_disabled_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_focus_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("69")
 action_mode = 0
 text = "broken"
@@ -3622,12 +3657,12 @@ script = ExtResource("19")
 custom_minimum_size = Vector2(0, 25)
 layout_mode = 2
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_focus_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_disabled_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_focus_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("69")
 action_mode = 0
 text = "online"
@@ -3639,12 +3674,12 @@ target = "last_search_incl_online"
 custom_minimum_size = Vector2(0, 25)
 layout_mode = 2
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_focus_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_disabled_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_focus_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("69")
 theme_override_icons/checked = ExtResource("24")
 theme_override_icons/unchecked = ExtResource("25")
@@ -3657,12 +3692,12 @@ script = ExtResource("17")
 custom_minimum_size = Vector2(0, 25)
 layout_mode = 2
 theme = ExtResource("1")
-theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
-theme_override_colors/font_focus_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_colors/font_disabled_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_hover_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_pressed_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_focus_color = Color(0.670588, 0.556863, 0.556863, 1)
+theme_override_colors/font_color = Color(0.670588, 0.556863, 0.556863, 1)
 theme_override_fonts/font = SubResource("69")
 theme_override_icons/checked = ExtResource("24")
 theme_override_icons/unchecked = ExtResource("25")
@@ -3703,6 +3738,8 @@ anchor_bottom = 1.0
 pivot_offset = Vector2(42, 42)
 theme_override_fonts/font = SubResource("61")
 text = "N"
+horizontal_alignment = 1
+vertical_alignment = 1
 clip_text = true
 
 [node name="Select" type="Button" parent="Main/Maps/Filters/NODIF"]
@@ -3710,11 +3747,11 @@ material = SubResource("62")
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme_override_styles/normal = SubResource("66")
+theme_override_styles/focus = SubResource("64")
+theme_override_styles/disabled = SubResource("65")
 theme_override_styles/hover = SubResource("63")
 theme_override_styles/pressed = SubResource("63")
-theme_override_styles/disabled = SubResource("65")
-theme_override_styles/focus = SubResource("64")
+theme_override_styles/normal = SubResource("66")
 action_mode = 0
 
 [node name="EASY" type="Panel" parent="Main/Maps/Filters"]
@@ -3747,6 +3784,8 @@ anchor_bottom = 1.0
 pivot_offset = Vector2(42, 42)
 theme_override_fonts/font = SubResource("61")
 text = "E"
+horizontal_alignment = 1
+vertical_alignment = 1
 clip_text = true
 
 [node name="Select" type="Button" parent="Main/Maps/Filters/EASY"]
@@ -3754,11 +3793,11 @@ material = SubResource("62")
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme_override_styles/normal = SubResource("66")
+theme_override_styles/focus = SubResource("64")
+theme_override_styles/disabled = SubResource("65")
 theme_override_styles/hover = SubResource("63")
 theme_override_styles/pressed = SubResource("63")
-theme_override_styles/disabled = SubResource("65")
-theme_override_styles/focus = SubResource("64")
+theme_override_styles/normal = SubResource("66")
 action_mode = 0
 
 [node name="MEDIUM" type="Panel" parent="Main/Maps/Filters"]
@@ -3791,6 +3830,8 @@ anchor_bottom = 1.0
 pivot_offset = Vector2(42, 42)
 theme_override_fonts/font = SubResource("61")
 text = "M"
+horizontal_alignment = 1
+vertical_alignment = 1
 clip_text = true
 
 [node name="Select" type="Button" parent="Main/Maps/Filters/MEDIUM"]
@@ -3798,11 +3839,11 @@ material = SubResource("62")
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme_override_styles/normal = SubResource("66")
+theme_override_styles/focus = SubResource("64")
+theme_override_styles/disabled = SubResource("65")
 theme_override_styles/hover = SubResource("63")
 theme_override_styles/pressed = SubResource("63")
-theme_override_styles/disabled = SubResource("65")
-theme_override_styles/focus = SubResource("64")
+theme_override_styles/normal = SubResource("66")
 action_mode = 0
 
 [node name="HARD" type="Panel" parent="Main/Maps/Filters"]
@@ -3835,6 +3876,8 @@ anchor_bottom = 1.0
 pivot_offset = Vector2(42, 42)
 theme_override_fonts/font = SubResource("61")
 text = "H"
+horizontal_alignment = 1
+vertical_alignment = 1
 clip_text = true
 
 [node name="Select" type="Button" parent="Main/Maps/Filters/HARD"]
@@ -3842,11 +3885,11 @@ material = SubResource("62")
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme_override_styles/normal = SubResource("66")
+theme_override_styles/focus = SubResource("64")
+theme_override_styles/disabled = SubResource("65")
 theme_override_styles/hover = SubResource("63")
 theme_override_styles/pressed = SubResource("63")
-theme_override_styles/disabled = SubResource("65")
-theme_override_styles/focus = SubResource("64")
+theme_override_styles/normal = SubResource("66")
 action_mode = 0
 
 [node name="LOGIC" type="Panel" parent="Main/Maps/Filters"]
@@ -3879,6 +3922,8 @@ anchor_bottom = 1.0
 pivot_offset = Vector2(42, 42)
 theme_override_fonts/font = SubResource("61")
 text = "L"
+horizontal_alignment = 1
+vertical_alignment = 1
 clip_text = true
 
 [node name="Select" type="Button" parent="Main/Maps/Filters/LOGIC"]
@@ -3886,11 +3931,11 @@ material = SubResource("62")
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme_override_styles/normal = SubResource("66")
+theme_override_styles/focus = SubResource("64")
+theme_override_styles/disabled = SubResource("65")
 theme_override_styles/hover = SubResource("63")
 theme_override_styles/pressed = SubResource("63")
-theme_override_styles/disabled = SubResource("65")
-theme_override_styles/focus = SubResource("64")
+theme_override_styles/normal = SubResource("66")
 action_mode = 0
 
 [node name="AMOGUS" type="Panel" parent="Main/Maps/Filters"]
@@ -3924,6 +3969,8 @@ offset_right = -1.0
 offset_bottom = -3.0
 theme_override_fonts/font = SubResource("68")
 text = "助"
+horizontal_alignment = 1
+vertical_alignment = 1
 clip_text = true
 
 [node name="Select" type="Button" parent="Main/Maps/Filters/AMOGUS"]
@@ -3931,11 +3978,11 @@ material = SubResource("62")
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme_override_styles/normal = SubResource("66")
+theme_override_styles/focus = SubResource("64")
+theme_override_styles/disabled = SubResource("65")
 theme_override_styles/hover = SubResource("63")
 theme_override_styles/pressed = SubResource("63")
-theme_override_styles/disabled = SubResource("65")
-theme_override_styles/focus = SubResource("64")
+theme_override_styles/normal = SubResource("66")
 action_mode = 0
 
 [node name="VSeparator3" type="VSeparator" parent="Main/Maps"]
@@ -3997,6 +4044,8 @@ border_color = Color(1, 0, 0, 0)
 
 [node name="Menu" parent="Main/Content" instance=ExtResource("103")]
 layout_mode = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
 script = null
 
 [node name="Language" type="ReferenceRect" parent="Main"]
@@ -4010,6 +4059,8 @@ border_color = Color(1, 0, 0, 0)
 
 [node name="LanguageMenu" parent="Main/Language" instance=ExtResource("104")]
 layout_mode = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
 
 [node name="Quit" type="Button" parent="."]
 visible = false
@@ -4063,9 +4114,6 @@ anchor_bottom = 1.0
 offset_right = 60.0
 theme_override_styles/panel = SubResource("1")
 script = ExtResource("12")
-__meta__ = {
-"_edit_lock_": true
-}
 
 [node name="L" type="VBoxContainer" parent="Sidebar"]
 layout_mode = 0
@@ -4077,11 +4125,11 @@ theme_override_constants/separation = 0
 [node name="Results" type="Button" parent="Sidebar/L"]
 custom_minimum_size = Vector2(0, 58)
 layout_mode = 2
-theme_override_styles/normal = SubResource("4")
+theme_override_styles/focus = SubResource("3")
+theme_override_styles/disabled = SubResource("4")
 theme_override_styles/hover = SubResource("4")
 theme_override_styles/pressed = SubResource("2")
-theme_override_styles/disabled = SubResource("4")
-theme_override_styles/focus = SubResource("3")
+theme_override_styles/normal = SubResource("4")
 toggle_mode = true
 action_mode = 0
 
@@ -4107,11 +4155,11 @@ text = "Play Song"
 visible = false
 custom_minimum_size = Vector2(0, 58)
 layout_mode = 2
-theme_override_styles/normal = SubResource("4")
+theme_override_styles/focus = SubResource("3")
+theme_override_styles/disabled = SubResource("4")
 theme_override_styles/hover = SubResource("4")
 theme_override_styles/pressed = SubResource("2")
-theme_override_styles/disabled = SubResource("4")
-theme_override_styles/focus = SubResource("3")
+theme_override_styles/normal = SubResource("4")
 toggle_mode = true
 action_mode = 0
 
@@ -4136,11 +4184,11 @@ text = "Song Select"
 [node name="Settings" type="Button" parent="Sidebar/L"]
 custom_minimum_size = Vector2(0, 58)
 layout_mode = 2
-theme_override_styles/normal = SubResource("4")
+theme_override_styles/focus = SubResource("3")
+theme_override_styles/disabled = SubResource("4")
 theme_override_styles/hover = SubResource("4")
 theme_override_styles/pressed = SubResource("2")
-theme_override_styles/disabled = SubResource("4")
-theme_override_styles/focus = SubResource("3")
+theme_override_styles/normal = SubResource("4")
 toggle_mode = true
 action_mode = 0
 
@@ -4165,11 +4213,11 @@ text = "Settings"
 [node name="Credits" type="Button" parent="Sidebar/L"]
 custom_minimum_size = Vector2(0, 58)
 layout_mode = 2
-theme_override_styles/normal = SubResource("4")
+theme_override_styles/focus = SubResource("3")
+theme_override_styles/disabled = SubResource("4")
 theme_override_styles/hover = SubResource("4")
 theme_override_styles/pressed = SubResource("2")
-theme_override_styles/disabled = SubResource("4")
-theme_override_styles/focus = SubResource("3")
+theme_override_styles/normal = SubResource("4")
 toggle_mode = true
 action_mode = 0
 
@@ -4194,11 +4242,11 @@ text = "Credits"
 [node name="ContentMgr" type="Button" parent="Sidebar/L"]
 custom_minimum_size = Vector2(0, 58)
 layout_mode = 2
-theme_override_styles/normal = SubResource("4")
+theme_override_styles/focus = SubResource("3")
+theme_override_styles/disabled = SubResource("4")
 theme_override_styles/hover = SubResource("4")
 theme_override_styles/pressed = SubResource("2")
-theme_override_styles/disabled = SubResource("4")
-theme_override_styles/focus = SubResource("3")
+theme_override_styles/normal = SubResource("4")
 toggle_mode = true
 action_mode = 0
 
@@ -4223,11 +4271,11 @@ text = "Content Manager"
 [node name="Language" type="Button" parent="Sidebar/L"]
 custom_minimum_size = Vector2(0, 58)
 layout_mode = 2
-theme_override_styles/normal = SubResource("4")
+theme_override_styles/focus = SubResource("3")
+theme_override_styles/disabled = SubResource("4")
 theme_override_styles/hover = SubResource("4")
 theme_override_styles/pressed = SubResource("2")
-theme_override_styles/disabled = SubResource("4")
-theme_override_styles/focus = SubResource("3")
+theme_override_styles/normal = SubResource("4")
 toggle_mode = true
 action_mode = 0
 
@@ -4253,11 +4301,11 @@ text = "Language"
 visible = false
 custom_minimum_size = Vector2(0, 58)
 layout_mode = 2
-theme_override_styles/normal = SubResource("4")
+theme_override_styles/focus = SubResource("3")
+theme_override_styles/disabled = SubResource("4")
 theme_override_styles/hover = SubResource("4")
 theme_override_styles/pressed = SubResource("2")
-theme_override_styles/disabled = SubResource("4")
-theme_override_styles/focus = SubResource("3")
+theme_override_styles/normal = SubResource("4")
 toggle_mode = true
 action_mode = 0
 
@@ -4283,11 +4331,11 @@ text = "Play in VR"
 visible = false
 custom_minimum_size = Vector2(0, 58)
 layout_mode = 2
-theme_override_styles/normal = SubResource("4")
+theme_override_styles/focus = SubResource("3")
+theme_override_styles/disabled = SubResource("4")
 theme_override_styles/hover = SubResource("4")
 theme_override_styles/pressed = SubResource("2")
-theme_override_styles/disabled = SubResource("4")
-theme_override_styles/focus = SubResource("3")
+theme_override_styles/normal = SubResource("4")
 toggle_mode = true
 action_mode = 0
 
@@ -4312,11 +4360,11 @@ text = "Switch to Old Menu"
 [node name="Quit" type="Button" parent="Sidebar/L"]
 custom_minimum_size = Vector2(0, 58)
 layout_mode = 2
-theme_override_styles/normal = SubResource("4")
+theme_override_styles/focus = SubResource("3")
+theme_override_styles/disabled = SubResource("4")
 theme_override_styles/hover = SubResource("4")
 theme_override_styles/pressed = SubResource("2")
-theme_override_styles/disabled = SubResource("4")
-theme_override_styles/focus = SubResource("3")
+theme_override_styles/normal = SubResource("4")
 toggle_mode = true
 action_mode = 0
 
